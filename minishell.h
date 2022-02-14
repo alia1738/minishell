@@ -16,4 +16,12 @@
 # define TWO_IN_ONE_OUT 2 
 # define ONE_IN_TWO_OUT 3 
 # define TWO_IN_TWO_OUT 4 
+
+# define ERROR_CODE -1
+
+
+void	free_array(char **array);
+
+char	*get_cmd_path(char **env, char *cmd);
+
 #endif
