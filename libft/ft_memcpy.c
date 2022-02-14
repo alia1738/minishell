@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/04 01:09:20 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/12 12:46:06 by anasr            ###   ########.fr       */
+/*   Updated: 2022/02/14 04:23:30 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,9 @@ void	*ft_memcpy(void *dst, const void *src, size_t n)
 	if (dst == NULL && src == NULL)
 		return (0);
 	while (n--)
-		((char *)dst)[i] = ((char *)src)[i++];
+	{
+		((char *)dst)[i] = ((char *)src)[i];
+		i++;
+	}
 	return (dst);
 }

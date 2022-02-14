@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/04 14:29:53 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/12 12:46:43 by anasr            ###   ########.fr       */
+/*   Updated: 2022/02/14 04:36:38 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,10 @@ void	*ft_memmove(void *dst, const void *src, size_t n)
 	{
 		i = n - 1;
 		while (n--)
-			((char *)dst)[i] = ((char *)src)[i++];
+		{
+			((char *)dst)[i] = ((char *)src)[i];
+			i--;
+		}
 		return (dst);
 	}
 }

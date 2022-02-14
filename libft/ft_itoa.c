@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/15 12:40:34 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/02/13 18:00:20 by Alia             ###   ########.fr       */
+/*   Updated: 2022/02/14 05:13:04 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static char	*copy_part(int n, int save, char *s, int c)
 		s[c--] = (n % 10) + 48;
 		n = n / 10;
 	}
-	if (n > 0)
+	if (save > 0)
 		s[0] = n + 48;
 	else if (save < 0)
 		s[0] = '-';
@@ -60,7 +60,6 @@ char	*ft_itoa(int n)
 	s = (char *)malloc((c + 1) * sizeof(char));
 	if (s == 0)
 		return (NULL);
-	c--;
 	s[c--] = 0;
 	if (save == INT_MIN)
 	{

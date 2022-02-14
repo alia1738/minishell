@@ -3,23 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/07 11:22:36 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/02/13 18:44:30 by Alia             ###   ########.fr       */
+/*   Updated: 2022/02/14 05:20:45 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
 
-#include <ctype.h>
+# include <ctype.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
 # include <stdint.h>
 # include <limits.h>
 # include <stdbool.h>
+# include <unistd.h>
 
 /* **************************** structs **************************** */
 

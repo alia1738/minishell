@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/04 11:53:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/12 12:59:02 by anasr            ###   ########.fr       */
+/*   Updated: 2022/02/14 04:26:12 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,10 @@ char	*ft_strdup(const char *s1)
 	if (!dup)
 		return (NULL);
 	while (s1 && s1[i])
-		dup[i] = s1[i++];
+	{
+		dup[i] = s1[i];
+		i++;
+	}
 	dup[i] = '\0';
 	return (dup);
 }
