@@ -12,13 +12,8 @@
 
 /*------- > >> REDIRECTION << < -----------*/
 
-# define ONE_IN_ONE_OUT 1 
-# define TWO_IN_ONE_OUT 2 
-# define ONE_IN_TWO_OUT 3 
-# define TWO_IN_TWO_OUT 4 
-
-# define SINGLE_ARROW 5
-# define DOUBLE_ARROW 6
+# define SINGLE_ARROW 1
+# define DOUBLE_ARROW 2
 
 
 # define ERROR_CODE -1
@@ -28,14 +23,16 @@ typedef struct s_parser_info{
 	char	*output_files[OPEN_MAX];
 	char	*cmd_path;
 	char	**cmd;
+	int		exit_code;
 	
-	int		arrow_flag;
-	int		in_arrow_flag;
+	int		in_arrow_flag; //can be equal to SINGLE_ARROW or DOUBLE_ARROW based on last redirection
 	int		out_arrow_flag;
 	int		in_single_arrow_count;
 	int		in_double_arrow_count;
+	int		in_arrow_count;
 	int		out_single_arrow_count;
 	int		out_double_arrow_count;
+	int		out_arrow_count;
 } t_parser_info;
 
 

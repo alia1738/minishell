@@ -118,15 +118,11 @@ get_cmd_path.o: get_cmd_path.c minishell.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/sys/_pthread/_pthread_key_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/sys/_types/_fsblkcnt_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/sys/_types/_fsfilcnt_t.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/readline/readline.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/sys/ioctl.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/sys/ttycom.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/sys/ioccom.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/sys/filio.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/sys/sockio.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/sys/ttydefaults.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/readline/history.h \
-  libft/libft.h \
+  /usr/local/opt/readline/include/readline/readline.h \
+  /usr/local/opt/readline/include/readline/rlstdc.h \
+  /usr/local/opt/readline/include/readline/rltypedefs.h \
+  /usr/local/opt/readline/include/readline/keymaps.h \
+  /usr/local/opt/readline/include/readline/chardefs.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/ctype.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/_ctype.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/runetype.h \
@@ -135,6 +131,10 @@ get_cmd_path.o: get_cmd_path.c minishell.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/strings.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/secure/_strings.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/secure/_string.h \
+  /usr/local/opt/readline/include/readline/tilde.h \
+  /usr/local/opt/readline/include/readline/history.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/time.h \
+  libft/libft.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/12.0.0/include/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/limits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/machine/limits.h \
