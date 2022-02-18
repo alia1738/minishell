@@ -4,6 +4,7 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>       
+# include <dirent.h>
 # include <sys/wait.h>
 # include <sys/types.h>
 # include <readline/readline.h>
@@ -21,24 +22,21 @@
 typedef struct s_parser_info{
 	char	*input_files[OPEN_MAX];
 	char	*output_files[OPEN_MAX];
+	int		in_arrow_flag[OPEN_MAX];
+	int		out_arrow_flag[OPEN_MAX];
 	char	*cmd_path;
-	char	**cmd;
+	char	**words;
+	char	*cmd[OPEN_MAX];
 	int		exit_code;
-	
-	int		in_arrow_flag; //can be equal to SINGLE_ARROW or DOUBLE_ARROW based on last redirection
-	int		out_arrow_flag;
-	int		in_single_arrow_count;
-	int		in_double_arrow_count;
-	int		in_arrow_count;
-	int		out_single_arrow_count;
-	int		out_double_arrow_count;
-	int		out_arrow_count;
 } t_parser_info;
 
 
 void	free_array(char **array);
 char	*ft_strndup(const char *s1, int n);
+void	skip_isspaces(int *index, char *input);
 
 char	*get_cmd_path(char **env, char *cmd);
+
+void	split_input(char *input, t_parser_info *p);
 
 #endif
