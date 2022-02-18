@@ -6,13 +6,13 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 17:35:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/18 17:47:04 by anasr            ###   ########.fr       */
+/*   Updated: 2022/02/18 19:19:24 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void env(char **env)
+void	env(char **env)
 {
 	int	i;
 
@@ -21,7 +21,7 @@ void env(char **env)
 		printf("%s\n", env[i++]);
 }
 
-int	cd(char *path)
+int		cd(char *path)
 {
 	int	result;
 
