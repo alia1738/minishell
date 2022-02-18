@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/18 19:58:14 by anasr            ###   ########.fr       */
+/*   Updated: 2022/02/18 20:34:11 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	save_input_output_files_n_cmds(char **words, t_parser_info *p)
 				p->in_arrow_flag[in_index] = DOUBLE_ARROW;
 			else
 				p->in_arrow_flag[in_index] = SINGLE_ARROW;
-			p->input_files[in_index++] = words[++i];
+			p->input_files_delimiters[in_index++] = words[++i];
 		}
 		else if ((!ft_strncmp(words[i], ">>", 2) || !ft_strncmp(words[i], ">", 1)) && words[i + 1])
 		{
@@ -63,10 +63,10 @@ int	main(int argc, char **argv, char **env)
 		split_input(input, &p);
 		save_input_output_files_n_cmds(p.words, &p);
 		p.cmd_path = get_cmd_path(env, p.cmd[0]);
-		/*ADD EXECUTION HERE*/
+		execute_command(&p);
 
 		/*-----------------*/
-		ft_bzero(p.input_files, sizeof(p.input_files));
+		ft_bzero(p.input_files_delimiters, sizeof(p.input_files_delimiters));
 		ft_bzero(p.output_files, sizeof(p.output_files));
 		ft_bzero(p.cmd, sizeof(p.cmd));
 		free_array(p.words);
