@@ -1,49 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   simple_helpers.c                                   :+:      :+:    :+:   */
+/*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/14 17:52:09 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/18 17:12:08 by anasr            ###   ########.fr       */
+/*   Created: 2022/02/18 17:35:34 by anasr             #+#    #+#             */
+/*   Updated: 2022/02/18 19:19:24 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	free_array(char **array)
+void	env(char **env)
 {
 	int	i;
 
-	i = -1;
-	while (array[++i])
-		free(array[i]);
-	return ;
-}
-
-char	*ft_strndup(const char *s1, int n)
-{
-	int		i;
-	char	*dup;	
-
 	i = 0;
-	if (!s1)
-		return (NULL);
-	dup = (char *)malloc(n + 1);
-	if (!dup)
-		return (NULL);
-	while (s1 && i < n)
-	{
-		dup[i] = s1[i];
-		i++;
-	}
-	dup[i] = '\0';
-	return (dup);
+	while (env[i])
+		printf("%s\n", env[i++]);
 }
 
-void	skip_isspaces(int *index, char *input)
+int		cd(char *path)
 {
-	while (ft_isspace(input[*index]) == 1)
-		(*index)++;
+	int	result;
+
+	result = chdir(path);
+	if (!opendir(path))
+		perror("minishell: ");
+	return (result);
 }
