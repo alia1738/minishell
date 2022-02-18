@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/18 19:19:56 by anasr            ###   ########.fr       */
+/*   Updated: 2022/02/18 19:58:14 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ int	main(int argc, char **argv, char **env)
 
 	(void)argc;
 	(void)argv;
-	(void)env;
 	ft_bzero(&p, sizeof(t_parser_info));
 	while (1)
 	{
@@ -64,7 +63,7 @@ int	main(int argc, char **argv, char **env)
 		split_input(input, &p);
 		save_input_output_files_n_cmds(p.words, &p);
 		p.cmd_path = get_cmd_path(env, p.cmd[0]);
-		/*ADD EXECTION HERE*/
+		/*ADD EXECUTION HERE*/
 
 		/*-----------------*/
 		ft_bzero(p.input_files, sizeof(p.input_files));
