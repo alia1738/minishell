@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_cmd_path.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 16:55:09 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/18 19:27:02 by anasr            ###   ########.fr       */
+/*   Updated: 2022/02/19 18:41:53 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ char	*get_cmd_path(char **env, char *cmd)
 	char	*temp_path;
 
 	i = 0;
+	if (!cmd)
+		return (NULL);
 	temp_path = &env[path_index(env)][5];
 	paths_array = ft_split(temp_path, ':');
 	while (paths_array[i])
