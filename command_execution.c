@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/02/19 19:17:58 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/02/19 19:26:23 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,6 @@ static void	child_job(t_parser_info *p)
 	int	in_fd;
 	int	out_fd;
 	int	pipe_end[2];
-	int	check;
 
 	pipe(pipe_end);
 	in_fd = final_in_fd(p, pipe_end);
@@ -100,7 +99,7 @@ static void	child_job(t_parser_info *p)
 	}
 	if (out_fd)
 		dup2(out_fd, STDOUT_FILENO);
-	check = execve(p->cmd_path, p->cmd, 0);
+	execve(p->cmd_path, p->cmd, 0);
 	// free here
 	exit(1);
 }
