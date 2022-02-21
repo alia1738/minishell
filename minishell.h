@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/19 15:01:20 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/02/21 19:33:40 by Alia             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	skip_isspaces(int *index, char *input);
 
 /* ------------- ** command path ** ------------- */
 
-char	*get_cmd_path(char **env, char *cmd);
+char	*get_cmd_path(char *cmd);
 
 /* ----------------- ** split ** ---------------- */
 

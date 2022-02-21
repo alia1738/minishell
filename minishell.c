@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/18 20:34:11 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/02/21 19:33:49 by Alia             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,11 @@ void	save_input_output_files_n_cmds(char **words, t_parser_info *p)
 	}
 }
 
-int	main(int argc, char **argv, char **env)
+int	main()
 {
 	t_parser_info	p;
 	char			*input;
 
-	(void)argc;
-	(void)argv;
 	ft_bzero(&p, sizeof(t_parser_info));
 	while (1)
 	{
@@ -62,7 +60,7 @@ int	main(int argc, char **argv, char **env)
 			add_history(input);
 		split_input(input, &p);
 		save_input_output_files_n_cmds(p.words, &p);
-		p.cmd_path = get_cmd_path(env, p.cmd[0]);
+		p.cmd_path = get_cmd_path(p.cmd[0]);
 		execute_command(&p);
 
 		/*-----------------*/
