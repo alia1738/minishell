@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   command_execution.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/02/19 19:26:23 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/02/21 18:57:48 by Alia             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	child_input_append(char *delimiter, int pipe_end[2])
+static int	child_input_append(t_parser_info *p, int i, int pipe_end[2])
 {
 	char	*temp;
 	char	*input;
@@ -20,11 +20,15 @@ static int	child_input_append(char *delimiter, int pipe_end[2])
 	while (1)
 	{
 		input = readline("> ");
-		if (!ft_strncmp(input, delimiter, ft_strlen(delimiter) + 1))
+		if (!ft_strncmp(input, p->input_files_delimiters[i], \
+		ft_strlen(p->input_files_delimiters[i]) + 1))
 			break ;
-		temp = ft_strjoin(input, "\n");
-		ft_putstr_fd(temp, pipe_end[1]);
-		free(temp);
+		if (!p->input_files_delimiters[i + 1])
+		{
+			temp = ft_strjoin(input, "\n");
+			ft_putstr_fd(temp, pipe_end[1]);
+			free(temp);
+		}
 		free(input);
 	}
 	free(input);
@@ -48,7 +52,7 @@ static int	final_in_fd(t_parser_info *p, int pipe_end[2])
 				fd = open(p->input_files_delimiters[i], O_RDONLY, 0640);
 		}
 		else if (p->in_arrow_flag[i] == DOUBLE_ARROW)
-			fd = child_input_append(p->input_files_delimiters[i], pipe_end);
+			fd = child_input_append(p, i, pipe_end);
 		i++;
 	}
 	return(fd);
