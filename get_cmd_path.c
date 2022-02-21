@@ -3,27 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   get_cmd_path.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 16:55:09 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/18 19:27:02 by anasr            ###   ########.fr       */
+/*   Updated: 2022/02/21 19:32:49 by Alia             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	path_index(char **env)
-{
-	int	i;
-
-	i = -1;
-	while (env[++i])
-	{
-		if (ft_strncmp(env[i], "PATH=", 5) ==  0)
-			return (i);
-	}
-	return (ERROR_CODE);
-}
 
 char	*join_cmd_to_path(char *path, char *cmd)
 {
@@ -38,14 +25,16 @@ char	*join_cmd_to_path(char *path, char *cmd)
 
 /*Malloc occurs here*/
 
-char	*get_cmd_path(char **env, char *cmd)
+char	*get_cmd_path(char *cmd)
 {
 	int		i;
 	char	**paths_array;
 	char	*temp_path;
 
 	i = 0;
-	temp_path = &env[path_index(env)][5];
+	if (!cmd)
+		return (NULL);
+	temp_path = getenv("PATH");
 	paths_array = ft_split(temp_path, ':');
 	while (paths_array[i])
 	{

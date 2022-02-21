@@ -3,29 +3,39 @@
 /*                                                        :::      ::::::::   */
 /*   command_execution.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/02/18 20:48:13 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/02/21 18:57:48 by Alia             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	child_input_append(char *delimiter) // this is shit
+static int	child_input_append(t_parser_info *p, int i, int pipe_end[2])
 {
+	char	*temp;
 	char	*input;
 
-	input = 0;
-	while (ft_strncmp(input, delimiter, ft_strlen(delimiter)))
+	while (1)
 	{
 		input = readline("> ");
-		printf("%s", input);
+		if (!ft_strncmp(input, p->input_files_delimiters[i], \
+		ft_strlen(p->input_files_delimiters[i]) + 1))
+			break ;
+		if (!p->input_files_delimiters[i + 1])
+		{
+			temp = ft_strjoin(input, "\n");
+			ft_putstr_fd(temp, pipe_end[1]);
+			free(temp);
+		}
 		free(input);
 	}
+	free(input);
+	return (1);
 }
 
-static int	final_in_fd(t_parser_info *p)
+static int	final_in_fd(t_parser_info *p, int pipe_end[2])
 {
 	int	i;
 	int	fd;
@@ -42,7 +52,7 @@ static int	final_in_fd(t_parser_info *p)
 				fd = open(p->input_files_delimiters[i], O_RDONLY, 0640);
 		}
 		else if (p->in_arrow_flag[i] == DOUBLE_ARROW)
-			child_input_append(p->input_files_delimiters[i]);
+			fd = child_input_append(p, i, pipe_end);
 		i++;
 	}
 	return(fd);
@@ -58,9 +68,9 @@ static int	final_out_fd(t_parser_info *p)
 	while (p->output_files[i])
 	{
 		if (p->out_arrow_flag[i] == SINGLE_ARROW)
-			fd = open(p->output_files[i], O_CREAT | O_TRUNC | O_WRONLY, 0640);
+			fd = open(p->output_files[i], O_CREAT | O_WRONLY | O_TRUNC, 0640);
 		else if (p->out_arrow_flag[i] == DOUBLE_ARROW)
-			fd = open(p->output_files[i], O_CREAT | O_APPEND | O_WRONLY, 0640);
+			fd = open(p->output_files[i], O_CREAT | O_WRONLY | O_APPEND, 0640);
 		if (p->output_files[i + 1])
 			close(fd);
 		i++;
@@ -72,17 +82,30 @@ static void	child_job(t_parser_info *p)
 {
 	int	in_fd;
 	int	out_fd;
+	int	pipe_end[2];
 
-	in_fd = final_in_fd(p);
+	pipe(pipe_end);
+	in_fd = final_in_fd(p, pipe_end);
 	out_fd = final_out_fd(p);
 	if (in_fd == -1)
 		exit(1); // free here
-	if (in_fd)
+	else if (in_fd == 1) // dup pipe;
+	{
+		close(pipe_end[1]);
+		dup2(pipe_end[0], STDIN_FILENO);
+	}
+	else if (in_fd)
 		dup2(in_fd, STDIN_FILENO);
+	if (in_fd != 1) //close both pipe ends
+	{
+		close(pipe_end[1]);
+		close(pipe_end[0]);
+	}
 	if (out_fd)
 		dup2(out_fd, STDOUT_FILENO);
 	execve(p->cmd_path, p->cmd, 0);
 	// free here
+	exit(1);
 }
 
 void	execute_command(t_parser_info *p)
