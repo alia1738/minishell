@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/21 19:33:49 by Alia             ###   ########.fr       */
+/*   Updated: 2022/02/26 11:18:33 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,23 +42,32 @@ void	save_input_output_files_n_cmds(char **words, t_parser_info *p)
 			p->output_files[out_index++] = words[++i];
 		}
 		else
-			p->cmd[cmd_index++] = words[i];
+		{
+			if (ft_strchr(words[i], '$') != NULL && p->do_not_expand[i] == false)
+				p->cmd[cmd_index++] = expand_dollar(words[i]);
+			else
+				p->cmd[cmd_index++] = words[i];
+		}
 		i++;
 	}
 }
 
-int	main()
+int	main(int argc, char **argv, char **env)
 {
 	t_parser_info	p;
 	char			*input;
+	char	*meta[5] = {"<<", "<", ">", ">>", 0};
 
+	(void)argc;
+	(void)argv;
 	ft_bzero(&p, sizeof(t_parser_info));
+	p.env = env;
 	while (1)
 	{
 		input = readline("\e[35mbaby shell> \e[0m");
 		if (input[0])
 			add_history(input);
-		split_input(input, &p);
+		p.words = ft_split_custom(input, meta, &p);
 		save_input_output_files_n_cmds(p.words, &p);
 		p.cmd_path = get_cmd_path(p.cmd[0]);
 		execute_command(&p);
@@ -67,6 +76,7 @@ int	main()
 		ft_bzero(p.input_files_delimiters, sizeof(p.input_files_delimiters));
 		ft_bzero(p.output_files, sizeof(p.output_files));
 		ft_bzero(p.cmd, sizeof(p.cmd));
+		ft_bzero(p.do_not_expand, sizeof(p.do_not_expand));
 		free_array(p.words);
 		free(input);
 	}

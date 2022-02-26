@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/21 19:33:40 by Alia             ###   ########.fr       */
+/*   Updated: 2022/02/26 11:20:44 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@
 
 typedef struct s_parser_info
 {
+	char	**env;
+	
 	char	*input_files_delimiters[OPEN_MAX];
 	char	*output_files[OPEN_MAX];
 	int		in_arrow_flag[OPEN_MAX];
@@ -45,8 +47,10 @@ typedef struct s_parser_info
 	char	**words;
 	char	*cmd_path;
 	char	*cmd[OPEN_MAX];
+	int		word_index;
 
 	int		exit_code;
+	bool	do_not_expand[OPEN_MAX];
 }	t_parser_info;
 
 /* --------------------- > >> Prototypes << < --------------------- */
@@ -56,6 +60,8 @@ typedef struct s_parser_info
 void	free_array(char **array);
 char	*ft_strndup(const char *s1, int n);
 void	skip_isspaces(int *index, char *input);
+void	clear(void);
+char	*ft_strcpy(char *dst, const char *src);
 
 /* ------------- ** command path ** ------------- */
 
@@ -63,15 +69,14 @@ char	*get_cmd_path(char *cmd);
 
 /* ----------------- ** split ** ---------------- */
 
-void	split_input(char *input, t_parser_info *p);
-
-/* --------------- ** builtins ** --------------- */
-
-void	env(char **env);
-int		cd(char *path);
+char	**ft_split_custom(char *input, char **meta, t_parser_info *p);
 
 /* ---------- ** command execution ** ----------- */
 
 void	execute_command(t_parser_info *p);
+
+/* ------------ ** expand dollar ** ------------- */
+
+char	*expand_dollar(char *str);
 
 #endif
