@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/24 12:49:31 by anasr            ###   ########.fr       */
+/*   Updated: 2022/02/26 11:18:33 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,13 +52,16 @@ void	save_input_output_files_n_cmds(char **words, t_parser_info *p)
 	}
 }
 
-int	main()
+int	main(int argc, char **argv, char **env)
 {
 	t_parser_info	p;
 	char			*input;
 	char	*meta[5] = {"<<", "<", ">", ">>", 0};
 
+	(void)argc;
+	(void)argv;
 	ft_bzero(&p, sizeof(t_parser_info));
+	p.env = env;
 	while (1)
 	{
 		input = readline("\e[35mbaby shell> \e[0m");
@@ -73,6 +76,7 @@ int	main()
 		ft_bzero(p.input_files_delimiters, sizeof(p.input_files_delimiters));
 		ft_bzero(p.output_files, sizeof(p.output_files));
 		ft_bzero(p.cmd, sizeof(p.cmd));
+		ft_bzero(p.do_not_expand, sizeof(p.do_not_expand));
 		free_array(p.words);
 		free(input);
 	}

@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/24 12:58:30 by anasr            ###   ########.fr       */
+/*   Updated: 2022/02/26 11:20:44 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@
 
 typedef struct s_parser_info
 {
+	char	**env;
+	
 	char	*input_files_delimiters[OPEN_MAX];
 	char	*output_files[OPEN_MAX];
 	int		in_arrow_flag[OPEN_MAX];
