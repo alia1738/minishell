@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/26 11:20:44 by anasr            ###   ########.fr       */
+/*   Updated: 2022/02/27 12:40:04 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,16 @@
 # include "libft/libft.h"
 # include <readline/history.h>
 # include <readline/readline.h>
+
+/* ----------------------- > >> Colors << < ----------------------- */
+
+# define RED		"\x1B[31m"
+# define GREEN		"\x1B[32m"
+# define YELLOW		"\x1B[33m"
+# define BLUE		"\x1B[34m"
+# define MAGENTA	"\x1B[35m"
+# define LIGHT_BLUE	"\x1B[36m"
+# define RESET		"\x1B[0m"
 
 /* ----------------------- > >> Macros << < ----------------------- */
 

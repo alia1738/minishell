@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/07 11:22:36 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/02/14 05:20:45 by anasr            ###   ########.fr       */
+/*   Updated: 2022/02/27 12:31:54 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@
 # include <string.h>
 # include <stdint.h>
 # include <limits.h>
-# include <stdbool.h>
 # include <unistd.h>
+# include <stdbool.h>
 
 /* **************************** structs **************************** */
 

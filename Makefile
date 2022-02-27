@@ -19,7 +19,7 @@ obj/%.o:%.c
 	gcc -c $(CFLAGS) $< -o $@ -MD -MF $(@:obj/%.o=dep/%.d)
 
 clean:
-	$(MAKE) -sC libft fclean
+	$(MAKE) -sC libft clean
 	rm -f $(addprefix obj/,$(OBJ)) $(addprefix dep/,$(DEP))
 
 fclean: clean
