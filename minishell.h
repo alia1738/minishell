@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/26 11:20:44 by anasr            ###   ########.fr       */
+/*   Updated: 2022/02/28 13:00:39 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,25 +39,30 @@ typedef struct s_parser_info
 {
 	char	**env;
 	
-	char	*input_files_delimiters[OPEN_MAX];
-	char	*output_files[OPEN_MAX];
-	int		in_arrow_flag[OPEN_MAX];
-	int		out_arrow_flag[OPEN_MAX];
+	char	*input_files_delimiters[FOPEN_MAX][FOPEN_MAX];
+	char	*output_files[FOPEN_MAX][FOPEN_MAX];
+	int		in_arrow_flag[FOPEN_MAX][FOPEN_MAX];
+	int		out_arrow_flag[FOPEN_MAX][FOPEN_MAX];
 
-	char	**words;
-	char	*cmd_path;
-	char	*cmd[OPEN_MAX];
+	char	**words[FOPEN_MAX];
+	char	*cmd_path[FOPEN_MAX];
+	char	*cmd[FOPEN_MAX][FOPEN_MAX];
 	int		word_index;
 
 	int		exit_code;
-	bool	do_not_expand[OPEN_MAX];
+	bool	do_not_expand[FOPEN_MAX];
+
+	//pipex
+	int		pipes_count;
+	char	**cmd_array;
 }	t_parser_info;
 
 /* --------------------- > >> Prototypes << < --------------------- */
 
 /* ------------ ** simple helpers ** ------------ */
 
-void	free_array(char **array);
+void	free_double(char **array);
+void	free_triple(char ***array);
 char	*ft_strndup(const char *s1, int n);
 void	skip_isspaces(int *index, char *input);
 void	clear(void);

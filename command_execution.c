@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_execution.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/02/21 18:57:48 by Alia             ###   ########.fr       */
+/*   Updated: 2022/02/28 13:29:28 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@ static int	child_input_append(t_parser_info *p, int i, int pipe_end[2])
 	while (1)
 	{
 		input = readline("> ");
-		if (!ft_strncmp(input, p->input_files_delimiters[i], \
-		ft_strlen(p->input_files_delimiters[i]) + 1))
+		if (!ft_strncmp(input, p->input_files_delimiters[0][i], \
+		ft_strlen(p->input_files_delimiters[0][i]) + 1))
 			break ;
-		if (!p->input_files_delimiters[i + 1])
+		if (!p->input_files_delimiters[0][i + 1])
 		{
 			temp = ft_strjoin(input, "\n");
 			ft_putstr_fd(temp, pipe_end[1]);
@@ -42,16 +42,16 @@ static int	final_in_fd(t_parser_info *p, int pipe_end[2])
 
 	i = 0;
 	fd = 0;
-	while (p->input_files_delimiters[i])
+	while (p->input_files_delimiters[0][i])
 	{
-		if (p->in_arrow_flag[i] == SINGLE_ARROW)
+		if (p->in_arrow_flag[0][i] == SINGLE_ARROW)
 		{
-			if (access(p->input_files_delimiters[i], F_OK) == 1)
+			if (access(p->input_files_delimiters[0][i], F_OK) == 1)
 				fd = -1;
-			if (!p->input_files_delimiters[i + 1])
-				fd = open(p->input_files_delimiters[i], O_RDONLY, 0640);
+			if (!p->input_files_delimiters[0][i + 1])
+				fd = open(p->input_files_delimiters[0][i], O_RDONLY, 0640);
 		}
-		else if (p->in_arrow_flag[i] == DOUBLE_ARROW)
+		else if (p->in_arrow_flag[0][i] == DOUBLE_ARROW)
 			fd = child_input_append(p, i, pipe_end);
 		i++;
 	}
@@ -65,13 +65,13 @@ static int	final_out_fd(t_parser_info *p)
 
 	i = 0;
 	fd = 0;
-	while (p->output_files[i])
+	while (p->output_files[0][i])
 	{
-		if (p->out_arrow_flag[i] == SINGLE_ARROW)
-			fd = open(p->output_files[i], O_CREAT | O_WRONLY | O_TRUNC, 0640);
-		else if (p->out_arrow_flag[i] == DOUBLE_ARROW)
-			fd = open(p->output_files[i], O_CREAT | O_WRONLY | O_APPEND, 0640);
-		if (p->output_files[i + 1])
+		if (p->out_arrow_flag[0][i] == SINGLE_ARROW)
+			fd = open(p->output_files[0][i], O_CREAT | O_WRONLY | O_TRUNC, 0640);
+		else if (p->out_arrow_flag[0][i] == DOUBLE_ARROW)
+			fd = open(p->output_files[0][i], O_CREAT | O_WRONLY | O_APPEND, 0640);
+		if (p->output_files[0][i + 1])
 			close(fd);
 		i++;
 	}
@@ -103,7 +103,7 @@ static void	child_job(t_parser_info *p)
 	}
 	if (out_fd)
 		dup2(out_fd, STDOUT_FILENO);
-	execve(p->cmd_path, p->cmd, 0);
+	execve(p->cmd_path[0], p->cmd[0], 0);
 	// free here
 	exit(1);
 }
