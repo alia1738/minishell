@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/28 13:25:57 by anasr            ###   ########.fr       */
+/*   Updated: 2022/02/28 16:57:45 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,17 +104,19 @@ void	save_cmds(char *input, t_parser_info *p)
 		}
 		p->words[array_index] = 0;
 		p->cmd[array_index][0] = 0;
+		init_pipex(p);
+		//look into the nulling the end of the p->cmd array **also look into  stack vs heap allocation and the way we should free
 	}
-		//TESTING
-		int i = -1, j = -1;
-		while (++j < p->pipes_count + 1)
-		{
-			i = -1;
-			while (p->cmd[j][++i])
-				printf("*%s* ", p->cmd[j][i]);
-			printf("\n");
-		}
-		//
+	//TESTING
+	int i = -1, j = -1;
+	while (++j < p->pipes_count + 1)
+	{
+		i = -1;
+		while (p->cmd[j][++i])
+			printf("*%s* ", p->cmd[j][i]);
+		printf("\n");
+	}
+	//
 }
 
 int	main(int argc, char **argv, char **env)
@@ -132,10 +134,6 @@ int	main(int argc, char **argv, char **env)
 		input = readline("\e[35mbaby shell> \e[0m");
 		if (input[0])
 			add_history(input);
-		// p.words = ft_split_custom(input, meta, &p);
-		// save_input_output_files_n_cmds(p.words, &p);
-		// p.cmd_path = get_cmd_path(p.cmd[0]);
-		// execute_command(&p);
 		save_cmds(input, &p);
 
 		/*-----------------*/

@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/28 13:00:39 by anasr            ###   ########.fr       */
+/*   Updated: 2022/02/28 16:57:11 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,5 +83,9 @@ void	execute_command(t_parser_info *p);
 /* ------------ ** expand dollar ** ------------- */
 
 char	*expand_dollar(char *str);
+
+/* ----------------- ** pipex ** ---------------- */
+
+void	init_pipex(t_parser_info *p);
 
 #endif
