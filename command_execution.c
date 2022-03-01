@@ -88,8 +88,8 @@ static void	child_job(t_parser_info *p)
 	in_fd = final_in_fd(p, pipe_end);
 	out_fd = final_out_fd(p);
 	if (in_fd == -1)
-		exit(1); // free here
-	else if (in_fd == 1) // dup pipe;
+		exit(1); //free here
+	else if (in_fd == 1) //dup pipe;
 	{
 		close(pipe_end[1]);
 		dup2(pipe_end[0], STDIN_FILENO);
@@ -103,9 +103,17 @@ static void	child_job(t_parser_info *p)
 	}
 	if (out_fd)
 		dup2(out_fd, STDOUT_FILENO);
-	execve(p->cmd_path[0], p->cmd[0], 0);
-	// free here
-	exit(1);
+	p->cmd_path[0] = get_cmd_path(p->cmd[0][0]);
+	if (p->cmd_path[0])
+		execve(p->cmd_path[0], p->cmd[0], 0);
+	//free here
+	if (in_fd == 1)
+		close(pipe_end[0]);
+	else if (in_fd)
+		close(in_fd);
+	if (out_fd)
+		close(out_fd);
+	exit(127);
 }
 
 void	execute_command(t_parser_info *p)

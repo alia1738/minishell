@@ -16,16 +16,22 @@ static void	first_child(int *out_pipe, t_parser_info *p) //consider only passing
 {
 	// if (!p->input_files_delimiters[0])
 	// {
+		p->cmd_path[0] = get_cmd_path(p->cmd[0][0]);
+		printf("FIRST CHILD: %s -- %s\n", p->cmd[0][0], p->cmd_path[0]);
 		close(out_pipe[0]);
 		dup2(out_pipe[1], STDOUT_FILENO);
-		execve(p->cmd_path[0], p->cmd[0], NULL);
-		perror("ERROR");
-		exit(EXIT_FAILURE);
+		if (p->cmd_path[0])
+			execve(p->cmd_path[0], p->cmd[0], 0);
+		close(out_pipe[1]);
+
+		exit(127);
 	// }
 }
 
 static void	middle_child(int i, int *in_pipe, int *out_pipe, t_parser_info *p) //consider only passing what you need to make freeing easier
 {
+		p->cmd_path[i] = get_cmd_path(p->cmd[i][0]);
+		printf("MIDDLE CHILD: %s -- %s\n", p->cmd[i][0], p->cmd_path[i]);
 	// if (!p->input_files_delimiters[i])
 	// {
 		close(in_pipe[1]);
@@ -35,9 +41,9 @@ static void	middle_child(int i, int *in_pipe, int *out_pipe, t_parser_info *p) /
 	// {
 		close(out_pipe[0]);
 		dup2(out_pipe[1], STDOUT_FILENO);
-		execve(p->cmd_path[i], p->cmd[i], NULL);
-		perror("ERROR");
-		exit(EXIT_FAILURE);
+		if (p->cmd_path[i])
+			execve(p->cmd_path[i], p->cmd[i], 0);
+		exit(127);
 	// }
 }
 
@@ -47,9 +53,12 @@ static void	last_child(int	*in_pipe, t_parser_info *p) //consider only passing w
 	// {
 		close(in_pipe[1]);
 		dup2(in_pipe[0], STDIN_FILENO);
-		execve(p->cmd_path[p->pipes_count], p->cmd[p->pipes_count], NULL);
-		perror("ERROR");
-		exit(EXIT_FAILURE);
+		p->cmd_path[p->pipes_count] = get_cmd_path(p->cmd[p->pipes_count][0]);
+		printf("LAST CHILD: %s -- %s\n", p->cmd[p->pipes_count][0], p->cmd_path[p->pipes_count]);
+		if (p->cmd_path[p->pipes_count])
+			execve(p->cmd_path[p->pipes_count], p->cmd[p->pipes_count], 0);
+		close(in_pipe[0]);
+		exit(127);
 	// }
 }
 
@@ -57,6 +66,7 @@ void	init_pipex(t_parser_info *p)
 {
 	int	i;
 	int	fork_pid;
+	int	status;
 	int	**pip;
 
 	i = -1;
@@ -65,6 +75,7 @@ void	init_pipex(t_parser_info *p)
 	{
 		pip[i] = ft_calloc(2, sizeof(int));
 		pipe(pip[i]);
+		printf("PIPE: %d\n", i);
 	}
 	i = -1;
 	while (++i < p->pipes_count + 1)
@@ -76,8 +87,15 @@ void	init_pipex(t_parser_info *p)
 			last_child(pip[i - 1], p);//check the "i - 1"
 		else if (fork_pid == 0)
 			middle_child(i, pip[i - 1], pip[i], p);
+		printf("WEEE: %d\n", i);
 	}
-	while (waitpid(-1, NULL, 0) > 0)
-		;
+	while (waitpid(-1, &status, 0) > 0)
+	{
+		p->exit_code = WEXITSTATUS(status);
+		printf("waiting\n");
+	}
+	// sleep(5);
+	// printf("waiting\n");
+
 	//free int **
 }

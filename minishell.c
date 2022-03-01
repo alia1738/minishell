@@ -88,7 +88,7 @@ void	save_cmds(char *input, t_parser_info *p)
 	{
 		p->words[0] = ft_split_custom(input, meta, p);
 		save_input_output_files_n_cmds(0, p->words[0], p);
-		p->cmd_path[0] = get_cmd_path(p->cmd[0][0]);
+		// p->cmd_path[0] = get_cmd_path(p->cmd[0][0]); //i put it in command_execution bec the error should come from the child process
 		execute_command(p);
 	}
 	else
@@ -105,6 +105,7 @@ void	save_cmds(char *input, t_parser_info *p)
 		p->words[array_index] = 0;
 		p->cmd[array_index][0] = 0;
 		init_pipex(p);
+		printf("EXITED PIPEX\n");
 		//look into the nulling the end of the p->cmd array **also look into  stack vs heap allocation and the way we should free
 	}
 	//TESTING
