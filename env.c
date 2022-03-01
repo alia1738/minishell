@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/28 16:24:23 by Alia              #+#    #+#             */
+/*   Updated: 2022/02/28 16:32:40 by Alia             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	find_equal(char *env)
@@ -34,7 +46,7 @@ char	**save_env(t_parser_info *p, int *size)
 		i++;
 	save = ft_calloc((i + 1), sizeof(char *));
 	if (!save)
-		exit(1);
+		perror("");
 	i = 0;
 	while (p->env[i])
 	{
@@ -58,7 +70,7 @@ void	new_env(t_parser_info *p, char **save, char *env_variable, int save_index)
 		if (i == save_index)
 			p->env[i] = env_variable;
 	}
-	if (save_index == -1)
+	else if (save_index == -1)
 	{
 		while (save[i])
 		{
@@ -90,6 +102,7 @@ void	export_env(t_parser_info *p, char *env_variable)
 		// free(p->env);
 		// p->env = ft_calloc((size + 2), sizeof(char *));
 		new_env(p, save, env_variable, save_index);
+		free_array(save);
 	}
 }
 
