@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/28 16:57:11 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/02 14:00:46 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,11 @@ char	**ft_split_custom(char *input, char **meta, t_parser_info *p);
 /* ---------- ** command execution ** ----------- */
 
 void	execute_command(t_parser_info *p);
+
+/* ----------- ** execution utils ** ------------ */
+int	child_input_append(int array_index, t_parser_info *p, int i, int pipe_append[2]);
+int	final_in_fd(int array_index, t_parser_info *p, int pipe_end[2]);
+int	final_out_fd(int array_index, t_parser_info *p);
 
 /* ------------ ** expand dollar ** ------------- */
 
