@@ -52,21 +52,17 @@ void	new_env(char **env, char **save, char *env_variable, int save_index)
 
 	i = 0;
 	if (save_index >= 0)
-	{
-		while (i != save_index)
-			i++;
-		if (i == save_index)
-			env[i] = env_variable;
-	}
+		env[save_index] = env_variable;
+	// {
+		// free(env[save_index]);
+		// env[save_index] = ft_calloc((ft_strlen(env_variable) + 1), sizeof(char));
+	// }
 	if (save_index == -1)
 	{
 		while (save[i])
-		{
-			env[i] = save[i];
 			i++;
-		}
-		env[i++] = env_variable;
-		env[i] = 0;
+		env[i] = env_variable;
+		env[++i] = 0;
 	}
 }
 
@@ -79,7 +75,9 @@ void	export_env(char	**env, char *env_variable)
 	save_index = check_env(env_variable, env);
 	save = 0;
 	if (save_index >= 0)
+	{
 		new_env(env, save, env_variable, save_index);
+	}
 	else if (save_index == -1)
 	{
 		save = save_env(env, &size);
@@ -87,39 +85,40 @@ void	export_env(char	**env, char *env_variable)
 	}
 }
 
-
-int	main(int argc, char **argv, char **env)
+int	main()
 {
-	int				i;
+	int	i;
 
-	(void)argc;
-	(void)argv;
 	i = 0;
-	while (env[i])
-		printf("%s%s%s\n", YELLOW, env[i++], RESET);
-	export_env(env, "HI=owwowo");
+	while (environ[i])
+		printf("%s%s%s\n", YELLOW, environ[i++], RESET);
+	export_env(environ, "HIIIIIIIIIIIIIII=:D");
 	i = 0;
-	while (env[i])
-		printf("%s%s%s\n", LIGHT_BLUE, env[i++], RESET);
-	/* ------------------------------------------------- */
-	pid_t	child = fork();
+	while (environ[i])
+		printf("%s%s%s\n", LIGHT_BLUE, environ[i++], RESET);
+
+	/* ---------------------------------------------------- */
+
+	pid_t	child;
 	char	*cmd[3];
-	cmd[0] = ft_strdup("cd");
-	cmd[1] = ft_strdup("dep");
+	cmd[0] = "cd";
+	cmd[1] =  "dep";
 	cmd[2] = 0;
-	if (!child)
-		execve("/usr/bin/cd", cmd, 0);
-	else
-		waitpid(-1, 0, 0);
-	printf("%s%s%s\n", GREEN, getenv("PWD"), RESET);
-	free(cmd[0]);
-	free(cmd[1]);
-	cmd[0] = ft_strdup("env");
-	cmd[1] = 0;
-	cmd[2] = 0;
+
 	child = fork();
 	if (!child)
-		execve("/usr/bin/env", cmd, 0);
+	{
+		export_env(environ, "PWD=:o");
+		i = 0;
+		while (environ[i])
+			printf("%s%s%s\n", MAGENTA, environ[i++], RESET);
+		execve("/usr/bin/cd", cmd, environ);
+	}
 	else
+	{
 		waitpid(-1, 0, 0);
+		i = 0;
+		while (environ[i])
+			printf("%s%s%s\n", GREEN, environ[i++], RESET);
+	}
 }

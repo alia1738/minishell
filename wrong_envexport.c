@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   env_with_p.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/28 16:24:23 by Alia              #+#    #+#             */
-/*   Updated: 2022/02/28 16:32:40 by Alia             ###   ########.fr       */
+/*   Updated: 2022/03/02 13:00:17 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,12 +64,7 @@ void	new_env(t_parser_info *p, char **save, char *env_variable, int save_index)
 
 	i = 0;
 	if (save_index >= 0)
-	{
-		while (i != save_index)
-			i++;
-		if (i == save_index)
-			p->env[i] = env_variable;
-	}
+		p->env[save_index] = env_variable;
 	else if (save_index == -1)
 	{
 		while (save[i])

@@ -3,16 +3,43 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/26 11:18:33 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/01 16:28:28 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	save_input_output_files_n_cmds(char **words, t_parser_info *p)
+static void	do_if(t_parser_info *p, int *i, int *in_index, int *out_index, int *cmd_index, int flag)
+{
+	if (flag == 1)
+	{
+		if (!ft_strncmp(p->words[*i], "<<", 2))
+			p->in_arrow_flag[*in_index] = DOUBLE_ARROW;
+		else
+			p->in_arrow_flag[*in_index] = SINGLE_ARROW;
+		p->input_files_delimiters[(*in_index)++] = p->words[++(*i)];
+	}
+	if (flag == 2)
+	{
+		if (!ft_strncmp(p->words[*i], ">>", 2))
+			p->out_arrow_flag[*out_index] = DOUBLE_ARROW;
+		else
+			p->out_arrow_flag[*out_index] = SINGLE_ARROW;
+		p->output_files[(*out_index)++] = p->words[++(*i)];
+	}
+	if (flag == 3)
+	{
+		if (ft_strchr(p->words[*i], '$') != NULL && p->do_not_expand[*i] == false)
+			p->cmd[(*cmd_index)++] = expand_dollar(p->words[*i]);
+		else
+			p->cmd[(*cmd_index)++] = p->words[*i];
+	}
+}
+
+void	save_input_output_files_n_cmds(/*char **words, */t_parser_info *p)
 {
 	int	i;
 	int	in_index;
@@ -23,31 +50,14 @@ void	save_input_output_files_n_cmds(char **words, t_parser_info *p)
 	in_index = 0;
 	out_index = 0;
 	cmd_index = 0;
-	while (words[i])
+	while (p->words[i])
 	{
-		if ((!ft_strncmp(words[i], "<<", 2) || !ft_strncmp(words[i], "<", 1)) && words[i + 1])
-		{
-			if (!ft_strncmp(words[i], "<<", 2))
-				p->in_arrow_flag[in_index] = DOUBLE_ARROW;
-			else
-				p->in_arrow_flag[in_index] = SINGLE_ARROW;
-			p->input_files_delimiters[in_index++] = words[++i];
-		}
-		else if ((!ft_strncmp(words[i], ">>", 2) || !ft_strncmp(words[i], ">", 1)) && words[i + 1])
-		{
-			if (!ft_strncmp(words[i], ">>", 2))
-				p->out_arrow_flag[out_index] = DOUBLE_ARROW;
-			else
-				p->out_arrow_flag[out_index] = SINGLE_ARROW;
-			p->output_files[out_index++] = words[++i];
-		}
+		if ((!ft_strncmp(p->words[i], "<<", 2) || !ft_strncmp(p->words[i], "<", 1)) && p->words[i + 1])
+			do_if(p, &i, &in_index, &out_index, &cmd_index, 1);
+		else if ((!ft_strncmp(p->words[i], ">>", 2) || !ft_strncmp(p->words[i], ">", 1)) && p->words[i + 1])
+			do_if(p, &i, &in_index, &out_index, &cmd_index, 2);
 		else
-		{
-			if (ft_strchr(words[i], '$') != NULL && p->do_not_expand[i] == false)
-				p->cmd[cmd_index++] = expand_dollar(words[i]);
-			else
-				p->cmd[cmd_index++] = words[i];
-		}
+			do_if(p, &i, &in_index, &out_index, &cmd_index, 3);
 		i++;
 	}
 }
@@ -68,7 +78,7 @@ int	main(int argc, char **argv, char **env)
 		if (input[0])
 			add_history(input);
 		p.words = ft_split_custom(input, meta, &p);
-		save_input_output_files_n_cmds(p.words, &p);
+		save_input_output_files_n_cmds(/*p.words, */&p);
 		p.cmd_path = get_cmd_path(p.cmd[0]);
 		execute_command(&p);
 

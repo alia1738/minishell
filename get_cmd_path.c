@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_cmd_path.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 16:55:09 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/21 19:32:49 by Alia             ###   ########.fr       */
+/*   Updated: 2022/03/02 11:51:02 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ char	*join_cmd_to_path(char *path, char *cmd)
 }
 
 /*Malloc occurs here*/
-
 char	*get_cmd_path(char *cmd)
 {
 	int		i;
@@ -32,6 +31,14 @@ char	*get_cmd_path(char *cmd)
 	char	*temp_path;
 
 	i = 0;
+	if (!ft_strncmp(cmd, "echo", 5) || !ft_strncmp(cmd, "cd", 3) || \
+	!ft_strncmp(cmd, "pwd", 4) || !ft_strncmp(cmd, "export", 7) || \
+	!ft_strncmp(cmd, "unset", 6) || !ft_strncmp(cmd, "env", 4) || \
+	!ft_strncmp(cmd, "exit", 5) || !ft_strncmp(cmd, "minishell", 10))
+	{
+		temp_path = ft_strjoin("/Users/aalsuwai/Desktop/minishell/builtins/", cmd);
+		return(temp_path);
+	}
 	if (!cmd)
 		return (NULL);
 	temp_path = getenv("PATH");
