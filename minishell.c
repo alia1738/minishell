@@ -6,13 +6,13 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/26 11:18:33 by anasr            ###   ########.fr       */
+/*   Updated: 2022/02/28 16:57:45 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	save_input_output_files_n_cmds(char **words, t_parser_info *p)
+void	save_input_output_files_n_cmds(int array_index, char **words, t_parser_info *p)
 {
 	int	i;
 	int	in_index;
@@ -28,35 +28,103 @@ void	save_input_output_files_n_cmds(char **words, t_parser_info *p)
 		if ((!ft_strncmp(words[i], "<<", 2) || !ft_strncmp(words[i], "<", 1)) && words[i + 1])
 		{
 			if (!ft_strncmp(words[i], "<<", 2))
-				p->in_arrow_flag[in_index] = DOUBLE_ARROW;
+				p->in_arrow_flag[array_index][in_index] = DOUBLE_ARROW;
 			else
-				p->in_arrow_flag[in_index] = SINGLE_ARROW;
-			p->input_files_delimiters[in_index++] = words[++i];
+				p->in_arrow_flag[array_index][in_index] = SINGLE_ARROW;
+			p->input_files_delimiters[array_index][in_index++] = words[++i];
 		}
 		else if ((!ft_strncmp(words[i], ">>", 2) || !ft_strncmp(words[i], ">", 1)) && words[i + 1])
 		{
 			if (!ft_strncmp(words[i], ">>", 2))
-				p->out_arrow_flag[out_index] = DOUBLE_ARROW;
+				p->out_arrow_flag[array_index][out_index] = DOUBLE_ARROW;
 			else
-				p->out_arrow_flag[out_index] = SINGLE_ARROW;
-			p->output_files[out_index++] = words[++i];
+				p->out_arrow_flag[array_index][out_index] = SINGLE_ARROW;
+			p->output_files[array_index][out_index++] = words[++i];
 		}
 		else
 		{
 			if (ft_strchr(words[i], '$') != NULL && p->do_not_expand[i] == false)
-				p->cmd[cmd_index++] = expand_dollar(words[i]);
+				p->cmd[array_index][cmd_index++] = expand_dollar(words[i]);
 			else
-				p->cmd[cmd_index++] = words[i];
+				p->cmd[array_index][cmd_index++] = words[i];
 		}
 		i++;
 	}
+}
+
+int	count_pipes(char *input)
+{
+	int	i;
+	int	count;
+
+	i = -1;
+	count = 0;
+	while (input[++i])
+	{
+		if (input[i] == '\'')
+		{
+			while (input[++i] != '\'' && input[i])
+				;
+		}
+		else if (input[i] == '\"')
+		{
+			while (input[++i] != '\"' && input[i])
+				;
+		}
+		else if (input[i] == '|')
+			count++;
+		
+	}
+	return (count);
+}
+
+void	save_cmds(char *input, t_parser_info *p)
+{
+	int		array_index;
+	char	*meta[5] = {"<<", "<", ">", ">>", 0};
+
+	p->pipes_count = count_pipes(input);
+	if (p->pipes_count == 0)
+	{
+		p->words[0] = ft_split_custom(input, meta, p);
+		save_input_output_files_n_cmds(0, p->words[0], p);
+		// p->cmd_path[0] = get_cmd_path(p->cmd[0][0]); //i put it in command_execution bec the error should come from the child process
+		execute_command(p);
+	}
+	else
+	{
+		array_index = 0;
+		p->cmd_array = ft_split(input, '|');//account for '|' in quotes
+		while (array_index < p->pipes_count + 1)
+		{
+			p->words[array_index] = ft_split_custom(p->cmd_array[array_index], meta, p);
+			save_input_output_files_n_cmds(array_index, p->words[array_index], p);
+			p->cmd_path[array_index] = get_cmd_path(p->cmd[array_index][0]);
+			array_index++;
+		}
+		p->words[array_index] = 0;
+		p->cmd[array_index][0] = 0;
+		init_pipex(p);
+		printf("EXITED PIPEX\n");
+		//look into the nulling the end of the p->cmd array **also look into  stack vs heap allocation and the way we should free
+	}
+	//TESTING
+	int i = -1, j = -1;
+	while (++j < p->pipes_count + 1)
+	{
+		i = -1;
+		while (p->cmd[j][++i])
+			printf("*%s* ", p->cmd[j][i]);
+		printf("\n");
+	}
+	//
 }
 
 int	main(int argc, char **argv, char **env)
 {
 	t_parser_info	p;
 	char			*input;
-	char	*meta[5] = {"<<", "<", ">", ">>", 0};
+	// char	*meta[5] = {"<<", "<", ">", ">>", 0};
 
 	(void)argc;
 	(void)argv;
@@ -67,17 +135,14 @@ int	main(int argc, char **argv, char **env)
 		input = readline("\e[35mbaby shell> \e[0m");
 		if (input[0])
 			add_history(input);
-		p.words = ft_split_custom(input, meta, &p);
-		save_input_output_files_n_cmds(p.words, &p);
-		p.cmd_path = get_cmd_path(p.cmd[0]);
-		execute_command(&p);
+		save_cmds(input, &p);
 
 		/*-----------------*/
 		ft_bzero(p.input_files_delimiters, sizeof(p.input_files_delimiters));
 		ft_bzero(p.output_files, sizeof(p.output_files));
 		ft_bzero(p.cmd, sizeof(p.cmd));
 		ft_bzero(p.do_not_expand, sizeof(p.do_not_expand));
-		free_array(p.words);
+		free_triple(p.words);
 		free(input);
 	}
 }
