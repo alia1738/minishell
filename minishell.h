@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/02 14:00:46 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/03 12:09:23 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,16 @@
 # include "libft/libft.h"
 # include <readline/history.h>
 # include <readline/readline.h>
+
+/* ----------------------- > >> Colors << < ----------------------- */
+
+# define RED		"\x1B[31m"
+# define BLUE		"\x1B[34m"
+# define GREEN		"\x1B[32m"
+# define YELLOW		"\x1B[33m"
+# define MAGENTA	"\x1B[35m"
+# define LIGHT_BLUE	"\x1B[36m"
+# define RESET		"\x1B[0m"
 
 /* ----------------------- > >> Macros << < ----------------------- */
 
@@ -61,11 +71,11 @@ typedef struct s_parser_info
 
 /* ------------ ** simple helpers ** ------------ */
 
+void	clear(void);
 void	free_double(char **array);
 void	free_triple(char ***array);
 char	*ft_strndup(const char *s1, int n);
 void	skip_isspaces(int *index, char *input);
-void	clear(void);
 char	*ft_strcpy(char *dst, const char *src);
 
 /* ------------- ** command path ** ------------- */
@@ -81,9 +91,10 @@ char	**ft_split_custom(char *input, char **meta, t_parser_info *p);
 void	execute_command(t_parser_info *p);
 
 /* ----------- ** execution utils ** ------------ */
-int	child_input_append(int array_index, t_parser_info *p, int i, int pipe_append[2]);
-int	final_in_fd(int array_index, t_parser_info *p, int pipe_end[2]);
-int	final_out_fd(int array_index, t_parser_info *p);
+
+int		final_out_fd(int array_index, t_parser_info *p);
+int		final_in_fd(int array_index, t_parser_info *p, int pipe_end[2]);
+int		child_input_append(int array_index, t_parser_info *p, int i, int pipe_append[2]);
 
 /* ------------ ** expand dollar ** ------------- */
 
