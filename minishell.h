@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/03 12:09:23 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/04 13:28:52 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,22 +86,28 @@ char	*get_cmd_path(char *cmd);
 
 char	**ft_split_custom(char *input, char **meta, t_parser_info *p);
 
-/* ---------- ** command execution ** ----------- */
+/* ------------ ** expand dollar ** ------------- */
 
-void	execute_command(t_parser_info *p);
+char	*expand_dollar(char *str);
 
 /* ----------- ** execution utils ** ------------ */
 
 int		final_out_fd(int array_index, t_parser_info *p);
 int		final_in_fd(int array_index, t_parser_info *p, int pipe_end[2]);
 int		child_input_append(int array_index, t_parser_info *p, int i, int pipe_append[2]);
+int		account_for_in_redirect(int i, int *pipe_append, int *in_pipe, t_parser_info *p)
+int		account_for_out_redirect(int i, int *out_pipe, t_parser_info *p)
 
-/* ------------ ** expand dollar ** ------------- */
+/* ---------- ** command execution ** ----------- */
 
-char	*expand_dollar(char *str);
+void	execute_command(t_parser_info *p);
 
 /* ----------------- ** pipex ** ---------------- */
 
 void	init_pipex(t_parser_info *p);
+
+/* --------------- ** export env ** ------------- */
+
+void	export_env(char	**env, char *env_variable);
 
 #endif

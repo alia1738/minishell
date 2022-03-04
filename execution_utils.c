@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 11:46:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/03 12:47:41 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/04 13:26:42 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,11 @@ int	child_input_append(int array_i, t_parser_info *p, int i, int pipe_end[2])
 	return (1);
 }
 
-/**********************************************************************
- *************** returns -1 if file cant be accessed ******************
- *************** returns 1 if << std_in is allowed ********************
- *************** returns >1 if it was able to open the file *********** 
-**********************************************************************/
+/* ***************************************************************** *\
+|* ************* returns -1 if file cant be accessed *************** *|
+|* ************* returns 1 if << std_in is allowed ***************** *|
+|* ************* returns >1 if it was able to open the file ******** *|
+\* ***************************************************************** */
 
 int	final_in_fd(int array_i, t_parser_info *p, int pipe_end[2])
 {
@@ -82,4 +82,57 @@ int	final_out_fd(int array_i, t_parser_info *p)
 		i++;
 	}
 	return(fd);
+}
+
+
+int	account_for_in_redirect(int i, int *pipe_append, int *in_pipe, t_parser_info *p)
+{
+	int	fd;
+	
+	fd = final_in_fd(i, p, pipe_append);
+	// if (fd == -1) ----------------------------> account for it in final_in_fd
+	// 	exit(1);
+	if (fd > 1)
+		dup2(fd, STDIN_FILENO);
+	if (fd == 1) //dup pipe;
+	{
+		close(pipe_append[1]);
+		dup2(pipe_append[0], STDIN_FILENO);
+	}
+	else if (fd != 1) //close both pipe ends
+	{
+		close(pipe_append[1]);
+		close(pipe_append[0]);
+	}
+	if (!fd && i)
+	{
+		close(in_pipe[1]);
+		dup2(in_pipe[0], STDIN_FILENO);
+	}
+	else if (i)
+	{
+		close(in_pipe[0]);
+		close(in_pipe[1]);
+	}
+	return(fd);
+}
+
+int	account_for_out_redirect(int i, int *out_pipe, t_parser_info *p)
+{
+	int	fd;
+
+	fd = final_out_fd(i, p);
+	if (fd)
+		dup2(fd, STDOUT_FILENO);
+	if (!fd && (i != p->pipes_count))
+	{
+		close(out_pipe[0]);
+		dup2(out_pipe[1], STDOUT_FILENO);
+	}
+	else if (fd && (i != p->pipes_count))
+	{
+		close(out_pipe[0]);
+		close(out_pipe[1]);
+	}
+	return (fd);
 }
