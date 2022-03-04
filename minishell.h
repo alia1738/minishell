@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/04 14:37:10 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/04 16:54:52 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,20 +47,20 @@
 
 typedef struct s_parser_info
 {
-	char	**env;
+	// char	**env;
 
-	char	*input_files_delimiters[OPEN_MAX][OPEN_MAX];
-	char	*output_files[OPEN_MAX][OPEN_MAX];
-	int		in_arrow_flag[OPEN_MAX][OPEN_MAX];
-	int		out_arrow_flag[OPEN_MAX][OPEN_MAX];
+	char	*input_files_delimiters[500][500];
+	char	*output_files[500][500];
+	int		in_arrow_flag[500][500];
+	int		out_arrow_flag[500][500];
 
-	char	**words[OPEN_MAX];
-	char	*cmd_path[OPEN_MAX];
-	char	*cmd[OPEN_MAX][OPEN_MAX];
+	char	**words[500];
+	char	*cmd_path[500];
+	char	*cmd[500][500];
 	int		word_index;
 
 	int		exit_code;
-	bool	do_not_expand[OPEN_MAX];
+	bool	do_not_expand[500];
 
 	int		pipes_count;
 	char	**cmd_array;
@@ -117,7 +117,7 @@ void	export_env(char	**env, char *env_variable);
 
 int		env(void);
 int		pwd(void);
-int		cd(int argc, char **argv);
+int		cd(char **argv);
 int		echo(char **argv);
 
 #endif

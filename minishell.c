@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/28 16:57:45 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/04 17:00:55 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,22 +105,22 @@ void	save_cmds(char *input, t_parser_info *p)
 		p->words[array_index] = 0;
 		p->cmd[array_index][0] = 0;
 		init_pipex(p);
-		printf("EXITED PIPEX\n");
+		// printf("EXITED PIPEX\n");
 		//look into the nulling the end of the p->cmd array **also look into  stack vs heap allocation and the way we should free
 	}
-	//TESTING
-	int i = -1, j = -1;
-	while (++j < p->pipes_count + 1)
-	{
-		i = -1;
-		while (p->cmd[j][++i])
-			printf("*%s* ", p->cmd[j][i]);
-		printf("\n");
-	}
-	//
+	// //TESTING
+	// int i = -1, j = -1;
+	// while (++j < p->pipes_count + 1)
+	// {
+	// 	i = -1;
+	// 	while (p->cmd[j][++i])
+	// 		printf("*%s* ", p->cmd[j][i]);
+	// 	printf("\n");
+	// }
+	// //
 }
 
-int	main(int argc, char **argv, char **env)
+int	main(int argc, char **argv)
 {
 	t_parser_info	p;
 	char			*input;
@@ -129,7 +129,7 @@ int	main(int argc, char **argv, char **env)
 	(void)argc;
 	(void)argv;
 	ft_bzero(&p, sizeof(t_parser_info));
-	p.env = env;
+	// p.env = env;
 	while (1)
 	{
 		input = readline("\e[35mbaby shell> \e[0m");
