@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/04 13:28:52 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/04 14:37:10 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,24 +48,27 @@
 typedef struct s_parser_info
 {
 	char	**env;
-	
-	char	*input_files_delimiters[FOPEN_MAX][FOPEN_MAX];
-	char	*output_files[FOPEN_MAX][FOPEN_MAX];
-	int		in_arrow_flag[FOPEN_MAX][FOPEN_MAX];
-	int		out_arrow_flag[FOPEN_MAX][FOPEN_MAX];
 
-	char	**words[FOPEN_MAX];
-	char	*cmd_path[FOPEN_MAX];
-	char	*cmd[FOPEN_MAX][FOPEN_MAX];
+	char	*input_files_delimiters[OPEN_MAX][OPEN_MAX];
+	char	*output_files[OPEN_MAX][OPEN_MAX];
+	int		in_arrow_flag[OPEN_MAX][OPEN_MAX];
+	int		out_arrow_flag[OPEN_MAX][OPEN_MAX];
+
+	char	**words[OPEN_MAX];
+	char	*cmd_path[OPEN_MAX];
+	char	*cmd[OPEN_MAX][OPEN_MAX];
 	int		word_index;
 
 	int		exit_code;
-	bool	do_not_expand[FOPEN_MAX];
+	bool	do_not_expand[OPEN_MAX];
 
-	//pipex
 	int		pipes_count;
 	char	**cmd_array;
 }	t_parser_info;
+
+/* ------------------ > >> Global variables << < ------------------ */
+
+extern char	**environ;
 
 /* --------------------- > >> Prototypes << < --------------------- */
 
@@ -95,8 +98,8 @@ char	*expand_dollar(char *str);
 int		final_out_fd(int array_index, t_parser_info *p);
 int		final_in_fd(int array_index, t_parser_info *p, int pipe_end[2]);
 int		child_input_append(int array_index, t_parser_info *p, int i, int pipe_append[2]);
-int		account_for_in_redirect(int i, int *pipe_append, int *in_pipe, t_parser_info *p)
-int		account_for_out_redirect(int i, int *out_pipe, t_parser_info *p)
+int		account_for_in_redirect(int i, int *pipe_append, int *in_pipe, t_parser_info *p);
+int		account_for_out_redirect(int i, int *out_pipe, t_parser_info *p);
 
 /* ---------- ** command execution ** ----------- */
 
@@ -109,5 +112,12 @@ void	init_pipex(t_parser_info *p);
 /* --------------- ** export env ** ------------- */
 
 void	export_env(char	**env, char *env_variable);
+
+/* ---------------- ** builtins ** -------------- */
+
+int		env(void);
+int		pwd(void);
+int		cd(int argc, char **argv);
+int		echo(char **argv);
 
 #endif
