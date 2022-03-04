@@ -85,40 +85,41 @@ void	export_env(char	**env, char *env_variable)
 	}
 }
 
-int	main()
-{
-	int	i;
+// int	main()
+// {
+// 	int	i;
 
-	i = 0;
-	while (environ[i])
-		printf("%s%s%s\n", YELLOW, environ[i++], RESET);
-	export_env(environ, "HIIIIIIIIIIIIIII=:D");
-	i = 0;
-	while (environ[i])
-		printf("%s%s%s\n", LIGHT_BLUE, environ[i++], RESET);
+// 	i = 0;
+// 	// while (environ[i])
+// 	// 	printf("%s%s%s\n", YELLOW, environ[i++], RESET);
+// 	// export_env(environ, "HIIIIIIIIIIIIIII=:D");
+// 	// i = 0;
+// 	// while (environ[i])
+// 	// 	printf("%s%s%s\n", LIGHT_BLUE, environ[i++], RESET);
 
-	/* ---------------------------------------------------- */
+// 	/* ---------------------------------------------------- */
 
-	pid_t	child;
-	char	*cmd[3];
-	cmd[0] = "cd";
-	cmd[1] =  "dep";
-	cmd[2] = 0;
+// 	pid_t	child;
+// 	char	*cmd[3];
+// 	cmd[0] = "cd";
+// 	cmd[1] =  0;
+// 	cmd[2] = 0;
 
-	child = fork();
-	if (!child)
-	{
-		export_env(environ, "PWD=:o");
-		i = 0;
-		while (environ[i])
-			printf("%s%s%s\n", MAGENTA, environ[i++], RESET);
-		execve("/usr/bin/cd", cmd, environ);
-	}
-	else
-	{
-		waitpid(-1, 0, 0);
-		i = 0;
-		while (environ[i])
-			printf("%s%s%s\n", GREEN, environ[i++], RESET);
-	}
-}
+// 	child = fork();
+// 	if (!child)
+// 	{
+// 		export_env(environ, "PWD=:o");
+// 		i = 0;
+// 		while (environ[i])
+// 			printf("%s%s%s\n", MAGENTA, environ[i++], RESET);
+// 		execve("builtins/cd", cmd, environ);
+// 		printf("HEYEY");
+// 	}
+// 	else
+// 	{
+// 		waitpid(-1, 0, 0);
+// 		i = 0;
+// 		while (environ[i])
+// 			printf("%s%s%s\n", GREEN, environ[i++], RESET);
+// 	}
+// }

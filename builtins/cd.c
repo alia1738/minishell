@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 15:22:36 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/24 12:26:46 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/03 12:54:19 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ int	main(int argc, char **argv, char **env)
 		{
 			if (!opendir(getenv("HOME")) || chdir(getenv("HOME")) == -1)
 				perror(ft_strjoin("minishell: cd: ", argv[1]));
+			export_env(environ, ft_strjoin("PWD=", getenv("HOME")));
 		}
 		else if (access(argv[1], F_OK) != 0 || ft_strlen(argv[1]) > 255)
 		{
@@ -37,6 +38,7 @@ int	main(int argc, char **argv, char **env)
 			printf("PWD: %s\n", getenv("PWD"));
 		}
 		printf("%s\n", getcwd(NULL, 100));
+		export_env(environ, ft_strjoin("PWD=", argv[1]));
 		exit(0);
 	}
 	else
