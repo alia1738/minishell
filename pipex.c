@@ -3,66 +3,66 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/28 13:33:43 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/03 13:25:26 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/04 13:29:26 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int account_for_in_redirect(int i, int *pipe_append, int *in_pipe, t_parser_info *p)
-{
-	int	fd;
+// static int account_for_in_redirect(int i, int *pipe_append, int *in_pipe, t_parser_info *p)
+// {
+// 	int	fd;
 	
-	fd = final_in_fd(i, p, pipe_append);
-	// if (fd == -1) ----------------------------> account for it in final_in_fd
-	// 	exit(1);
-	if (fd > 1)
-		dup2(fd, STDIN_FILENO);
-	if (fd == 1) //dup pipe;
-	{
-		close(pipe_append[1]);
-		dup2(pipe_append[0], STDIN_FILENO);
-	}
-	else if (fd != 1) //close both pipe ends
-	{
-		close(pipe_append[1]);
-		close(pipe_append[0]);
-	}
-	if (!fd && i)
-	{
-		close(in_pipe[1]);
-		dup2(in_pipe[0], STDIN_FILENO);
-	}
-	else if (i)
-	{
-		close(in_pipe[0]);
-		close(in_pipe[1]);
-	}
-	return(fd);
-}
+// 	fd = final_in_fd(i, p, pipe_append);
+// 	// if (fd == -1) ----------------------------> account for it in final_in_fd
+// 	// 	exit(1);
+// 	if (fd > 1)
+// 		dup2(fd, STDIN_FILENO);
+// 	if (fd == 1) //dup pipe;
+// 	{
+// 		close(pipe_append[1]);
+// 		dup2(pipe_append[0], STDIN_FILENO);
+// 	}
+// 	else if (fd != 1) //close both pipe ends
+// 	{
+// 		close(pipe_append[1]);
+// 		close(pipe_append[0]);
+// 	}
+// 	if (!fd && i)
+// 	{
+// 		close(in_pipe[1]);
+// 		dup2(in_pipe[0], STDIN_FILENO);
+// 	}
+// 	else if (i)
+// 	{
+// 		close(in_pipe[0]);
+// 		close(in_pipe[1]);
+// 	}
+// 	return(fd);
+// }
 
-static int account_for_out_redirect(int i, int *out_pipe, t_parser_info *p)
-{
-	int	fd;
+// static int account_for_out_redirect(int i, int *out_pipe, t_parser_info *p)
+// {
+// 	int	fd;
 
-	fd = final_out_fd(i, p);
-	if (fd)
-		dup2(fd, STDOUT_FILENO);
-	if (!fd && (i != p->pipes_count))
-	{
-		close(out_pipe[0]);
-		dup2(out_pipe[1], STDOUT_FILENO);
-	}
-	else if (fd && (i != p->pipes_count))
-	{
-		close(out_pipe[0]);
-		close(out_pipe[1]);
-	}
-	return (fd);
-}
+// 	fd = final_out_fd(i, p);
+// 	if (fd)
+// 		dup2(fd, STDOUT_FILENO);
+// 	if (!fd && (i != p->pipes_count))
+// 	{
+// 		close(out_pipe[0]);
+// 		dup2(out_pipe[1], STDOUT_FILENO);
+// 	}
+// 	else if (fd && (i != p->pipes_count))
+// 	{
+// 		close(out_pipe[0]);
+// 		close(out_pipe[1]);
+// 	}
+// 	return (fd);
+// }
 
 static void	first_child(int *out_pipe, t_parser_info *p) //consider only passing what you need to make freeing easier
 {
