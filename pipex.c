@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/28 13:33:43 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/05 16:42:55 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/08 16:36:51 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,30 +97,30 @@ void	init_pipex(t_parser_info *p)
 		pipe(pip[i]);
 		// printf("PIPE: %d\n", i);
 	}
-	i = 0;
+	i = -1;
+	while (++i < p->pipes_count + 1)
+	{
+		fork_pid = fork(); //protect in case of failure
+		if (!i && !fork_pid)
+			first_child(pip[i], p);
+		else if (i != p->pipes_count && !fork_pid)
+			middle_child(i, pip[i - 1], pip[i], p);
+		else if (i == p->pipes_count && !fork_pid)
+			last_child(i, pip[i - 1], p); //check the "i - 1"
+		if (fork_pid && i == p->pipes_count)
+		{
+			waitpid(-1, &status, 0);
+			break ;
+			// exit(1);
+		}
+		// else if (fork_pid)
+		// 	waitpid(-1, &status, 0);
+		// i++;
+		// printf("WEEE: %d\n", i);
+	}
 	// fork_pid = fork();
 	// if (!fork_pid)
 	// {
-		while (i < p->pipes_count + 1)
-		{
-			fork_pid = fork(); //protect in case of failure
-			if (!i && !fork_pid)
-				first_child(pip[i], p);
-			else if (i != p->pipes_count && !fork_pid)
-				middle_child(i, pip[i - 1], pip[i], p);
-			else if (i == p->pipes_count && !fork_pid)
-				last_child(i, pip[i - 1], p); //check the "i - 1"
-			if (fork_pid && i == p->pipes_count)
-			{
-				waitpid(-1, &status, 0);
-				break ;
-				// exit(1);
-			}
-			// else if (fork_pid)
-			// 	waitpid(-1, &status, 0);
-			i++;
-			// printf("WEEE: %d\n", i);
-		}
 	// }
 	// else
 	// {
