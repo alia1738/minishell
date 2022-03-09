@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/04 14:37:10 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/09 14:36:19 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ void	export_env(char	**env, char *env_variable);
 
 int		env(void);
 int		pwd(void);
-int		cd(int argc, char **argv);
+int		cd(char **argv);
 int		echo(char **argv);
 
 #endif

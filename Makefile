@@ -9,12 +9,15 @@ export LDFLAGS="-L/usr/local/opt/readline/lib"
 export CPPFLAGS="-I/usr/local/opt/readline/include"
 
 all: $(NAME)
+
 -include $(addprefix dep/,$(DEP))
 
-$(NAME): directories $(addprefix obj/,$(OBJ))
-	$(MAKE) -sC libft all
+$(NAME): obj dep libft/libft.a $(addprefix obj/,$(OBJ))
 	gcc $(addprefix obj/,$(OBJ)) $(LINK_LIBFT) $(LDFLAGS) $(CPPFLAGS) -lreadline -o $(NAME)
 
+libft/libft.a:
+	$(MAKE) -sC libft all
+	
 obj/%.o:%.c
 	gcc -c $(CFLAGS) $< -o $@ -MD -MF $(@:obj/%.o=dep/%.d)
 
