@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/04 17:00:55 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/10 13:26:42 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,9 @@ void	save_cmds(char *input, t_parser_info *p)
 		}
 		p->words[array_index] = 0;
 		p->cmd[array_index][0] = 0;
-		init_pipex(p);
+		// init_pipex(p);
+		pipe_stuff(p);
+
 		// printf("EXITED PIPEX\n");
 		//look into the nulling the end of the p->cmd array **also look into  stack vs heap allocation and the way we should free
 	}

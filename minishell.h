@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/04 16:54:52 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/10 13:07:32 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,5 +119,7 @@ int		env(void);
 int		pwd(void);
 int		cd(char **argv);
 int		echo(char **argv);
+
+void	pipe_stuff(t_parser_info *p);
 
 #endif
