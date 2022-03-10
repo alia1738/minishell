@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/19 18:10:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/10 14:52:23 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/10 15:18:24 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,6 +197,11 @@ static char	*get_next_word(int i, char *input, char **meta, t_parser_info *p)
 	// }
 	// else
 	// 	return (temp);
+
+	//where expanding the dollar occurs
+	if (ft_strchr(temp, '$'))
+		temp = expand_dollar(temp);
+	//
 	if (ft_strchr(temp, '\'') || ft_strchr(temp, '\"'))
 		result = strcpy_wout_quotes(temp);
 	else
