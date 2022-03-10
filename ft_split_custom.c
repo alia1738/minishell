@@ -6,13 +6,13 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/19 18:10:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/09 18:10:47 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/10 14:52:23 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	ft_ismeta(char *current_c, char **meta)
+int	ft_ismeta(char *current_c, char **meta)
 {
 	int	i;
 
@@ -186,6 +186,7 @@ static char	*get_next_word(int i, char *input, char **meta, t_parser_info *p)
 
 	len = get_next_word_len(i, input, meta);
 	temp = ft_substr(input, i, len);
+	// printf("word: %s.. len = %d\n", temp, len);
 	p->do_not_expand[p->word_index] = false;
 	// if (*temp == '\"')
 	// 	result = ft_strtrim(temp, "\"");
@@ -203,8 +204,6 @@ static char	*get_next_word(int i, char *input, char **meta, t_parser_info *p)
 	free(temp);
 	return (result);
 }
-	// printf("WOO--len: %d .. word: %s\n", len, temp);
-	// printf("len: %d .. word: %s\n", len, result);
 
 char	**ft_split_custom(char *input, char **meta, t_parser_info *p)
 {
@@ -243,13 +242,14 @@ char	**ft_split_custom(char *input, char **meta, t_parser_info *p)
 // 		printf("%s\n", *ptr);
 // 		ptr++;
 // 	}
-// 	// int	i = 0;
-// 	// printf("count: %d\n", count_inputs(argv[1], meta));
-// 	// printf("quote length: %d\n", get_next_word_len(3, "<<\"me\'hey    ey\'me\"", meta));
-// 	// char	*str = "a    \"''\"''      a"     ;
-// 	// char	*str = "me\"heye\"me\"he'oo'ye\"'yyyy'";
-// 	// printf("string with    quotes: %s\n", str);
-// 	// printf("string without quotes: %s\n", strcpy_wout_quotes(str));
-// 	// strcpy_wout_quotes("me'heye'me'heye'");
-// 	// strcpy_wout_quotes("''''\"\"");
 // }
+
+	// int	i = 0;
+	// printf("count: %d\n", count_inputs(argv[1], meta));
+	// printf("quote length: %d\n", get_next_word_len(3, "<<\"me\'hey    ey\'me\"", meta));
+	// char	*str = "a    \"''\"''      a"     ;
+	// char	*str = "me\"heye\"me\"he'oo'ye\"'yyyy'";
+	// printf("string with    quotes: %s\n", str);
+	// printf("string without quotes: %s\n", strcpy_wout_quotes(str));
+	// strcpy_wout_quotes("me'heye'me'heye'");
+	// strcpy_wout_quotes("''''\"\"");

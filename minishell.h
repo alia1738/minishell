@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/09 14:36:19 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/10 13:48:05 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,18 +49,18 @@ typedef struct s_parser_info
 {
 	char	**env;
 
-	char	*input_files_delimiters[OPEN_MAX][OPEN_MAX];
-	char	*output_files[OPEN_MAX][OPEN_MAX];
-	int		in_arrow_flag[OPEN_MAX][OPEN_MAX];
-	int		out_arrow_flag[OPEN_MAX][OPEN_MAX];
+	char	*input_files_delimiters[255][255];
+	char	*output_files[255][255];
+	int		in_arrow_flag[255][255];
+	int		out_arrow_flag[255][255];
 
-	char	**words[OPEN_MAX];
-	char	*cmd_path[OPEN_MAX];
-	char	*cmd[OPEN_MAX][OPEN_MAX];
+	char	**words[255];
+	char	*cmd_path[255];
+	char	*cmd[255][255];
 	int		word_index;
 
 	int		exit_code;
-	bool	do_not_expand[OPEN_MAX];
+	bool	do_not_expand[255];
 
 	int		pipes_count;
 	char	**cmd_array;
@@ -71,6 +71,10 @@ typedef struct s_parser_info
 extern char	**environ;
 
 /* --------------------- > >> Prototypes << < --------------------- */
+
+/* ------------- ** parser utils ** ------------- */
+
+int		check_repeated_meta(char *input);
 
 /* ------------ ** simple helpers ** ------------ */
 
@@ -87,6 +91,9 @@ char	*get_cmd_path(char *cmd);
 
 /* ----------------- ** split ** ---------------- */
 
+int		ft_isquote(char c);
+int		ft_ismeta(char *current_c, char **meta);
+int		skip_quote_content(int *i, char *input);
 char	**ft_split_custom(char *input, char **meta, t_parser_info *p);
 
 /* ------------ ** expand dollar ** ------------- */

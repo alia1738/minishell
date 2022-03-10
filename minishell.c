@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/09 14:40:18 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/10 14:53:22 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,10 +78,11 @@ int	count_pipes(char *input)
 	return (count);
 }
 
+
 void	save_cmds(char *input, t_parser_info *p)
 {
 	int		array_index;
-	char	*meta[5] = {"<<", "<", ">", ">>", 0};
+	char	*meta[5] = {"<<", "<", ">>", ">", 0};
 
 	p->pipes_count = count_pipes(input);
 	if (p->pipes_count == 0)
@@ -135,6 +136,12 @@ int	main(int argc, char **argv, char **env)
 		input = readline("\e[35mbaby shell> \e[0m");
 		if (input[0])
 			add_history(input);
+		if (check_repeated_meta(input) == -1)
+		{
+			printf("minishell: syntax error regarding the usage of metacharacters\n");
+			free(input);
+			continue ;
+		}
 		save_cmds(input, &p);
 
 		/*-----------------*/
