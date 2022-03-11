@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/10 14:53:22 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/11 11:32:30 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,9 @@ void	save_input_output_files_n_cmds(int array_index, char **words, t_parser_info
 		}
 		else
 		{
-			if (ft_strchr(words[i], '$') != NULL && p->do_not_expand[i] == false)
-				p->cmd[array_index][cmd_index++] = expand_dollar(words[i]);
-			else
+			// if (ft_strchr(words[i], '$') != NULL && p->do_not_expand[i] == false)
+			// 	p->cmd[array_index][cmd_index++] = expand_dollar(words[i]);
+			// else
 				p->cmd[array_index][cmd_index++] = words[i];
 		}
 		i++;

@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/10 13:48:05 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/11 11:31:21 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,8 @@ char	**ft_split_custom(char *input, char **meta, t_parser_info *p);
 
 /* ------------ ** expand dollar ** ------------- */
 
-char	*expand_dollar(char *str);
+char	*expand_dollars_in_str(char *str);
+// char	*expand_dollar(char *str);
 
 /* ----------- ** execution utils ** ------------ */
 
