@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/11 11:31:21 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/12 10:33:49 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ typedef struct s_parser_info
 	char	**words[255];
 	char	*cmd_path[255];
 	char	*cmd[255][255];
-	int		word_index;
 
 	int		exit_code;
 	bool	do_not_expand[255];
@@ -94,7 +93,7 @@ char	*get_cmd_path(char *cmd);
 int		ft_isquote(char c);
 int		ft_ismeta(char *current_c, char **meta);
 int		skip_quote_content(int *i, char *input);
-char	**ft_split_custom(char *input, char **meta, t_parser_info *p);
+char	**ft_split_custom(char *input, char **meta);
 
 /* ------------ ** expand dollar ** ------------- */
 

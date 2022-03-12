@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 15:22:39 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/12 10:20:34 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/12 10:35:32 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ char	*expand_dollars_in_str(char *str)
 	char	*meta[6] = {"<<", "<", ">>", ">", "|", 0};
 	// char	*temp;
 
-	printf("LEN: %d\n", len_with_expansion(str));
+	// printf("LEN: %d\n", len_with_expansion(str));
 	expanded = ft_calloc(len_with_expansion(str) + 1, sizeof(char));
 	i = 0;
 	new_index = 0;
