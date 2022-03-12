@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 15:22:39 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/11 11:49:50 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/12 10:20:34 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,21 @@ int		len_with_expansion(char	*str) //keeping the quotes because i deal with them
 {
 	int	i;
 	int	len;
+	char	*meta[6] = {"<<", "<", ">>", ">", "|", 0};
+	// char	*temp;
 
 	i = 0;
 	len = 0;
 	while (str[i])
 	{
-		if (str[i] == '$')
+		// if (str[i] == '$' && str[i + 1] == '?')
+		// {
+		// 	temp = ft_itoa(p->exit_code);
+		// 	len += ft_strlen(temp);
+		// 	i += 2;
+		// 	free(temp);
+		// }
+		if (str[i] == '$' && ft_isspace(str[i + 1]) == 0 && ft_ismeta(&str[i], meta) == 0 && str[i + 1])
 		{
 			// printf("dollar expanded: %s\n", ft_getenv(i, str) ? ft_getenv(i, str) : "");
 			len += ft_strlen(ft_getenv(i, str));
@@ -63,7 +72,7 @@ int		len_with_expansion(char	*str) //keeping the quotes because i deal with them
 			while (ft_isquote(str[i]) != 2 && str[i])
 			{
 				// printf("currently: %s\n", str + i);
-				if (str[i] == '$')
+				if (str[i] == '$' && ft_isspace(str[i + 1]) == 0 && ft_ismeta(&str[i], meta) == 0 && str[i + 1])
 				{
 					// printf("dollar expanded: %s\n", ft_getenv(i, str) ? ft_getenv(i, str) : "");
 					len += ft_strlen(ft_getenv(i, str));
@@ -78,7 +87,10 @@ int		len_with_expansion(char	*str) //keeping the quotes because i deal with them
 			}
 		}
 		else
+		{
+			len++;
 			i++;
+		}
 		// printf("currently: %s, previous len: %d\n", str + i, len);
 	}
 	return (len);
@@ -89,15 +101,25 @@ char	*expand_dollars_in_str(char *str)
 	int		i;
 	int		new_index;
 	char	*expanded;
-	
-	// printf("LEN: %d\n", len_with_expansion(str));
+	char	*meta[6] = {"<<", "<", ">>", ">", "|", 0};
+	// char	*temp;
+
+	printf("LEN: %d\n", len_with_expansion(str));
 	expanded = ft_calloc(len_with_expansion(str) + 1, sizeof(char));
 	i = 0;
 	new_index = 0;
 	while (str[i])
 	{
 		// printf("currently: %s\n", str + i);
-		if (str[i] == '$')
+		
+		// if (str[i] == '$' && str[i + 1] == '?')
+		// {
+		// 	temp = ft_itoa(p->exit_code);
+		// 	ft_strcpy(&expanded[new_index], temp);
+		// 	free(temp);
+		// 	i += 2;
+		// }
+		/*else*/ if (str[i] == '$' && ft_isspace(str[i + 1]) == 0 && ft_ismeta(&str[i], meta) == 0 && str[i + 1])
 		{
 			// printf("dollar expanded: %s\n", ft_getenv(i, str) ? ft_getenv(i, str) : "");
 			ft_strcpy(&expanded[new_index], ft_getenv(i, str));
@@ -124,7 +146,7 @@ char	*expand_dollars_in_str(char *str)
 			while (ft_isquote(str[i]) != 2 && str[i])
 			{
 				// printf("currently: %s\n", str + i);
-				if (str[i] == '$')
+				if (str[i] == '$' && ft_isspace(str[i + 1]) == 0 && ft_ismeta(&str[i], meta) == 0 && str[i + 1])
 				{
 					// printf("dollar expanded: %s\n", ft_getenv(i, str) ? ft_getenv(i, str) : "");
 					ft_strcpy(&expanded[new_index], ft_getenv(i, str));
