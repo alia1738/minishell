@@ -1,5 +1,5 @@
 NAME = minishell
-SRC = minishell.c get_cmd_path.c simple_helpers.c command_execution.c execution_utils.c ft_split_custom.c expand_dollar.c pipex.c builtins.c
+SRC = minishell.c get_cmd_path.c simple_helpers.c command_execution.c execution_utils.c ft_split_custom.c pipex.c builtins.c parser_utils.c expand_dollar_v2.c
 OBJ = $(SRC:.c=.o)
 DEP = $(SRC:.c=.d)
 LINK_LIBFT = -Llibft -lft
@@ -9,12 +9,15 @@ export LDFLAGS="-L/usr/local/opt/readline/lib"
 export CPPFLAGS="-I/usr/local/opt/readline/include"
 
 all: $(NAME)
+
 -include $(addprefix dep/,$(DEP))
 
-$(NAME): directories $(addprefix obj/,$(OBJ))
-	$(MAKE) -sC libft all
+$(NAME): obj dep libft/libft.a $(addprefix obj/,$(OBJ))
 	gcc $(addprefix obj/,$(OBJ)) $(LINK_LIBFT) $(LDFLAGS) $(CPPFLAGS) -lreadline -o $(NAME)
 
+libft/libft.a:
+	$(MAKE) -sC libft all
+	
 obj/%.o:%.c
 	gcc -c $(CFLAGS) $< -o $@ -MD -MF $(@:obj/%.o=dep/%.d)
 
