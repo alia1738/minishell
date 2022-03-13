@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/10 13:07:32 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/13 17:39:47 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,23 +47,22 @@
 
 typedef struct s_parser_info
 {
-	// char	**env;
+	char	**env;
 
-	char	*input_files_delimiters[500][500];
-	char	*output_files[500][500];
-	int		in_arrow_flag[500][500];
-	int		out_arrow_flag[500][500];
+	int		in_arrow_flag[255][255];
+	char	*output_files[255][255];
+	int		out_arrow_flag[255][255];
+	char	*input_files_delimiters[255][255];
 
-	char	**words[500];
-	char	*cmd_path[500];
-	char	*cmd[500][500];
-	int		word_index;
+	char	**words[255];
+	char	*cmd_path[255];
+	char	*cmd[255][255];
 
 	int		exit_code;
-	bool	do_not_expand[500];
+	bool	do_not_expand[255];
 
-	int		pipes_count;
 	char	**cmd_array;
+	int		pipes_count;
 }	t_parser_info;
 
 /* ------------------ > >> Global variables << < ------------------ */
@@ -72,11 +71,16 @@ extern char	**environ;
 
 /* --------------------- > >> Prototypes << < --------------------- */
 
+/* ------------- ** parser utils ** ------------- */
+
+int		check_repeated_meta(char *input);
+
 /* ------------ ** simple helpers ** ------------ */
 
 void	clear(void);
 void	free_double(char **array);
 void	free_triple(char ***array);
+char	**dup_array(char **a1);
 char	*ft_strndup(const char *s1, int n);
 void	skip_isspaces(int *index, char *input);
 char	*ft_strcpy(char *dst, const char *src);
@@ -87,19 +91,23 @@ char	*get_cmd_path(char *cmd);
 
 /* ----------------- ** split ** ---------------- */
 
-char	**ft_split_custom(char *input, char **meta, t_parser_info *p);
+int		ft_isquote(char c);
+int		ft_ismeta(char *current_c, char **meta);
+int		skip_quote_content(int *i, char *input);
+char	**ft_split_custom(char *input, char **meta);
 
 /* ------------ ** expand dollar ** ------------- */
 
-char	*expand_dollar(char *str);
+char	*expand_dollars_in_str(char *str);
+// char	*expand_dollar(char *str);
 
 /* ----------- ** execution utils ** ------------ */
 
 int		final_out_fd(int array_index, t_parser_info *p);
 int		final_in_fd(int array_index, t_parser_info *p, int pipe_end[2]);
+int		account_for_out_redirect(int i, int *out_pipe, t_parser_info *p);
 int		child_input_append(int array_index, t_parser_info *p, int i, int pipe_append[2]);
 int		account_for_in_redirect(int i, int *pipe_append, int *in_pipe, t_parser_info *p);
-int		account_for_out_redirect(int i, int *out_pipe, t_parser_info *p);
 
 /* ---------- ** command execution ** ----------- */
 
@@ -111,14 +119,16 @@ void	init_pipex(t_parser_info *p);
 
 /* --------------- ** export env ** ------------- */
 
-void	export_env(char	**env, char *env_variable);
+char	**export_env(char **env, char *env_variable);
 
 /* ---------------- ** builtins ** -------------- */
 
-int		env(void);
+int		env(t_parser_info *p);
 int		pwd(void);
 int		cd(char **argv);
 int		echo(char **argv);
+int		export(t_parser_info *p, char **cmd);
+
 
 void	pipe_stuff(t_parser_info *p);
 

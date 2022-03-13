@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split_custom.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/19 18:10:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/03 12:16:12 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/13 13:21:06 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	ft_ismeta(char *current_c, char **meta)
+int	ft_ismeta(char *current_c, char **meta)
 {
 	int	i;
 
@@ -23,6 +23,87 @@ static int	ft_ismeta(char *current_c, char **meta)
 			return (ft_strlen(meta[i]));
 	}
 	return (0);
+}
+
+int		ft_isquote(char c)
+{
+	if (c == '\'')
+		return (1);
+	else if (c == '\"')
+		return (2);
+	return (0);
+}
+
+int	skip_quote_content(int *i, char *input)
+{
+	int	quote_len;
+	int	quote_type;
+	
+
+	quote_len = 1;
+	quote_type = ft_isquote(input[*i]);
+	(*i)++;
+	while (ft_isquote(input[*i]) != quote_type && input[*i])
+	{
+		(*i)++;
+		quote_len++;
+	}
+	if (ft_isquote(input[*i]) == quote_type)
+	{
+		(*i)++;
+		quote_len++;
+	}
+	return (quote_len);
+}
+
+char *strcpy_wout_quotes(char *str)
+{
+	int		i;
+	int		new;
+	int		quote_type;
+	int		len_wout_quote;
+	char	*new_str;
+
+	i = 0;
+	len_wout_quote = 0;
+	while (str[i])
+	{
+		while (ft_isquote(str[i]) == 0 && str[i])
+		{
+			i++;
+			len_wout_quote++;
+		}
+		if (str[i])
+		{
+			quote_type = ft_isquote(str[i]);
+			while (ft_isquote(str[++i]) != quote_type && str[i])
+				len_wout_quote++;
+			i++;
+		}
+	}
+	
+	new_str = ft_calloc(len_wout_quote + 1, sizeof(char));
+	if (!new_str)
+		return (NULL);
+	i = 0;
+	new = 0;
+	while (str[i])
+	{
+		while (ft_isquote(str[i]) == 0 && str[i])
+		{
+			new_str[new++] = str[i];
+			i++;
+		}
+		if (str[i])
+		{
+			quote_type = ft_isquote(str[i]);
+			while (ft_isquote(str[++i]) != quote_type && str[i])
+				new_str[new++] = str[i];
+			if (str[i])
+				i++;
+		}
+	}
+	return (new_str);
 }
 
 static int	count_inputs(char *input, char **meta)
@@ -42,27 +123,16 @@ static int	count_inputs(char *input, char **meta)
 			count++;
 			i += ft_ismeta(&input[i], meta);
 		}
-		else if (input[i] == '\"')// account for unclosed quotes
-		{
-			count++;
-			while (input[++i] != '\"')
-				;
-			++i;
-		}
-		else if (input[i] == '\'')// account for unclosed quotes
-		{
-			count++;
-			while (input[++i] != '\'')
-				;
-			++i;
-		}
 		else if (ft_isspace(input[i]) == 0)
 		{
 			count++;
-			while (ft_isspace(input[i]) == 0 && ft_ismeta(&input[i], meta) == 0 && input[i])
-				i++;
-			if (input[i] == '\0' || ft_ismeta(&input[i], meta) > 0)
-				continue ;
+			while ((ft_isspace(input[i]) == 0 && ft_ismeta(&input[i], meta) == 0 && input[i]))
+			{
+				if (ft_isquote (input[i]) > 0)
+					skip_quote_content(&i, input);
+				else
+					i++;
+			}
 		}
 		else
 			i++;
@@ -72,28 +142,18 @@ static int	count_inputs(char *input, char **meta)
 
 static void	go_to_next_word(int *i, char *input, char **meta)
 {
-	if (input[*i] == '\"' || input[*i] == '\'')
-	{
-		if (input[*i] == '\"')
-		{
-			while (input[++(*i)] != '\"')
-				;
-		}
-		else
-		{
-			while (input[++(*i)] != '\'')
-				;
-		}
-		++(*i);
-		return ;
-	}
-	else if (ft_ismeta(&input[*i], meta) > 0)
+	if (ft_ismeta(&input[*i], meta) > 0)
 	{
 		(*i) += ft_ismeta(&input[*i], meta);
 		return ;
 	}
 	while (ft_isspace(input[*i]) == 0 && ft_ismeta(&input[*i], meta) == 0 && input[*i])
-		(*i)++;
+	{
+		if (ft_isquote(input[*i]) > 0)
+			skip_quote_content(i, input);
+		else
+			(*i)++;
+	}
 	return ;
 }
 
@@ -102,31 +162,22 @@ static int	get_next_word_len(int i, char *input, char **meta)
 	int	len;
 
 	len = 0;
-	if (input[i] == '\"' || input[i] == '\'')
-	{
-		if (input[i] == '\"')
-		{
-			while (input[++i] != '\"')
-				len++;
-		}
-		else
-		{
-			while (input[++i] != '\'')
-				len++;
-		}
-		return (len + 2);
-	}
-	else if (ft_ismeta(&input[i], meta) > 0)
+	if (ft_ismeta(&input[i], meta) > 0)
 		return (ft_ismeta(&input[i], meta));
 	while (ft_isspace(input[i]) == 0 && ft_ismeta(&input[i], meta) == 0 && input[i])
 	{
-		len++;
-		i++;
+		if (ft_isquote (input[i]) > 0)
+			len += skip_quote_content(&i, input);
+		else
+		{
+			len++;
+			i++;
+		}
 	}
 	return (len);
 }
 
-static char	*get_next_word(int i, char *input, char **meta, t_parser_info *p)
+static char	*get_next_word(int i, char *input, char **meta)
 {
 	int		len;
 	char	*temp;
@@ -135,39 +186,37 @@ static char	*get_next_word(int i, char *input, char **meta, t_parser_info *p)
 
 	len = get_next_word_len(i, input, meta);
 	temp = ft_substr(input, i, len);
-	p->do_not_expand[p->word_index] = false;
-	if (*temp == '\"')
-		result = ft_strtrim(temp, "\"");
-	else if (*temp == '\'')
-	{
-		result = ft_strtrim(temp, "'");
-		p->do_not_expand[p->word_index] = true;
-	}
+	// printf("word: %s.. len = %d\n", temp, len);
+	//where expanding the dollar occurs (commented at the moment)
+	if (ft_strchr(temp, '$'))
+		temp = expand_dollars_in_str(temp);
+	//
+	if (ft_strchr(temp, '\'') || ft_strchr(temp, '\"'))
+		result = strcpy_wout_quotes(temp);
 	else
 		return (temp);
 	free(temp);
 	return (result);
 }
-	// printf("WOO--len: %d .. word: %s\n", len, temp);
-	// printf("len: %d .. word: %s\n", len, result);
 
-char	**ft_split_custom(char *input, char **meta, t_parser_info *p)
+char	**ft_split_custom(char *input, char **meta)
 {
 	int	i;
 	int	word_count;
+	int	word_index;
 	char	**result;
 
 	if (ft_ismeta("|", meta) > 0)
 		return (ft_split(input, '|'));
 	i = 0;
-	p->word_index = 0;
+	word_index = 0;
 	word_count = count_inputs(input, meta);
 	result = ft_calloc(word_count + 1, sizeof(char *)); //protect
 	skip_isspaces(&i, input);
-	while (p->word_index < word_count)
+	while (word_index < word_count)
 	{
-		result[p->word_index] = get_next_word(i, input, meta, p);
-		p->word_index++;
+		result[word_index] = get_next_word(i, input, meta);
+		word_index++;
 		go_to_next_word(&i, input, meta);
 		skip_isspaces(&i, input);
 	}
@@ -176,23 +225,26 @@ char	**ft_split_custom(char *input, char **meta, t_parser_info *p)
 
 // int main (int argc, char **argv)
 // {
+// 	t_parser_info p;
 // 	char	**ptr;
 // 	char	*meta[5] = {"<<", "<", ">", ">>", 0};
 	
 // 	if (argc < 2)
 // 		exit(EXIT_FAILURE);
-// 	ptr = ft_split_custom(argv[1], meta);
+// 	ptr = ft_split_custom(argv[1], meta, &p);
 // 	while (*ptr)
 // 	{
 // 		printf("%s\n", *ptr);
 // 		ptr++;
 // 	}
-// 	// printf("count: %d\n", count_inputs(argv[1], meta));
 // }
 
-	// *meta = "<<";
-	// *(meta + 1) = "<";
-	// *(meta + 2) = ">";
-	// *(meta + 3) = ">>";
-	// *(meta + 4) = 0;
-	
+	// int	i = 0;
+	// printf("count: %d\n", count_inputs(argv[1], meta));
+	// printf("quote length: %d\n", get_next_word_len(3, "<<\"me\'hey    ey\'me\"", meta));
+	// char	*str = "a    \"''\"''      a"     ;
+	// char	*str = "me\"heye\"me\"he'oo'ye\"'yyyy'";
+	// printf("string with    quotes: %s\n", str);
+	// printf("string without quotes: %s\n", strcpy_wout_quotes(str));
+	// strcpy_wout_quotes("me'heye'me'heye'");
+	// strcpy_wout_quotes("''''\"\"");

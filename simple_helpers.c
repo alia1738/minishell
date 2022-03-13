@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   simple_helpers.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 17:52:09 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/03 12:15:57 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/13 19:05:38 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,4 +77,23 @@ char	*ft_strcpy(char *dst, const char *src)
 	}
 	dst[i] = '\0';
 	return (dst);
+}
+
+char	**dup_array(char **a1)
+{
+	int	i;
+	char	**new_a;
+
+	i = 0;
+	while (a1[i])
+		i++;
+	new_a = ft_calloc((i + 1), sizeof(char *));
+	i = 0;
+	while (a1[i])
+	{
+		new_a[i] = ft_strdup(a1[i]);
+		i++;
+	}
+	new_a[i] = 0;
+	return (new_a);
 }

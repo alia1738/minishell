@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_execution.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/12 15:22:52 by Alia             ###   ########.fr       */
+/*   Updated: 2022/03/13 18:58:26 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,28 +36,34 @@ static void	child_job(t_parser_info *p)
 	exit(127);
 }
 
-int	bultin_check(t_parser_info *p)
+int	builtin_check(t_parser_info *p, int i)
 {
-	if (!ft_strncmp(p->cmd[0], "echo", 5))
+	if (!ft_strncmp(p->cmd[i][0], "echo", 5))
+		return (echo(p->cmd[i]));
+	else if (!ft_strncmp(p->cmd[i][0], "cd", 3))
+		return (cd(p->cmd[i]));
+	else if (!ft_strncmp(p->cmd[i][0], "pwd", 4))
+		return (pwd());
+	else if (!ft_strncmp(p->cmd[i][0], "export", 7))
+	{
+		export(p, p->cmd[i]);
+		return (0);
+	}
+	else if (!ft_strncmp(p->cmd[i][0], "unset", 6))
 		;
-	else if (!ft_strncmp(p->cmd[0], "cd", 3))
+	else if (!ft_strncmp(p->cmd[i][0], "env", 4))
+		return (env(p));
+	else if (!ft_strncmp(p->cmd[i][0], "exit", 5))
 		;
-	else if (!ft_strncmp(p->cmd[0], "pwd", 4))
-		;
-	else if (!ft_strncmp(p->cmd[0], "export", 7))
-		;
-	else if (!ft_strncmp(p->cmd[0], "unset", 7))
-		;
-	else if (!ft_strncmp(p->cmd[0], "env", 4))
-		;
-	return(1);
+		// return (baby_exit());
+	return (1);
 }
 
 void	execute_command(t_parser_info *p)
 {
 	pid_t	child;
 
-	if (builtin_check(p)) // builtin return 0 
+	if (builtin_check(p, 0) == 1) // builtin return 0 
 	{
 		child = fork();
 		if (!child)

@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/10 13:26:42 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/13 17:04:54 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,9 @@ void	save_input_output_files_n_cmds(int array_index, char **words, t_parser_info
 		}
 		else
 		{
-			if (ft_strchr(words[i], '$') != NULL && p->do_not_expand[i] == false)
-				p->cmd[array_index][cmd_index++] = expand_dollar(words[i]);
-			else
+			// if (ft_strchr(words[i], '$') != NULL && p->do_not_expand[i] == false)
+			// 	p->cmd[array_index][cmd_index++] = expand_dollar(words[i]);
+			// else
 				p->cmd[array_index][cmd_index++] = words[i];
 		}
 		i++;
@@ -81,14 +81,13 @@ int	count_pipes(char *input)
 void	save_cmds(char *input, t_parser_info *p)
 {
 	int		array_index;
-	char	*meta[5] = {"<<", "<", ">", ">>", 0};
+	char	*meta[5] = {"<<", "<", ">>", ">", 0};
 
 	p->pipes_count = count_pipes(input);
 	if (p->pipes_count == 0)
 	{
-		p->words[0] = ft_split_custom(input, meta, p);
+		p->words[0] = ft_split_custom(input, meta);
 		save_input_output_files_n_cmds(0, p->words[0], p);
-		// p->cmd_path[0] = get_cmd_path(p->cmd[0][0]); //i put it in command_execution bec the error should come from the child process
 		execute_command(p);
 	}
 	else
@@ -97,7 +96,7 @@ void	save_cmds(char *input, t_parser_info *p)
 		p->cmd_array = ft_split(input, '|');//account for '|' in quotes
 		while (array_index < p->pipes_count + 1)
 		{
-			p->words[array_index] = ft_split_custom(p->cmd_array[array_index], meta, p);
+			p->words[array_index] = ft_split_custom(p->cmd_array[array_index], meta);
 			save_input_output_files_n_cmds(array_index, p->words[array_index], p);
 			p->cmd_path[array_index] = get_cmd_path(p->cmd[array_index][0]);
 			array_index++;
@@ -106,11 +105,10 @@ void	save_cmds(char *input, t_parser_info *p)
 		p->cmd[array_index][0] = 0;
 		// init_pipex(p);
 		pipe_stuff(p);
-
 		// printf("EXITED PIPEX\n");
 		//look into the nulling the end of the p->cmd array **also look into  stack vs heap allocation and the way we should free
 	}
-	// //TESTING
+	//TESTING
 	// int i = -1, j = -1;
 	// while (++j < p->pipes_count + 1)
 	// {
@@ -119,24 +117,29 @@ void	save_cmds(char *input, t_parser_info *p)
 	// 		printf("*%s* ", p->cmd[j][i]);
 	// 	printf("\n");
 	// }
-	// //
+	//
 }
 
-int	main(int argc, char **argv)
+int	main(int argc, char **argv, char **env)
 {
 	t_parser_info	p;
 	char			*input;
-	// char	*meta[5] = {"<<", "<", ">", ">>", 0};
 
 	(void)argc;
 	(void)argv;
 	ft_bzero(&p, sizeof(t_parser_info));
-	// p.env = env;
+	p.env = dup_array(env);
 	while (1)
 	{
 		input = readline("\e[35mbaby shell> \e[0m");
 		if (input[0])
 			add_history(input);
+		if (check_repeated_meta(input) == -1)
+		{
+			printf("minishell: syntax error regarding the usage of metacharacters\n");
+			free(input);
+			continue ;
+		}
 		save_cmds(input, &p);
 
 		/*-----------------*/

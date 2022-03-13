@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 13:56:18 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/03 13:56:19 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/13 19:06:49 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,102 +36,115 @@ int	check_env(char *env_variable, char **env)
 	return (-1);
 }
 
-char	**save_env(char **env, int *size)
-{
-	int		i;
-	char	**save;
-
-	i = 0;
-	while (env[i])
-		i++;
-	save = ft_calloc((i + 1), sizeof(char *));
-	if (!save)
-		exit(1);
-	i = 0;
-	while (env[i])
-	{
-		save[i] = env[i];
-		i++;
-	}
-	save[i] = 0;
-	*size = i;
-	return (save);
-}
-
-void	new_env(char **env, char **save, char *env_variable, int save_index)
+char	**new_env(char **env, char *new_env_var, int save_index)
 {
 	int i;
+	char	**new_env;
 
 	i = 0;
 	if (save_index >= 0)
-		env[save_index] = env_variable;
-	// {
-		// free(env[save_index]);
-		// env[save_index] = ft_calloc((ft_strlen(env_variable) + 1), sizeof(char));
-	// }
-	if (save_index == -1)
 	{
-		while (save[i])
+		while (env[i])
 			i++;
-		env[i] = env_variable;
-		env[++i] = 0;
-	}
-}
-
-void	export_env(char	**env, char *env_variable)
-{
-	char	**save;
-	int		size;
-	int		save_index;
-
-	save_index = check_env(env_variable, env);
-	save = 0;
-	if (save_index >= 0)
-	{
-		new_env(env, save, env_variable, save_index);
+		new_env = ft_calloc((i + 1), sizeof(char *));
+		i = 0;
+		while (env[i])
+		{
+			if (i == save_index)
+				new_env[i] = ft_strdup(new_env_var);
+			else
+				new_env[i] = ft_strdup(env[i]);
+			i++;
+		}
+		free_double(env);
+		return (new_env);
 	}
 	else if (save_index == -1)
 	{
-		save = save_env(env, &size);
-		new_env(env, save, env_variable, save_index);
+		i = 0;
+		while (env[i])
+			i++;
+		new_env = ft_calloc((i + 2), sizeof(char *));
+		i = - 1;
+		while (env[++i])
+			new_env[i] = ft_strdup(env[i]);
+		new_env[i] = ft_strdup(new_env_var);
+		free_double(env);
+		return (new_env);
 	}
+	return (0);
 }
 
-// int	main()
+int	error_check(char *new_var)
+{
+	int	i;
+
+	i = 0;
+	while (new_var[i] && new_var[i] != '=')
+	{
+		if (!i && !ft_isalpha(new_var[i]))
+		{
+			printf("minishell: export: '%s': not valid identifier\n", new_var);
+			// change exit code;
+			return (0);
+		}
+		else if (!ft_isalnum(new_var[i]))
+		{
+			printf("minishell: export: '%s': not valid identifier\n", new_var);
+			// change exit code;
+			return (0);
+		}
+		i++;
+	}
+	return (i);
+}
+
+char	**export_env(char **env, char *new_env_var) // How To Use --> p->env = export_env(p->env, "NAME=value");
+{
+	int		save_index;
+
+	if (!error_check(new_env_var))
+		return (env);
+	if (!ft_strchr(new_env_var, '='))
+		return (env);
+	save_index = check_env(new_env_var, env);
+	if (save_index >= 0)
+		return (new_env(env, new_env_var, save_index));
+	else if (save_index == -1)
+		return (new_env(env, new_env_var, save_index));
+	return (0);
+}
+
+// int	main(int argc, char **argv, char **envp)
 // {
-// 	int	i;
+// 	int		i;
+// 	char	**p_env;
 
-// 	i = 0;
-// 	// while (environ[i])
-// 	// 	printf("%s%s%s\n", YELLOW, environ[i++], RESET);
-// 	// export_env(environ, "HIIIIIIIIIIIIIII=:D");
-// 	// i = 0;
-// 	// while (environ[i])
-// 	// 	printf("%s%s%s\n", LIGHT_BLUE, environ[i++], RESET);
+// 	(void)argc;
+// 	(void)argv;
 
-// 	/* ---------------------------------------------------- */
+// 	/* ------------------ Original env ------------------ */
+// 	p_env = dup_array(envp);
+// 	for (i = 0; p_env[i]; i++)
+// 		printf("%s%s%s\n", YELLOW, p_env[i], RESET);
 
-// 	pid_t	child;
-// 	char	*cmd[3];
-// 	cmd[0] = "cd";
-// 	cmd[1] =  0;
-// 	cmd[2] = 0;
+// 	/* -------------------- Test One -------------------- */
+// 	p_env = export_env(p_env, "HIIIIIIIIIIIIIII");
+// 	for (i = 0; p_env[i]; i++)
+// 		printf("%s%s%s\n", LIGHT_BLUE, p_env[i], RESET);
+	
+// 	/* -------------------- Test Two -------------------- */
+// 	p_env = export_env(p_env, "HIIIIIIIIIIIIIII=howowowo");
+// 	for (i = 0; p_env[i]; i++)
+// 		printf("%s%s%s\n", GREEN, p_env[i], RESET);
 
-// 	child = fork();
-// 	if (!child)
-// 	{
-// 		export_env(environ, "PWD=:o");
-// 		i = 0;
-// 		while (environ[i])
-// 			printf("%s%s%s\n", MAGENTA, environ[i++], RESET);
-// 		execve("builtins/cd", cmd, environ);
-// 		printf("HEYEY");
-// 	}
-// 	else
-// 	{
-// 		waitpid(-1, 0, 0);
-// 		i = 0;
-// 		while (environ[i])
-// 			printf("%s%s%s\n", GREEN, environ[i++], RESET);
-// 	}
+// 	/* ------------------- Test Three ------------------- */
+// 	p_env = export_env(p_env, "SHELL=");
+// 	for (i = 0; p_env[i]; i++)
+// 		printf("%s%s%s\n", BLUE, p_env[i], RESET);
+
+// 	/* -------------------- Test Four ------------------- */
+// 	p_env = export_env(p_env, "SHELL=Haha");
+// 	for (i = 0; p_env[i]; i++)
+// 		printf("%s%s%s\n", MAGENTA, p_env[i], RESET);
 // }

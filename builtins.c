@@ -6,19 +6,19 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 12:12:03 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/04 16:25:14 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/13 17:39:23 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	env(void)
+int	env(t_parser_info *p)
 {
 	int	i;
 
 	i = 0;
-	while (environ[i])
-		printf("%s\n", environ[i++]);
+	while (p->env[i])
+		printf("%s\n", p->env[i++]);
 	return(0);
 }
 
@@ -71,5 +71,15 @@ int	echo(char **argv)
 	while (argv[i])
 		printf("%s ", argv[i++]);
 	printf("\n");
+	return (0);
+}
+
+int	export(t_parser_info *p, char **cmd)
+{
+	int	i;
+	
+	i = 1;
+	while (cmd[i])
+		p->env = export_env(p->env, cmd[i++]);
 	return (0);
 }
