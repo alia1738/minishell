@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 11:46:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/05 15:56:18 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/14 15:37:30 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	final_in_fd(int array_i, t_parser_info *p, int pipe_end[2])
 			if (access(p->input_files_delimiters[array_i][i], F_OK) == 1)
 				fd = -1; // perror, free && exit
 			if (!p->input_files_delimiters[array_i][i + 1])
-				fd = open(p->input_files_delimiters[array_i][i], O_RDONLY, 0640);
+				fd = open(p->input_files_delimiters[array_i][i], O_RDONLY, 0644);
 		}
 		else if (p->in_arrow_flag[array_i][i] == DOUBLE_ARROW)
 			fd = child_input_append(array_i, p, i, pipe_end);
@@ -74,9 +74,9 @@ int	final_out_fd(int array_i, t_parser_info *p)
 	while (p->output_files[array_i][i])
 	{
 		if (p->out_arrow_flag[array_i][i] == SINGLE_ARROW)
-			fd = open(p->output_files[array_i][i], O_CREAT | O_WRONLY | O_TRUNC, 0640);
+			fd = open(p->output_files[array_i][i], O_CREAT | O_WRONLY | O_TRUNC, 0644);
 		else if (p->out_arrow_flag[array_i][i] == DOUBLE_ARROW)
-			fd = open(p->output_files[array_i][i], O_CREAT | O_WRONLY | O_APPEND, 0640);
+			fd = open(p->output_files[array_i][i], O_CREAT | O_WRONLY | O_APPEND, 0644);
 		if (p->output_files[array_i][i + 1])
 			close(fd);
 		i++;
@@ -85,11 +85,10 @@ int	final_out_fd(int array_i, t_parser_info *p)
 }
 
 
-int	account_for_in_redirect(int i, int *pipe_append, int *in_pipe, t_parser_info *p)
+int	account_for_in_redirect(int i, int *pipe_append, /*int *in_pipe, */t_parser_info *p)
 {
 	int	fd;
 	
-	(void)i;
 	fd = final_in_fd(i, p, pipe_append);
 	// if (fd == -1) ----------------------------> account for it in final_in_fd
 	// 	exit(1);
@@ -105,36 +104,36 @@ int	account_for_in_redirect(int i, int *pipe_append, int *in_pipe, t_parser_info
 		close(pipe_append[1]);
 		close(pipe_append[0]);
 	}
-	if (!fd && in_pipe/*i*/)
-	{
-		close(in_pipe[1]);
-		dup2(in_pipe[0], STDIN_FILENO);
-	}
-	else if (in_pipe/*i*/)
-	{
-		close(in_pipe[0]);
-		close(in_pipe[1]);
-	}
+	// if (!fd && in_pipe)
+	// {
+	// 	close(in_pipe[1]);
+	// 	dup2(in_pipe[0], STDIN_FILENO);
+	// }
+	// else if (in_pipe)
+	// {
+	// 	close(in_pipe[0]);
+	// 	close(in_pipe[1]);
+	// }
 	return(fd);
 }
 
-int	account_for_out_redirect(int i, int *out_pipe, t_parser_info *p)
+int	account_for_out_redirect(int i, /*int *out_pipe, */t_parser_info *p)
 {
 	int	fd;
 
-	(void)i;
+	// (void)i;
 	fd = final_out_fd(i, p);
 	if (fd)
 		dup2(fd, STDOUT_FILENO);
-	if (!fd && out_pipe/*(i != p->pipes_count)*/)
-	{
-		close(out_pipe[0]);
-		dup2(out_pipe[1], STDOUT_FILENO);
-	}
-	else if (fd && out_pipe/*(i != p->pipes_count)*/)
-	{
-		close(out_pipe[0]);
-		close(out_pipe[1]);
-	}
+	// if (!fd && out_pipe/*(i != p->pipes_count)*/)
+	// {
+	// 	close(out_pipe[0]);
+	// 	dup2(out_pipe[1], STDOUT_FILENO);
+	// }
+	// else if (fd && out_pipe/*(i != p->pipes_count)*/)
+	// {
+	// 	close(out_pipe[0]);
+	// 	close(out_pipe[1]);
+	// }
 	return (fd);
 }

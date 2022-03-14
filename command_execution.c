@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/13 18:58:26 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/14 12:46:47 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@ static void	child_job(t_parser_info *p)
 	int	pipe_append[2];
 
 	pipe(pipe_append);
-	in_fd = final_in_fd(0, p, pipe_append);
-	out_fd = final_out_fd(0, p);
-	account_for_in_redirect(0, pipe_append, 0, p);
-	account_for_out_redirect(0, 0, p);
+	// in_fd = final_in_fd(0, p, pipe_append);
+	// out_fd = final_out_fd(0, p);
+	in_fd = account_for_in_redirect(0, pipe_append, p);
+	out_fd = account_for_out_redirect(0, p);
 	p->cmd_path[0] = get_cmd_path(p->cmd[0][0]);
 	if (p->cmd_path[0])
 		execve(p->cmd_path[0], p->cmd[0], 0);

@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/13 17:04:54 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/14 13:14:07 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ void	save_cmds(char *input, t_parser_info *p)
 		// printf("EXITED PIPEX\n");
 		//look into the nulling the end of the p->cmd array **also look into  stack vs heap allocation and the way we should free
 	}
+	
 	//TESTING
 	// int i = -1, j = -1;
 	// while (++j < p->pipes_count + 1)
@@ -117,7 +118,25 @@ void	save_cmds(char *input, t_parser_info *p)
 	// 		printf("*%s* ", p->cmd[j][i]);
 	// 	printf("\n");
 	// }
-	//
+
+	/* ----------------------TESTING REDIRECTION-------------------------- */
+	// int i, j;	
+	// for (j = 0; j < p->pipes_count + 1; j++)
+	// {
+	// 	printf("COMMAND: %s\n", p->cmd[j][0]);
+	// 	for (i = 0; p->input_files_delimiters[j][i]; i++)
+	// 	{
+	// 		printf("%s Infile/Delimiters: %s ",YELLOW, p->input_files_delimiters[j][i]);
+	// 		printf(".. %sInfile Flag: %d ..", BLUE, p->in_arrow_flag[j][i]);
+	// 	}
+	// 	printf("\n");
+	// 	for (i = 0; p->output_files[j][i]; i++)
+	// 	{
+	// 		printf(" %sInfile/Delimiters: %s ", GREEN, p->output_files[j][i]);
+	// 		printf(".. %sInfile Flag: %d ..", MAGENTA, p->out_arrow_flag[j][i]);
+	// 	}
+	// 	printf("%s\n", RESET);
+	// }
 }
 
 int	main(int argc, char **argv, char **env)

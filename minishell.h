@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/13 17:39:47 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/14 18:37:33 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,34 @@
 
 /* ----------------------- > >> Colors << < ----------------------- */
 
-# define RED		"\x1B[31m"
-# define BLUE		"\x1B[34m"
-# define GREEN		"\x1B[32m"
-# define YELLOW		"\x1B[33m"
-# define MAGENTA	"\x1B[35m"
-# define LIGHT_BLUE	"\x1B[36m"
-# define RESET		"\x1B[0m"
+# define RED			"\033[0;31m"
+# define BLUE			"\033[0;34m"
+# define GREEN			"\033[0;32m"
+# define YELLOW			"\033[0;33m"
+# define PURPLE			"\033[0;35m"
+# define LIGHT_BLUE		"\033[0;36m"
+# define RESET			"\x1B[0m"
+
+# define RED1			"\033[1;31m"
+# define BLUE1			"\033[1;34m"
+# define GREEN1			"\033[1;32m"
+# define YELLOW1		"\033[1;33m"
+# define PURPLE1		"\033[1;35m"
+# define LIGHT_BLUE1	"\033[1;36m"
+
+# define RED2			"\033[2;31m"
+# define BLUE2			"\033[2;34m"
+# define GREEN2			"\033[2;32m"
+# define YELLOW2		"\033[2;33m"
+# define PURPLE2		"\033[2;35m"
+# define LIGHT_BLUE2	"\033[2;36m"
+
+# define RED3			"\033[3;31m"
+# define BLUE3			"\033[3;34m"
+# define GREEN3			"\033[3;32m"
+# define YELLOW3		"\033[3;33m"
+# define PURPLE3		"\033[3;35m"
+# define LIGHT_BLUE3	"\033[3;36m"
 
 /* ----------------------- > >> Macros << < ----------------------- */
 
@@ -67,7 +88,7 @@ typedef struct s_parser_info
 
 /* ------------------ > >> Global variables << < ------------------ */
 
-extern char	**environ;
+// extern char	**environ;
 
 /* --------------------- > >> Prototypes << < --------------------- */
 
@@ -105,13 +126,14 @@ char	*expand_dollars_in_str(char *str);
 
 int		final_out_fd(int array_index, t_parser_info *p);
 int		final_in_fd(int array_index, t_parser_info *p, int pipe_end[2]);
-int		account_for_out_redirect(int i, int *out_pipe, t_parser_info *p);
+int		account_for_out_redirect(int i, /*int *out_pipe, */t_parser_info *p);
+int		account_for_in_redirect(int i, int *pipe_append, /*int *in_pipe, */t_parser_info *p);
 int		child_input_append(int array_index, t_parser_info *p, int i, int pipe_append[2]);
-int		account_for_in_redirect(int i, int *pipe_append, int *in_pipe, t_parser_info *p);
 
 /* ---------- ** command execution ** ----------- */
 
 void	execute_command(t_parser_info *p);
+int		builtin_check(t_parser_info *p, int i);
 
 /* ----------------- ** pipex ** ---------------- */
 
@@ -119,16 +141,22 @@ void	init_pipex(t_parser_info *p);
 
 /* --------------- ** export env ** ------------- */
 
+int		find_equal(char *env);
 char	**export_env(char **env, char *env_variable);
 
 /* ---------------- ** builtins ** -------------- */
 
-int		env(t_parser_info *p);
 int		pwd(void);
 int		cd(char **argv);
 int		echo(char **argv);
+int		env(t_parser_info *p);
 int		export(t_parser_info *p, char **cmd);
 
+/* ----------------- ** getenv ** --------------- */
+
+char	*local_getenv(char *var, char **p_env);
+
+/* ------------------ ** pipe ** ---------------- */
 
 void	pipe_stuff(t_parser_info *p);
 

@@ -1,5 +1,5 @@
 NAME = minishell
-SRC = minishell.c get_cmd_path.c simple_helpers.c command_execution.c execution_utils.c ft_split_custom.c pipex.c builtins.c parser_utils.c expand_dollar_v2.c pipe.c env_export.c
+SRC = minishell.c get_cmd_path.c simple_helpers.c command_execution.c execution_utils.c ft_split_custom.c pipex.c builtins.c parser_utils.c expand_dollar_v2.c pipe.c env_export.c local_getenv.c
 OBJ = $(SRC:.c=.o)
 DEP = $(SRC:.c=.d)
 LINK_LIBFT = -Llibft -lft
