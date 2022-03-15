@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 11:46:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/04 13:26:42 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/15 13:42:50 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ int	final_out_fd(int array_i, t_parser_info *p)
 }
 
 
-int	account_for_in_redirect(int i, int *pipe_append, int *in_pipe, t_parser_info *p)
+int	account_for_in_redirect(int i, int *pipe_append, t_parser_info *p)
 {
 	int	fd;
 	
@@ -104,35 +104,15 @@ int	account_for_in_redirect(int i, int *pipe_append, int *in_pipe, t_parser_info
 		close(pipe_append[1]);
 		close(pipe_append[0]);
 	}
-	if (!fd && i)
-	{
-		close(in_pipe[1]);
-		dup2(in_pipe[0], STDIN_FILENO);
-	}
-	else if (i)
-	{
-		close(in_pipe[0]);
-		close(in_pipe[1]);
-	}
 	return(fd);
 }
 
-int	account_for_out_redirect(int i, int *out_pipe, t_parser_info *p)
+int	account_for_out_redirect(int i, t_parser_info *p)
 {
 	int	fd;
 
 	fd = final_out_fd(i, p);
 	if (fd)
 		dup2(fd, STDOUT_FILENO);
-	if (!fd && (i != p->pipes_count))
-	{
-		close(out_pipe[0]);
-		dup2(out_pipe[1], STDOUT_FILENO);
-	}
-	else if (fd && (i != p->pipes_count))
-	{
-		close(out_pipe[0]);
-		close(out_pipe[1]);
-	}
 	return (fd);
 }
