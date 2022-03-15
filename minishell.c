@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/15 13:52:28 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/15 18:01:36 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	save_input_output_files_n_cmds(int array_index, char **words, t_parser_info *p)
+void	save_input_output_files_n_cmds(int array_index, char **cmd_part, t_parser_info *p)
 {
 	int	i;
 	int	in_index;
@@ -23,30 +23,30 @@ void	save_input_output_files_n_cmds(int array_index, char **words, t_parser_info
 	in_index = 0;
 	out_index = 0;
 	cmd_index = 0;
-	while (words[i])
+	while (cmd_part[i])
 	{
-		if ((!ft_strncmp(words[i], "<<", 2) || !ft_strncmp(words[i], "<", 1)) && words[i + 1])
+		if ((!ft_strncmp(cmd_part[i], "<<", 2) || !ft_strncmp(cmd_part[i], "<", 1)) && cmd_part[i + 1])
 		{
-			if (!ft_strncmp(words[i], "<<", 2))
+			if (!ft_strncmp(cmd_part[i], "<<", 2))
 				p->in_arrow_flag[array_index][in_index] = DOUBLE_ARROW;
 			else
 				p->in_arrow_flag[array_index][in_index] = SINGLE_ARROW;
-			p->input_files_delimiters[array_index][in_index++] = words[++i];
+			p->input_files_delimiters[array_index][in_index++] = cmd_part[++i];
 		}
-		else if ((!ft_strncmp(words[i], ">>", 2) || !ft_strncmp(words[i], ">", 1)) && words[i + 1])
+		else if ((!ft_strncmp(cmd_part[i], ">>", 2) || !ft_strncmp(cmd_part[i], ">", 1)) && cmd_part[i + 1])
 		{
-			if (!ft_strncmp(words[i], ">>", 2))
+			if (!ft_strncmp(cmd_part[i], ">>", 2))
 				p->out_arrow_flag[array_index][out_index] = DOUBLE_ARROW;
 			else
 				p->out_arrow_flag[array_index][out_index] = SINGLE_ARROW;
-			p->output_files[array_index][out_index++] = words[++i];
+			p->output_files[array_index][out_index++] = cmd_part[++i];
 		}
 		else
 		{
-			// if (ft_strchr(words[i], '$') != NULL && p->do_not_expand[i] == false)
-			// 	p->cmd[array_index][cmd_index++] = expand_dollar(words[i]);
+			// if (ft_strchr(cmd_part[i], '$') != NULL && p->do_not_expand[i] == false)
+			// 	p->cmd[array_index][cmd_index++] = expand_dollar(cmd_part[i]);
 			// else
-				p->cmd[array_index][cmd_index++] = words[i];
+				p->cmd[array_index][cmd_index++] = cmd_part[i];
 		}
 		i++;
 	}
@@ -78,6 +78,89 @@ int	count_pipes(char *input)
 	return (count);
 }
 
+int	count_in_redirections(char	*str)
+{
+	int	i;
+	int	count;
+
+	i = 0;
+	count = 0;
+	while (str[i])
+	{
+		if (!ft_strncmp(&str[i], "<<", 2))
+		{
+			i += 2;
+			count++;
+		}
+		else if (!ft_strncmp(&str[i], "<", 1))
+		{
+			i++;
+			count++;
+		}
+		else
+			i++;
+	}
+	return (count);
+}
+
+int	count_out_redirections(char	*str)
+{
+	int	i;
+	int	count;
+
+	i = 0;
+	count = 0;
+	while (str[i])
+	{
+		if (!ft_strncmp(&str[i], ">>", 2))
+		{
+			i += 2;
+			count++;
+		}
+		else if (!ft_strncmp(&str[i], ">", 1))
+		{
+			i++;
+			count++;
+		}
+		else
+			i++;
+	}
+	return (count);
+}
+
+int		count_cmds_wout_meta(char *str)
+{
+	int		i;
+	int		count;
+	char	**temp;
+	char	*meta[5] = {"<<", "<", ">>", ">", 0};
+	
+	temp = ft_split_custom(str, meta);
+	i = 0;
+	count = 0;
+	while (temp[i])
+	{
+		if (ft_ismeta(temp[i], meta) == 0)
+			count++;
+		i++;
+	}
+	return (count);
+}
+
+void	allocate_meme(char *str, t_parser_info *p)
+{
+	int		i;
+	int		count;
+
+	p->cmd_part = (char ***)ft_calloc(p->pipes_count + 2, sizeof(char **));
+	p->cmd_path = (char **)ft_calloc(p->pipes_count + 2, sizeof(char *));
+	p->cmd = (char ***)ft_calloc(p->pipes_count + 2, sizeof(char **));
+	i = -1;
+	// count = count_inputs(str, meta);
+	while (++i <count)
+		p->cmd[i] = (char **)ft_calloc(p->pipes_count + 2, sizeof(char *));
+
+}
 
 void	save_cmds(char *input, t_parser_info *p)
 {
@@ -87,8 +170,8 @@ void	save_cmds(char *input, t_parser_info *p)
 	p->pipes_count = count_pipes(input);
 	if (p->pipes_count == 0)
 	{
-		p->words[0] = ft_split_custom(input, meta);
-		save_input_output_files_n_cmds(0, p->words[0], p);
+		p->cmd_part[0] = ft_split_custom(input, meta);
+		save_input_output_files_n_cmds(0, p->cmd_part[0], p);
 		execute_command(p);
 	}
 	else
@@ -97,12 +180,12 @@ void	save_cmds(char *input, t_parser_info *p)
 		p->cmd_array = ft_split(input, '|');//account for '|' in quotes
 		while (array_index < p->pipes_count + 1)
 		{
-			p->words[array_index] = ft_split_custom(p->cmd_array[array_index], meta);
-			save_input_output_files_n_cmds(array_index, p->words[array_index], p);
+			p->cmd_part[array_index] = ft_split_custom(p->cmd_array[array_index], meta);
+			save_input_output_files_n_cmds(array_index, p->cmd_part[array_index], p);
 			p->cmd_path[array_index] = get_cmd_path(p->cmd[array_index][0]);
 			array_index++;
 		}
-		p->words[array_index] = 0;
+		p->cmd_part[array_index] = 0;
 		p->cmd[array_index][0] = 0;
 		// init_pipex(p);
 		pipe_stuff(p);
@@ -167,7 +250,7 @@ int	main(int argc, char **argv, char **env)
 		ft_bzero(p.output_files, sizeof(p.output_files));
 		ft_bzero(p.cmd, sizeof(p.cmd));
 		ft_bzero(p.do_not_expand, sizeof(p.do_not_expand));
-		free_triple(p.words);
+		free_triple(p.cmd_part);
 		free(input);
 	}
 }
@@ -176,8 +259,8 @@ int	main(int argc, char **argv, char **env)
 		// //TESTING - START
 		// i = 0;
 		// printf("\e[36m****START PRINTING INPUT****\n\e[0m");
-		// while (p.words[i])
-		// 	printf("%s\n", p.words[i++]);
+		// while (p.cmd_part[i])
+		// 	printf("%s\n", p.cmd_part[i++]);
 		// printf("\e[36m****END PRINTING INPUT****\n\e[0m");
 
 		// i = 0;

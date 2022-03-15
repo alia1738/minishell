@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/15 13:44:49 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/15 17:58:54 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,9 +75,12 @@ typedef struct s_parser_info
 	int		out_arrow_flag[255][255];
 	char	*input_files_delimiters[255][255];
 
-	char	**words[255];
-	char	*cmd_path[255];
-	char	*cmd[255][255];
+	// char	**cmd_part[255];
+	// char	*cmd_path[255];
+	// char	*cmd[255][255];
+	char	***cmd;
+	char	**cmd_path;
+	char	***cmd_part;
 
 	int		exit_code;
 	bool	do_not_expand[255];
