@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 13:56:18 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/13 19:06:49 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/15 12:59:43 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,20 +44,9 @@ char	**new_env(char **env, char *new_env_var, int save_index)
 	i = 0;
 	if (save_index >= 0)
 	{
-		while (env[i])
-			i++;
-		new_env = ft_calloc((i + 1), sizeof(char *));
-		i = 0;
-		while (env[i])
-		{
-			if (i == save_index)
-				new_env[i] = ft_strdup(new_env_var);
-			else
-				new_env[i] = ft_strdup(env[i]);
-			i++;
-		}
-		free_double(env);
-		return (new_env);
+		free(env[save_index]);
+		env[save_index] = ft_strdup(new_env_var);
+		return (env);
 	}
 	else if (save_index == -1)
 	{

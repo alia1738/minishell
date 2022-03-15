@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/14 15:50:10 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/14 18:28:50 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/15 13:11:17 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static int	cmp_till_equal(char *p_env, char *var)
 	return (1);
 }
 
-char	*local_getenv(char *var, char **p_env)
+char	*local_getenv(char *var, char **p_env) // local_getenv("NAME", p->env)
 {
 	int	i;
 	
