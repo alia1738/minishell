@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/15 18:01:36 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/16 03:22:26 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,26 +140,63 @@ int		count_cmds_wout_meta(char *str)
 	count = 0;
 	while (temp[i])
 	{
-		if (ft_ismeta(temp[i], meta) == 0)
+		if (ft_ismeta(temp[i], meta) > 0)
+			i++;
+		else
 			count++;
 		i++;
 	}
 	return (count);
 }
+/*
+********
+cmd_part                  --  char *** -- allocated fully     -- (p->pipes_count + 2) char** -- each char** implicit allocation through split function
+cmd_path                  --  char **  -- allocated fully     -- (p->pipes_count + 2) char*  -- each char* implicit allocation through get_cmd_path function
+cmd                       --  char *** -- allocated partially -- (p->pipes_count + 2) char** -- allocated count_cmds_wout_meta() char*'s for each char**
+in_arrow_flag             --  int**    -- allocated fully     -- (p->pipes_count + 1) int*   -- allocated count_in_redirection() int's for each int* 
+out_arrow_flag            --  int**    -- allocated fully     -- (p->pipes_count + 1) int*   -- allocated count_out_redirection() int's for each int*
+output_files              --  char***  -- allocated partially -- (p->pipes_count + 2) char** -- allocated count_out_redirections() char*'s for each of the char**'s 
+input_files_delimeters    --  char***  -- allocated partially -- (p->pipes_count + 2) char** -- allocated count_in_redirections() char*'s for each of the char**'s 
+********
+*/
 
-void	allocate_meme(char *str, t_parser_info *p)
+void	free_everything(t_parser_info *p)
 {
-	int		i;
-	int		count;
+	//free fully
+	free_double_int(p->in_arrow_flag, p->pipes_count + 1);
+	free_double_int(p->out_arrow_flag, p->pipes_count + 1);
+	free_double_char(p->cmd_path);
+	free_triple_char(p->cmd_part);
+	if (p->pipes_count > 0)
+		free_double(p->cmd_array);
+	//free partially
+	free_triple_char_partial(p->cmd);
+	free_triple_char_partial(p->output_files);
+	free_triple_char_partial(p->input_files_delimiters);
+	
+}
 
+void	allocate_meme_general(t_parser_info *p)
+{
+	//thats all of the allocation required
 	p->cmd_part = (char ***)ft_calloc(p->pipes_count + 2, sizeof(char **));
 	p->cmd_path = (char **)ft_calloc(p->pipes_count + 2, sizeof(char *));
+	//more allocation will come later
 	p->cmd = (char ***)ft_calloc(p->pipes_count + 2, sizeof(char **));
-	i = -1;
-	// count = count_inputs(str, meta);
-	while (++i <count)
-		p->cmd[i] = (char **)ft_calloc(p->pipes_count + 2, sizeof(char *));
+	p->in_arrow_flag = (int **)ft_calloc(p->pipes_count + 1, sizeof(int *));
+	p->out_arrow_flag = (int **)ft_calloc(p->pipes_count + 1, sizeof(int *));
+	p->output_files = (char ***)ft_calloc(p->pipes_count + 2, sizeof(char **));
+	p->input_files_delimiters = (char ***)ft_calloc(p->pipes_count + 2, sizeof(char **));
+	
+}
 
+void	allocate_meme_specific(char *str, int array_index,t_parser_info *p)
+{
+	p->cmd[array_index] = (char **)ft_calloc(count_cmds_wout_meta(str), sizeof(char *));
+	p->in_arrow_flag[array_index] = (int *)ft_calloc(count_in_redirections(str), sizeof(int));
+	p->out_arrow_flag[array_index] = (int *)ft_calloc(count_out_redirections(str), sizeof(int));
+	p->output_files[array_index] = (char **)ft_calloc(count_out_redirections(str), sizeof(char *));
+	p->input_files_delimiters[array_index] = (char **)ft_calloc(count_in_redirections(str), sizeof(char *));
 }
 
 void	save_cmds(char *input, t_parser_info *p)
@@ -168,8 +205,10 @@ void	save_cmds(char *input, t_parser_info *p)
 	char	*meta[5] = {"<<", "<", ">>", ">", 0};
 
 	p->pipes_count = count_pipes(input);
+	allocate_meme_general(p);
 	if (p->pipes_count == 0)
 	{
+		allocate_meme_specific(input, 0, p);
 		p->cmd_part[0] = ft_split_custom(input, meta);
 		save_input_output_files_n_cmds(0, p->cmd_part[0], p);
 		execute_command(p);
@@ -180,9 +219,10 @@ void	save_cmds(char *input, t_parser_info *p)
 		p->cmd_array = ft_split(input, '|');//account for '|' in quotes
 		while (array_index < p->pipes_count + 1)
 		{
+			allocate_meme_specific(p->cmd_array[array_index], array_index, p);
 			p->cmd_part[array_index] = ft_split_custom(p->cmd_array[array_index], meta);
 			save_input_output_files_n_cmds(array_index, p->cmd_part[array_index], p);
-			p->cmd_path[array_index] = get_cmd_path(p->cmd[array_index][0]);
+			// p->cmd_path[array_index] = get_cmd_path(p->cmd[array_index][0]);
 			array_index++;
 		}
 		p->cmd_part[array_index] = 0;
@@ -193,15 +233,15 @@ void	save_cmds(char *input, t_parser_info *p)
 		//look into the nulling the end of the p->cmd array **also look into  stack vs heap allocation and the way we should free
 	}
 	//TESTING
-	// int i = -1, j = -1;
-	// while (++j < p->pipes_count + 1)
-	// {
-	// 	i = -1;
-	// 	while (p->cmd[j][++i])
-	// 		printf("*%s* ", p->cmd[j][i]);
-	// 	printf("\n");
-	// }
-	//
+	int i = -1, j = -1;
+	while (++j < p->pipes_count + 1)
+	{
+		i = -1;
+		while (p->cmd[j][++i])
+			printf("*%s* ", p->cmd[j][i]);
+		printf("\n");
+	}
+	
 	
 	/* ----------------------TESTING REDIRECTION-------------------------- */
 	// int i, j;	
@@ -237,20 +277,22 @@ int	main(int argc, char **argv, char **env)
 		input = readline("\e[35mbaby shell> \e[0m");
 		if (input[0])
 			add_history(input);
+		// printf("count: %d\n", count_cmds_wout_meta(input));
 		if (check_repeated_meta(input) == -1)
 		{
 			printf("minishell: syntax error regarding the usage of metacharacters\n");
 			free(input);
 			continue ;
 		}
+		if (!ft_strncmp(input, "exit", 5))
+		{
+			free(input);
+			exit(1);
+		}
 		save_cmds(input, &p);
 
 		/*-----------------*/
-		ft_bzero(p.input_files_delimiters, sizeof(p.input_files_delimiters));
-		ft_bzero(p.output_files, sizeof(p.output_files));
-		ft_bzero(p.cmd, sizeof(p.cmd));
-		ft_bzero(p.do_not_expand, sizeof(p.do_not_expand));
-		free_triple(p.cmd_part);
+		free_everything(&p);
 		free(input);
 	}
 }

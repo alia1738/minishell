@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/15 17:58:54 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/16 03:17:51 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,10 +70,14 @@ typedef struct s_parser_info
 {
 	char	**env;
 
-	int		in_arrow_flag[255][255];
-	char	*output_files[255][255];
-	int		out_arrow_flag[255][255];
-	char	*input_files_delimiters[255][255];
+	// int		in_arrow_flag[255][255];
+	// int		out_arrow_flag[255][255];
+	// char	*output_files[255][255];
+	// char	*input_files_delimiters[255][255];
+	int		**in_arrow_flag;
+	char	***output_files;
+	int		**out_arrow_flag;
+	char	***input_files_delimiters;
 
 	// char	**cmd_part[255];
 	// char	*cmd_path[255];
@@ -83,7 +87,7 @@ typedef struct s_parser_info
 	char	***cmd_part;
 
 	int		exit_code;
-	bool	do_not_expand[255];
+	// bool	do_not_expand[255];
 
 	int		pipes_count;
 	char	**cmd_array;
@@ -123,7 +127,6 @@ char	**ft_split_custom(char *input, char **meta);
 /* ------------ ** expand dollar ** ------------- */
 
 char	*expand_dollars_in_str(char *str);
-// char	*expand_dollar(char *str);
 
 /* ----------- ** execution utils ** ------------ */
 
@@ -154,6 +157,7 @@ int		cd(char **argv);
 int		echo(char **argv);
 int		env(t_parser_info *p);
 int		export(t_parser_info *p, char **cmd);
+void	baby_exit(t_parser_info *p, char **cmd);
 
 /* ----------------- ** getenv ** --------------- */
 
@@ -162,5 +166,24 @@ char	*local_getenv(char *var, char **p_env);
 /* ------------------ ** pipe ** ---------------- */
 
 void	pipe_stuff(t_parser_info *p);
+
+/* -------------- ** free utils ** -------------- */
+
+void	free_double_char(char **array);
+void	free_triple_char(char ***array);
+void	free_triple_char_partial(char ***array);
+void	free_double_int(int **array, int rows);
+
+/* ------------ ** counting utils ** ------------ */
+
+int		count_in_redirections(char	*str);
+int		count_out_redirections(char	*str);
+int		count_cmds_wout_meta(char *str);
+
+/* ----------------- ** memory ** --------------- */
+
+void	free_everything(t_parser_info *p);
+void	allocate_meme_general(t_parser_info *p);
+void	allocate_meme_specific(char *str, int array_index,t_parser_info *p);
 
 #endif
