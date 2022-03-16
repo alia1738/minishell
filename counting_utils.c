@@ -6,11 +6,37 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 02:49:02 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/16 02:55:55 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/16 12:56:17 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	count_pipes(char *input)
+{
+	int	i;
+	int	count;
+
+	i = -1;
+	count = 0;
+	while (input[++i])
+	{
+		if (input[i] == '\'')
+		{
+			while (input[++i] != '\'' && input[i])
+				;
+		}
+		else if (input[i] == '\"')
+		{
+			while (input[++i] != '\"' && input[i])
+				;
+		}
+		else if (input[i] == '|')
+			count++;
+		
+	}
+	return (count);
+}
 
 int	count_in_redirections(char	*str)
 {

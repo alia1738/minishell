@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/16 03:22:26 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/16 13:48:39 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,102 +52,6 @@ void	save_input_output_files_n_cmds(int array_index, char **cmd_part, t_parser_i
 	}
 }
 
-int	count_pipes(char *input)
-{
-	int	i;
-	int	count;
-
-	i = -1;
-	count = 0;
-	while (input[++i])
-	{
-		if (input[i] == '\'')
-		{
-			while (input[++i] != '\'' && input[i])
-				;
-		}
-		else if (input[i] == '\"')
-		{
-			while (input[++i] != '\"' && input[i])
-				;
-		}
-		else if (input[i] == '|')
-			count++;
-		
-	}
-	return (count);
-}
-
-int	count_in_redirections(char	*str)
-{
-	int	i;
-	int	count;
-
-	i = 0;
-	count = 0;
-	while (str[i])
-	{
-		if (!ft_strncmp(&str[i], "<<", 2))
-		{
-			i += 2;
-			count++;
-		}
-		else if (!ft_strncmp(&str[i], "<", 1))
-		{
-			i++;
-			count++;
-		}
-		else
-			i++;
-	}
-	return (count);
-}
-
-int	count_out_redirections(char	*str)
-{
-	int	i;
-	int	count;
-
-	i = 0;
-	count = 0;
-	while (str[i])
-	{
-		if (!ft_strncmp(&str[i], ">>", 2))
-		{
-			i += 2;
-			count++;
-		}
-		else if (!ft_strncmp(&str[i], ">", 1))
-		{
-			i++;
-			count++;
-		}
-		else
-			i++;
-	}
-	return (count);
-}
-
-int		count_cmds_wout_meta(char *str)
-{
-	int		i;
-	int		count;
-	char	**temp;
-	char	*meta[5] = {"<<", "<", ">>", ">", 0};
-	
-	temp = ft_split_custom(str, meta);
-	i = 0;
-	count = 0;
-	while (temp[i])
-	{
-		if (ft_ismeta(temp[i], meta) > 0)
-			i++;
-		else
-			count++;
-		i++;
-	}
-	return (count);
-}
 /*
 ********
 cmd_part                  --  char *** -- allocated fully     -- (p->pipes_count + 2) char** -- each char** implicit allocation through split function
@@ -159,45 +63,6 @@ output_files              --  char***  -- allocated partially -- (p->pipes_count
 input_files_delimeters    --  char***  -- allocated partially -- (p->pipes_count + 2) char** -- allocated count_in_redirections() char*'s for each of the char**'s 
 ********
 */
-
-void	free_everything(t_parser_info *p)
-{
-	//free fully
-	free_double_int(p->in_arrow_flag, p->pipes_count + 1);
-	free_double_int(p->out_arrow_flag, p->pipes_count + 1);
-	free_double_char(p->cmd_path);
-	free_triple_char(p->cmd_part);
-	if (p->pipes_count > 0)
-		free_double(p->cmd_array);
-	//free partially
-	free_triple_char_partial(p->cmd);
-	free_triple_char_partial(p->output_files);
-	free_triple_char_partial(p->input_files_delimiters);
-	
-}
-
-void	allocate_meme_general(t_parser_info *p)
-{
-	//thats all of the allocation required
-	p->cmd_part = (char ***)ft_calloc(p->pipes_count + 2, sizeof(char **));
-	p->cmd_path = (char **)ft_calloc(p->pipes_count + 2, sizeof(char *));
-	//more allocation will come later
-	p->cmd = (char ***)ft_calloc(p->pipes_count + 2, sizeof(char **));
-	p->in_arrow_flag = (int **)ft_calloc(p->pipes_count + 1, sizeof(int *));
-	p->out_arrow_flag = (int **)ft_calloc(p->pipes_count + 1, sizeof(int *));
-	p->output_files = (char ***)ft_calloc(p->pipes_count + 2, sizeof(char **));
-	p->input_files_delimiters = (char ***)ft_calloc(p->pipes_count + 2, sizeof(char **));
-	
-}
-
-void	allocate_meme_specific(char *str, int array_index,t_parser_info *p)
-{
-	p->cmd[array_index] = (char **)ft_calloc(count_cmds_wout_meta(str), sizeof(char *));
-	p->in_arrow_flag[array_index] = (int *)ft_calloc(count_in_redirections(str), sizeof(int));
-	p->out_arrow_flag[array_index] = (int *)ft_calloc(count_out_redirections(str), sizeof(int));
-	p->output_files[array_index] = (char **)ft_calloc(count_out_redirections(str), sizeof(char *));
-	p->input_files_delimiters[array_index] = (char **)ft_calloc(count_in_redirections(str), sizeof(char *));
-}
 
 void	save_cmds(char *input, t_parser_info *p)
 {
@@ -226,21 +91,22 @@ void	save_cmds(char *input, t_parser_info *p)
 			array_index++;
 		}
 		p->cmd_part[array_index] = 0;
-		p->cmd[array_index][0] = 0;
+		p->cmd[array_index] = 0;
+		// printf("HEEYYE\n");
 		// init_pipex(p);
 		pipe_stuff(p);
 		// printf("EXITED PIPEX\n");
 		//look into the nulling the end of the p->cmd array **also look into  stack vs heap allocation and the way we should free
 	}
 	//TESTING
-	int i = -1, j = -1;
-	while (++j < p->pipes_count + 1)
-	{
-		i = -1;
-		while (p->cmd[j][++i])
-			printf("*%s* ", p->cmd[j][i]);
-		printf("\n");
-	}
+	// int i = -1, j = -1;
+	// while (++j < p->pipes_count + 1)
+	// {
+	// 	i = -1;
+	// 	while (p->cmd[j][++i])
+	// 		printf("*%s* ", p->cmd[j][i]);
+	// 	printf("\n");
+	// }
 	
 	
 	/* ----------------------TESTING REDIRECTION-------------------------- */
@@ -277,7 +143,6 @@ int	main(int argc, char **argv, char **env)
 		input = readline("\e[35mbaby shell> \e[0m");
 		if (input[0])
 			add_history(input);
-		// printf("count: %d\n", count_cmds_wout_meta(input));
 		if (check_repeated_meta(input) == -1)
 		{
 			printf("minishell: syntax error regarding the usage of metacharacters\n");
@@ -287,10 +152,14 @@ int	main(int argc, char **argv, char **env)
 		if (!ft_strncmp(input, "exit", 5))
 		{
 			free(input);
+			free_double_char(p.env);
 			exit(1);
 		}
 		save_cmds(input, &p);
-
+		// printf("count_in_redirection: %d\n➡️", count_in_redirections(input));
+		// printf("count_out_redirection: %d\n➡️", count_out_redirections(input));
+		// printf("count_wout_meta: %d\n➡️", count_cmds_wout_meta(input));
+	
 		/*-----------------*/
 		free_everything(&p);
 		free(input);

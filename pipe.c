@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 16:42:32 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/14 18:34:32 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/16 13:47:27 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ void	first_child(t_parser_info *p, int **pip)
 	int	pipe_append[2];
 	int	out_fd;
 
+	pipe(pipe_append);
 	p->cmd_path[0] = get_cmd_path(p->cmd[0][0]);
 	i = 1;
 	while (i < p->pipes_count)
@@ -78,6 +79,7 @@ void	middle_child(t_parser_info *p, int **pip, int pip_i)
 	int	out_fd;
 	int	pipe_append[2];
 
+	pipe(pipe_append);
 	p->cmd_path[pip_i] = get_cmd_path(p->cmd[pip_i][0]);
 	i = 0;
 	while (i < p->pipes_count)
@@ -113,6 +115,7 @@ void	last_child(t_parser_info *p, int **pip, int pip_i)
 	int	pipe_append[2];
 
 	p->cmd_path[pip_i] = get_cmd_path(p->cmd[pip_i][0]);
+	pipe(pipe_append);
 	i = 0;
 	while (i < pip_i - 1)
 	{
@@ -169,4 +172,5 @@ void	pipe_stuff(t_parser_info *p)
 	}
 	while (waitpid(-1, &status, 0) > 0)
 		p->exit_code = WEXITSTATUS(status);
+	free_double_int(pip, p->pipes_count);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_execution.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/15 13:47:41 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/16 15:21:59 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ int	builtin_check(t_parser_info *p, int i)
 		;
 	else if (!ft_strncmp(p->cmd[i][0], "env", 4))
 		return (env(p));
+	else if (!ft_strncmp(p->cmd[i][0], "clear", 6))
+		return (clear());
 	else if (!ft_strncmp(p->cmd[i][0], "exit", 5))
 		;
 		// return (baby_exit());

@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 13:22:51 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/10 14:49:41 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/16 15:50:29 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,9 @@ int		check_repeated_meta(char *input)
 			return (-1);
 		else if (ft_ismeta(&input[i], meta) > 0)
 		{
+			if (ft_strncmp(&input[i], "|", 1) != 0)
+				meta_place_taken = true;
 			i += ft_ismeta(&input[i], meta);
-			meta_place_taken = true;
 		}
 		else if (ft_isquote(input[i]) > 0)
 			skip_quote_content(&i, input);

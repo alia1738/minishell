@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/16 03:17:51 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/16 15:22:34 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ int		check_repeated_meta(char *input);
 
 /* ------------ ** simple helpers ** ------------ */
 
-void	clear(void);
+int		clear(void);
 char	**dup_array(char **a1);
 void	free_double(char **array);
 void	free_triple(char ***array);
@@ -176,6 +176,7 @@ void	free_double_int(int **array, int rows);
 
 /* ------------ ** counting utils ** ------------ */
 
+int		count_pipes(char *input);
 int		count_in_redirections(char	*str);
 int		count_out_redirections(char	*str);
 int		count_cmds_wout_meta(char *str);

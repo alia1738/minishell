@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 02:46:33 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/16 02:47:14 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/16 13:34:52 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,13 @@ void	free_everything(t_parser_info *p)
 	free_triple_char_partial(p->cmd);
 	free_triple_char_partial(p->output_files);
 	free_triple_char_partial(p->input_files_delimiters);
-	free_triple_char_partial(p->in_arrow_flag);
 	
 }
 
 void	allocate_meme_general(t_parser_info *p)
 {
 	//thats all of the allocation required
-	p->cmd_part = (char ***)ft_calloc(p->pipes_count + 2, sizeof(char **));
+	p->cmd_part = (char ***)ft_calloc(p->pipes_count + 2, sizeof(char **)); //protect
 	p->cmd_path = (char **)ft_calloc(p->pipes_count + 2, sizeof(char *));
 	//more allocation will come later
 	p->cmd = (char ***)ft_calloc(p->pipes_count + 2, sizeof(char **));
@@ -56,9 +55,11 @@ void	allocate_meme_general(t_parser_info *p)
 
 void	allocate_meme_specific(char *str, int array_index,t_parser_info *p)
 {
-	p->cmd[array_index] = (char **)ft_calloc(count_cmds_wout_meta(str), sizeof(char *));
-	p->in_arrow_flag[array_index] = (int *)ft_calloc(count_in_redirections(str), sizeof(int));
-	p->out_arrow_flag[array_index] = (int *)ft_calloc(count_out_redirections(str), sizeof(int));
-	p->output_files[array_index] = (char **)ft_calloc(count_out_redirections(str), sizeof(char *));
-	p->input_files_delimiters[array_index] = (char **)ft_calloc(count_in_redirections(str), sizeof(char *));
+	p->cmd[array_index] = (char **)ft_calloc(count_cmds_wout_meta(str) + 1, sizeof(char *));
+	if (count_in_redirections(str) > 0)
+		p->in_arrow_flag[array_index] = (int *)ft_calloc(count_in_redirections(str), sizeof(int));
+	if (count_out_redirections(str) > 0)
+		p->out_arrow_flag[array_index] = (int *)ft_calloc(count_out_redirections(str), sizeof(int));
+	p->output_files[array_index] = (char **)ft_calloc(count_out_redirections(str) + 1, sizeof(char *));
+	p->input_files_delimiters[array_index] = (char **)ft_calloc(count_in_redirections(str) + 1, sizeof(char *));
 }
