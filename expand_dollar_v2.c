@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 15:22:39 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/12 10:35:32 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/17 16:02:30 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static char	*ft_getenv(int i, char *str)
 	{
 		temp[j++] = str[i];
 	}
-	return (getenv(temp)); //this getenv might need to be changed
+	return (getenv(temp)); //getenv() MUST BE CHANGED TO local_getenv()
 }
 
 void	skip_dollar_content(int *i, char *str)

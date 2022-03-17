@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 02:46:33 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/16 13:34:52 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/17 15:59:27 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	free_everything(t_parser_info *p)
 	free_double_int(p->out_arrow_flag, p->pipes_count + 1);
 	free_triple_char(p->cmd_part);
 	if (p->pipes_count > 0)
-		free_double(p->cmd_array);
+		free_double_char(p->cmd_array);
 	//free partially
 	free_triple_char_partial(p->cmd);
 	free_triple_char_partial(p->output_files);

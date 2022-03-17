@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 16:55:09 by anasr             #+#    #+#             */
-/*   Updated: 2022/02/28 12:59:17 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/17 17:10:38 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ char	*get_cmd_path(char *cmd)
 	i = 0;
 	if (!cmd)
 		return (NULL);
-	temp_path = getenv("PATH");
+	temp_path = getenv("PATH"); //CHANGE TO local_getenv
 	paths_array = ft_split(temp_path, ':');
 	while (paths_array[i])
 	{
@@ -45,7 +45,7 @@ char	*get_cmd_path(char *cmd)
 		i++;
 	}
 	printf("minishell: %s:  command not found\n", cmd);
-	free_double(paths_array);
+	free_double_char(paths_array);
 	return (NULL);
 	// exit (127); // error message
 }
