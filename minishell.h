@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/16 15:22:34 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/17 13:04:28 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <dirent.h>
+# include <signal.h>
 # include <sys/wait.h>
 # include <sys/errno.h>
 # include <sys/types.h>
@@ -60,9 +61,9 @@
 
 /* ----------------------- > >> Macros << < ----------------------- */
 
+# define ERROR_CODE -1
 # define SINGLE_ARROW 1
 # define DOUBLE_ARROW 2
-# define ERROR_CODE -1
 
 /* ----------------------- > >> Struct << < ----------------------- */
 
@@ -70,27 +71,19 @@ typedef struct s_parser_info
 {
 	char	**env;
 
-	// int		in_arrow_flag[255][255];
-	// int		out_arrow_flag[255][255];
-	// char	*output_files[255][255];
-	// char	*input_files_delimiters[255][255];
+	char	***cmd;
+	char	**cmd_path;
+	char	***cmd_part;
+
+	int		pipes_count;
+	char	**cmd_array;
+
 	int		**in_arrow_flag;
 	char	***output_files;
 	int		**out_arrow_flag;
 	char	***input_files_delimiters;
 
-	// char	**cmd_part[255];
-	// char	*cmd_path[255];
-	// char	*cmd[255][255];
-	char	***cmd;
-	char	**cmd_path;
-	char	***cmd_part;
-
 	int		exit_code;
-	// bool	do_not_expand[255];
-
-	int		pipes_count;
-	char	**cmd_array;
 }	t_parser_info;
 
 /* ------------------ > >> Global variables << < ------------------ */
@@ -171,15 +164,15 @@ void	pipe_stuff(t_parser_info *p);
 
 void	free_double_char(char **array);
 void	free_triple_char(char ***array);
-void	free_triple_char_partial(char ***array);
 void	free_double_int(int **array, int rows);
+void	free_triple_char_partial(char ***array);
 
 /* ------------ ** counting utils ** ------------ */
 
 int		count_pipes(char *input);
+int		count_cmds_wout_meta(char *str);
 int		count_in_redirections(char	*str);
 int		count_out_redirections(char	*str);
-int		count_cmds_wout_meta(char *str);
 
 /* ----------------- ** memory ** --------------- */
 

@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/16 13:48:39 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/17 12:59:00 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,18 +51,6 @@ void	save_input_output_files_n_cmds(int array_index, char **cmd_part, t_parser_i
 		i++;
 	}
 }
-
-/*
-********
-cmd_part                  --  char *** -- allocated fully     -- (p->pipes_count + 2) char** -- each char** implicit allocation through split function
-cmd_path                  --  char **  -- allocated fully     -- (p->pipes_count + 2) char*  -- each char* implicit allocation through get_cmd_path function
-cmd                       --  char *** -- allocated partially -- (p->pipes_count + 2) char** -- allocated count_cmds_wout_meta() char*'s for each char**
-in_arrow_flag             --  int**    -- allocated fully     -- (p->pipes_count + 1) int*   -- allocated count_in_redirection() int's for each int* 
-out_arrow_flag            --  int**    -- allocated fully     -- (p->pipes_count + 1) int*   -- allocated count_out_redirection() int's for each int*
-output_files              --  char***  -- allocated partially -- (p->pipes_count + 2) char** -- allocated count_out_redirections() char*'s for each of the char**'s 
-input_files_delimeters    --  char***  -- allocated partially -- (p->pipes_count + 2) char** -- allocated count_in_redirections() char*'s for each of the char**'s 
-********
-*/
 
 void	save_cmds(char *input, t_parser_info *p)
 {
@@ -140,9 +128,14 @@ int	main(int argc, char **argv, char **env)
 	p.env = dup_array(env);
 	while (1)
 	{
-		input = readline("\e[35mbaby shell> \e[0m");
+		input = readline("\033[1;35mbaby shell\033[2;35m> \e[0m");
 		if (input[0])
 			add_history(input);
+		else
+		{
+			free(input);
+			continue ;
+		}
 		if (check_repeated_meta(input) == -1)
 		{
 			printf("minishell: syntax error regarding the usage of metacharacters\n");
@@ -156,16 +149,16 @@ int	main(int argc, char **argv, char **env)
 			exit(1);
 		}
 		save_cmds(input, &p);
-		// printf("count_in_redirection: %d\n➡️", count_in_redirections(input));
-		// printf("count_out_redirection: %d\n➡️", count_out_redirections(input));
-		// printf("count_wout_meta: %d\n➡️", count_cmds_wout_meta(input));
-	
 		/*-----------------*/
 		free_everything(&p);
 		free(input);
 	}
 }
 
+	// printf("count_in_redirection: %d\n➡️", count_in_redirections(input));
+	// printf("count_out_redirection: %d\n➡️", count_out_redirections(input));
+	// printf("count_wout_meta: %d\n➡️", count_cmds_wout_meta(input));
+	
 	// int	i = 0;
 		// //TESTING - START
 		// i = 0;
