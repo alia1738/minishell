@@ -3,36 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   simple_helpers.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 17:52:09 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/15 13:39:35 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/17 14:02:23 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	free_double(char **array)
-{
-	int	i;
-
-	i = -1;
-	while (array[++i])
-		free(array[i]);
-	free(array);
-	return ;
-}
-
-void	free_triple(char ***array)
-{
-	int	i;
-
-	i = -1;
-	while (array[++i])
-		free_double(array[i]);
-	return ;
-}
-
 
 char	*ft_strndup(const char *s1, int n)
 {
@@ -60,10 +38,11 @@ void	skip_isspaces(int *index, char *input)
 		(*index)++;
 }
 
-void	clear(void)
+int		clear(void)
 {
 	printf("\e[1;1H\e[2J"); //this one doesn't delete history
 	// printf("\033c"); //this one deletes the history of the terminal
+	return (0);
 }
 
 char	*ft_strcpy(char *dst, const char *src)

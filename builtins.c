@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 12:12:03 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/15 13:46:27 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/16 03:18:09 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,4 +82,31 @@ int	cd(char **argv)
 	else
 		printf("minishell: cd: too many arguments\n");
 	exit(1);
+}
+
+void	baby_exit(t_parser_info *p, char **cmd)
+{
+	//catch cases of failure
+	// if (!ft_strncmp(local_getenv("SHLVL"), "1", 2))
+	// 	printf("logout\n");
+	// else
+	printf("exit\n");
+
+	if (!cmd[1])
+		p->exit_code = (unsigned char)p->exit_code;
+	else
+	{
+		if (ft_isdigit(cmd[1][0]) == 1)
+			p->exit_code = (unsigned char)ft_atoi(cmd[1]);
+		else
+		{
+			p->exit_code = 255;
+			printf("minishell: exit: %s: numeric argument required\n", cmd[1]);
+		}
+	}
+	printf("code: %d\n", p->exit_code);
+	exit(p->exit_code);
+	//if cmd[0] is higer than longmax it should fail
+	//also other cases should be accounted for where exit fails
+	//too many cases!!!
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_execution.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/15 13:47:41 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/17 13:05:35 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,17 +51,16 @@ int	builtin_check(t_parser_info *p, int i)
 		;
 	else if (!ft_strncmp(p->cmd[i][0], "env", 4))
 		return (env(p));
-	else if (!ft_strncmp(p->cmd[i][0], "exit", 5))
-		;
-		// return (baby_exit());
-	return (1);
+	else if (!ft_strncmp(p->cmd[i][0], "clear", 6))
+		return (clear());
+	return (-1);
 }
 
 void	execute_command(t_parser_info *p)
 {
 	pid_t	child;
 
-	if (builtin_check(p, 0) == 1) // if builtin return 0 
+	if (builtin_check(p, 0) == -1) // if builtin return 0 
 	{
 		child = fork();
 		if (!child)

@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 13:22:51 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/10 14:49:41 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/17 11:58:41 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,26 @@ int		check_repeated_meta(char *input)
 {
 	int		i;
 	bool	meta_place_taken;
+	bool	meta_pipe;
 	char	*meta[6] = {"<<", "<", ">>", ">", "|", 0};
 	
 	i = 0;
 	meta_place_taken = false;
+	meta_pipe = false;
 	skip_isspaces(&i, input);
 	if (!ft_strncmp("|", &input[i], 1))
 		return (-1);
 	while (input[i])
 	{
-		if (ft_ismeta(&input[i], meta) > 0 && meta_place_taken)
+		if ((ft_ismeta(&input[i], meta) > 0 && meta_place_taken) || (!ft_strncmp(&input[i], "|", 1) && meta_pipe))
 			return (-1);
 		else if (ft_ismeta(&input[i], meta) > 0)
 		{
+			if (!ft_strncmp(&input[i], "|", 1))
+				meta_pipe = true;
+			else
+				meta_place_taken = true;
 			i += ft_ismeta(&input[i], meta);
-			meta_place_taken = true;
 		}
 		else if (ft_isquote(input[i]) > 0)
 			skip_quote_content(&i, input);
@@ -40,9 +45,10 @@ int		check_repeated_meta(char *input)
 		{
 			i++;
 			meta_place_taken = false;
+			meta_pipe = false;
 		}
 	}
-	if (meta_place_taken == true) //for the case where the input ends with a meta character
+	if (meta_place_taken == true || meta_pipe == true) //for the case where the input ends with a meta character
 		return (-1);
 	return (0);
 	// exit code is 258
