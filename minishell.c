@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/17 12:59:00 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/17 14:01:47 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,7 @@ void	save_input_output_files_n_cmds(int array_index, char **cmd_part, t_parser_i
 		}
 		else
 		{
-			// if (ft_strchr(cmd_part[i], '$') != NULL && p->do_not_expand[i] == false)
-			// 	p->cmd[array_index][cmd_index++] = expand_dollar(cmd_part[i]);
-			// else
-				p->cmd[array_index][cmd_index++] = cmd_part[i];
+			p->cmd[array_index][cmd_index++] = cmd_part[i];
 		}
 		i++;
 	}
@@ -75,16 +72,9 @@ void	save_cmds(char *input, t_parser_info *p)
 			allocate_meme_specific(p->cmd_array[array_index], array_index, p);
 			p->cmd_part[array_index] = ft_split_custom(p->cmd_array[array_index], meta);
 			save_input_output_files_n_cmds(array_index, p->cmd_part[array_index], p);
-			// p->cmd_path[array_index] = get_cmd_path(p->cmd[array_index][0]);
 			array_index++;
 		}
-		p->cmd_part[array_index] = 0;
-		p->cmd[array_index] = 0;
-		// printf("HEEYYE\n");
-		// init_pipex(p);
 		pipe_stuff(p);
-		// printf("EXITED PIPEX\n");
-		//look into the nulling the end of the p->cmd array **also look into  stack vs heap allocation and the way we should free
 	}
 	//TESTING
 	// int i = -1, j = -1;

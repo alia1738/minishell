@@ -6,13 +6,11 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 02:25:49 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/16 02:40:23 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/17 14:02:28 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-
 
 void	free_double_char(char **array)
 {

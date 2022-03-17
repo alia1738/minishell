@@ -6,33 +6,11 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 17:52:09 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/16 15:22:20 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/17 14:02:23 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	free_double(char **array)
-{
-	int	i;
-
-	i = -1;
-	while (array[++i])
-		free(array[i]);
-	free(array);
-	return ;
-}
-
-void	free_triple(char ***array)
-{
-	int	i;
-
-	i = -1;
-	while (array[++i])
-		free_double(array[i]);
-	return ;
-}
-
 
 char	*ft_strndup(const char *s1, int n)
 {

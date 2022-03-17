@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/17 13:04:28 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/17 14:02:05 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,8 +100,6 @@ int		check_repeated_meta(char *input);
 
 int		clear(void);
 char	**dup_array(char **a1);
-void	free_double(char **array);
-void	free_triple(char ***array);
 char	*ft_strndup(const char *s1, int n);
 void	skip_isspaces(int *index, char *input);
 char	*ft_strcpy(char *dst, const char *src);
