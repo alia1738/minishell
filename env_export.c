@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 13:56:18 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/17 15:59:14 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/18 17:01:17 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	find_equal(char *env)
 	return (i);
 }
 
-int	check_env(char *env_variable, char **env)
+static int	check_env(char *env_variable, char **env)
 {
 	int	i;
 
@@ -36,7 +36,7 @@ int	check_env(char *env_variable, char **env)
 	return (-1);
 }
 
-int	error_check(char *new_var)
+int	error_check(t_parser_info *p, char *new_var)
 {
 	int	i;
 
@@ -46,16 +46,22 @@ int	error_check(char *new_var)
 		if (!i && !ft_isalpha(new_var[i]))
 		{
 			printf("minishell: export: '%s': not valid identifier\n", new_var);
-			// change exit code;
+			p->exit_code = 1;
 			return (0);
 		}
 		else if (!ft_isalnum(new_var[i]))
 		{
 			printf("minishell: export: '%s': not valid identifier\n", new_var);
-			// change exit code;
+			p->exit_code = 1;
 			return (0);
 		}
 		i++;
+	}
+	if (new_var[i - 1] == '$') //there is an edge case (export name$=) that should be caught by this func but the parser expands "$=" when it shoudn't
+	{
+		printf("minishell: export: '%s': not valid identifier\n", new_var);
+		p->exit_code = 1;
+		return (0);
 	}
 	return (i);
 }
@@ -74,11 +80,10 @@ char	**new_env(char **env, char *new_env_var, int save_index)
 	}
 	else if (save_index == -1)
 	{
-		i = 0;
 		while (env[i])
 			i++;
 		new_env = ft_calloc((i + 2), sizeof(char *));
-		i = - 1;
+		i = -1;
 		while (env[++i])
 			new_env[i] = ft_strdup(env[i]);
 		new_env[i] = ft_strdup(new_env_var);
@@ -88,11 +93,12 @@ char	**new_env(char **env, char *new_env_var, int save_index)
 	return (0);
 }
 
-char	**export_env(char **env, char *new_env_var) // How To Use --> p->env = export_env(p->env, "NAME=value");
+char	**export_env(t_parser_info *p, char **env, char *new_env_var) // How To Use --> p->env = export_env(p->env, "NAME=value");
 {
 	int		save_index;
-
-	if (!error_check(new_env_var))
+	
+	p->exit_code = 0;
+	if (!error_check(p, new_env_var))
 		return (env);
 	if (!ft_strchr(new_env_var, '='))
 		return (env);

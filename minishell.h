@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/18 14:12:06 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/18 19:13:55 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,15 +141,21 @@ void	init_pipex(t_parser_info *p);
 /* --------------- ** export env ** ------------- */
 
 int		find_equal(char *env);
-char	**export_env(char **env, char *env_variable);
+int		error_check(t_parser_info *p, char *new_var);
+char	**export_env(t_parser_info *p, char **env, char *env_variable);
+
+/* --------------- ** unset env ** -------------- */
+
+char	**unset_env(t_parser_info *p, char **env, char *to_be_removed_var);
 
 /* ---------------- ** builtins ** -------------- */
 
-int		pwd(void);
-int		cd(char **argv);
-int		echo(char **argv);
+int		pwd(t_parser_info *p);
+int		cd(t_parser_info *p, char **argv);
+int		echo(t_parser_info *p, char **argv);
 int		env(t_parser_info *p);
 int		export(t_parser_info *p, char **cmd);
+int		unset(t_parser_info *p, char **cmd);
 void	baby_exit(t_parser_info *p, char **cmd);
 
 /* ----------------- ** getenv ** --------------- */

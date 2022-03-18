@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/17 13:05:35 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/18 19:13:36 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,19 @@ static void	child_job(t_parser_info *p)
 int	builtin_check(t_parser_info *p, int i)
 {
 	if (!ft_strncmp(p->cmd[i][0], "echo", 5))
-		return (echo(p->cmd[i]));
+		return (echo(p, p->cmd[i]));
 	else if (!ft_strncmp(p->cmd[i][0], "cd", 3))
-		return (cd(p->cmd[i]));
+		return (cd(p, p->cmd[i]));
 	else if (!ft_strncmp(p->cmd[i][0], "pwd", 4))
-		return (pwd());
+		return (pwd(p));
 	else if (!ft_strncmp(p->cmd[i][0], "export", 7))
 	{
 		export(p, p->cmd[i]);
+		return (0);
+	}
+	else if (!ft_strncmp(p->cmd[i][0], "unset", 6))
+	{
+		unset(p, p->cmd[i]);
 		return (0);
 	}
 	else if (!ft_strncmp(p->cmd[i][0], "unset", 6))
