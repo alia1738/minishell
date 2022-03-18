@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/17 16:44:47 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/18 14:15:57 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,31 +117,11 @@ void	handle_signals(int signum)
 		rl_on_new_line();//tells (i think) readline that we moved to a newline
 		rl_replace_line("", 1); //replace the rl_buffer (whatever was written (without pressing enter) in readline before signal ctrl c occured) by ""
 		rl_redisplay(); //redisplay prompt and rl_buffer
-		return ;
 	}
 	else if (signum == SIGQUIT)
-	{
 		rl_redisplay();
-		return ;
-	}
 	return ;
 }
-// void    hide_signal_markers(void)
-// {
-// 	int		pid;
-// 	char	*ptr[3];
-// 	ptr[0] = "stty";
-// 	ptr[1] = "-echoctl";
-// 	ptr[2] =  0;
-// 	pid = fork();
-// 	printf("PID: %d\n", pid);
-// 	if (pid == -1)
-// 		return ;
-// 	else if (pid == 0)
-// 		execve("/bin/stty", ptr, NULL);
-// 	else
-// 		return ;
-// }
 
 //
 int	main(int argc, char **argv, char **env)
@@ -151,7 +131,6 @@ int	main(int argc, char **argv, char **env)
 
 	(void)argc;
 	(void)argv;
-	// hide_signal_markers();
 	ft_bzero(&p, sizeof(t_parser_info));
 	signal(SIGINT, &handle_signals);
 	signal(SIGQUIT, &handle_signals);

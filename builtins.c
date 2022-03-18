@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 12:12:03 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/16 03:18:09 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/17 17:24:59 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,22 @@ int	pwd(void)
 
 int	echo(char **argv)
 {
-	int	i;
+	int		i;
+	bool	newline_flag;
 
+	newline_flag = true;
 	i = 1;
-	while (argv[i])
-		printf("%s ", argv[i++]);
-	printf("\n");
+	if (argv[1] && !ft_strncmp(argv[1], "-n", 3))
+	{
+		newline_flag = false;
+		i = 2;
+	}
+	if (argv[i])
+		printf("%s", argv[i++]);
+	while (argv[i] && printf(" "))
+		printf("%s", argv[i++]);
+	if (newline_flag)
+		printf("\n");
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 02:46:33 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/17 15:59:27 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/18 14:13:57 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ void	free_everything(t_parser_info *p)
 	free_triple_char_partial(p->cmd);
 	free_triple_char_partial(p->output_files);
 	free_triple_char_partial(p->input_files_delimiters);
+	//free single level
+	free(p->child_pids);
 	
 }
 
@@ -50,6 +52,8 @@ void	allocate_meme_general(t_parser_info *p)
 	p->out_arrow_flag = (int **)ft_calloc(p->pipes_count + 1, sizeof(int *));
 	p->output_files = (char ***)ft_calloc(p->pipes_count + 2, sizeof(char **));
 	p->input_files_delimiters = (char ***)ft_calloc(p->pipes_count + 2, sizeof(char **));
+	//child pids
+	p->child_pids = (int *)ft_calloc(p->pipes_count + 1, sizeof(int));
 	
 }
 

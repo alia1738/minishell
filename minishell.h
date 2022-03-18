@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/17 16:47:34 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/18 14:12:06 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ typedef struct s_parser_info
 	char	***cmd_part;
 
 	int		pipes_count;
+	int		*child_pids;
 	char	**cmd_array;
 
 	int		**in_arrow_flag;
