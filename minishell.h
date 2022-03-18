@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/17 14:02:05 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/18 14:12:06 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ typedef struct s_parser_info
 	char	***cmd_part;
 
 	int		pipes_count;
+	int		*child_pids;
 	char	**cmd_array;
 
 	int		**in_arrow_flag;
@@ -89,6 +90,7 @@ typedef struct s_parser_info
 /* ------------------ > >> Global variables << < ------------------ */
 
 // extern char	**environ;
+extern int rl_catch_signals;
 
 /* --------------------- > >> Prototypes << < --------------------- */
 
@@ -177,5 +179,8 @@ int		count_out_redirections(char	*str);
 void	free_everything(t_parser_info *p);
 void	allocate_meme_general(t_parser_info *p);
 void	allocate_meme_specific(char *str, int array_index,t_parser_info *p);
+
+
+void	handle_signals(int signum);
 
 #endif

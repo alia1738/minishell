@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_export.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 13:56:18 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/15 13:34:00 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/17 15:59:14 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ char	**new_env(char **env, char *new_env_var, int save_index)
 		while (env[++i])
 			new_env[i] = ft_strdup(env[i]);
 		new_env[i] = ft_strdup(new_env_var);
-		free_double(env);
+		free_double_char(env);
 		return (new_env);
 	}
 	return (0);
