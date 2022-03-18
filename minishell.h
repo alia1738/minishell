@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/18 14:12:06 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/18 18:39:04 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,8 @@ typedef struct s_parser_info
 	int		*child_pids;
 	char	**cmd_array;
 
+	int		*in_fds;
+	int		*out_fds;
 	int		**in_arrow_flag;
 	char	***output_files;
 	int		**out_arrow_flag;
@@ -159,6 +161,17 @@ char	*local_getenv(char *var, char **p_env);
 /* ------------------ ** pipe ** ---------------- */
 
 void	pipe_stuff(t_parser_info *p);
+
+/* --------------- ** pipe utils ** ------------- */
+
+int		*get_out_fds(t_parser_info *p);
+int		**create_pipes(t_parser_info *p);
+int		**create_pipe_append(t_parser_info *p);
+int		*get_in_fds(t_parser_info *p, int **pipe_append);
+void	check_out_fd(int in_fd, int **pip, int i, int pipe_count);
+void	check_in_fd(int in_fd, int *pipe_append, int **pip, int i);
+// void	check_inpipe_use(int flag, int index, int **pip);
+// void	check_outpipe_use(int flag, int index, int **pip);
 
 /* -------------- ** free utils ** -------------- */
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_execution.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/17 13:05:35 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/18 19:09:37 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,12 +59,13 @@ int	builtin_check(t_parser_info *p, int i)
 void	execute_command(t_parser_info *p)
 {
 	pid_t	child;
-
+ 
+	// check for fd; // fork && check for bultin if it there exit and execute it by parent .. if not do the command execution here
 	if (builtin_check(p, 0) == -1) // if builtin return 0 
 	{
 		child = fork();
 		if (!child)
-			child_job(p);
+			child_job(p); // get the open fds
 		else
 			waitpid(-1, 0, 0);
 	}

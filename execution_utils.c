@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 11:46:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/15 13:42:50 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/18 18:34:55 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int	child_input_append(int array_i, t_parser_info *p, int i, int pipe_end[2])
 	char	*temp;
 	char	*input;
 
+	// signal()
 	while (1)
 	{
 		input = readline("> ");
