@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/18 18:39:04 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/19 14:59:08 by Alia             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,18 +127,14 @@ char	*expand_dollars_in_str(char *str);
 
 int		final_out_fd(int array_index, t_parser_info *p);
 int		account_for_out_redirect(int i, t_parser_info *p);
+void	account_for_in_redirect(int *pipe_append, t_parser_info *p);
 int		final_in_fd(int array_index, t_parser_info *p, int pipe_end[2]);
-int		account_for_in_redirect(int i, int *pipe_append, t_parser_info *p);
 int		child_input_append(int array_index, t_parser_info *p, int i, int pipe_append[2]);
 
 /* ---------- ** command execution ** ----------- */
 
 void	execute_command(t_parser_info *p);
-int		builtin_check(t_parser_info *p, int i);
-
-/* ----------------- ** pipex ** ---------------- */
-
-void	init_pipex(t_parser_info *p);
+int		builtin_execute(t_parser_info *p, int i);
 
 /* --------------- ** export env ** ------------- */
 

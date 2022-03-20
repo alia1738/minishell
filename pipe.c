@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 16:42:32 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/18 19:10:19 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/19 14:09:42 by Alia             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	first_child(t_parser_info *p, int **pip, int **pipe_append)
 	close_append_pipe(p, pipe_append, 0);
 	check_in_fd(p->in_fds[0], pipe_append[0], pip, 0);
 	check_out_fd(p->out_fds[0], pip, 0, p->pipes_count);
-	if (builtin_check(p, 0) != -1)
+	if (builtin_execute(p, 0) != -1)
 		exit(p->exit_code); //free and exit with correct code
 	if (p->cmd_path[0])
 		execve(p->cmd_path[0], p->cmd[0], 0);
@@ -64,7 +64,7 @@ void	middle_child(t_parser_info *p, int **pip, int pip_i, int **pipe_append)
 	close_append_pipe(p, pipe_append, pip_i);
 	check_in_fd(p->in_fds[pip_i], pipe_append[pip_i], pip, pip_i);
 	check_out_fd(p->out_fds[pip_i], pip, pip_i, p->pipes_count);
-	if (builtin_check(p, pip_i) != -1)
+	if (builtin_execute(p, pip_i) != -1)
 		exit(p->exit_code); //free and exit with correct code
 	if (p->cmd_path[pip_i])
 		execve(p->cmd_path[pip_i], p->cmd[pip_i], 0);
@@ -78,7 +78,7 @@ void	last_child(t_parser_info *p, int **pip, int pip_i, int **pipe_append)
 	close_append_pipe(p, pipe_append, pip_i);
 	check_in_fd(p->in_fds[pip_i], pipe_append[pip_i], pip, pip_i);
 	check_out_fd(p->out_fds[pip_i], pip, pip_i, p->pipes_count);
-	if (builtin_check(p, pip_i) != -1)
+	if (builtin_execute(p, pip_i) != -1)
 		exit(p->exit_code); //free and exit with correct code
 	if (p->cmd_path[pip_i])
 		execve(p->cmd_path[pip_i], p->cmd[pip_i], 0);

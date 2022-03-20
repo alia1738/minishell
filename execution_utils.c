@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 11:46:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/18 18:34:55 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/19 15:00:19 by Alia             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,34 +86,28 @@ int	final_out_fd(int array_i, t_parser_info *p)
 }
 
 
-int	account_for_in_redirect(int i, int *pipe_append, t_parser_info *p)
-{
-	int	fd;
-	
-	fd = final_in_fd(i, p, pipe_append);
+void	account_for_in_redirect(int *pipe_append, t_parser_info *p)
+{	
 	// if (fd == -1) ----------------------------> account for it in final_in_fd
 	// 	exit(1);
-	if (fd > 1)
-		dup2(fd, STDIN_FILENO);
-	if (fd == 1) //dup pipe;
+	if (p->in_fds[0] > 1)
+		dup2(p->in_fds[0], STDIN_FILENO);
+	if (p->in_fds[0] == 1) //dup pipe;
 	{
 		close(pipe_append[1]);
 		dup2(pipe_append[0], STDIN_FILENO);
+		close(pipe_append[0]);
 	}
-	else if (fd != 1) //close both pipe ends
+	else if (p->in_fds[0] != 1) //close both pipe ends
 	{
 		close(pipe_append[1]);
 		close(pipe_append[0]);
 	}
-	return(fd);
 }
 
-int	account_for_out_redirect(int i, t_parser_info *p)
-{
-	int	fd;
-
-	fd = final_out_fd(i, p);
-	if (fd)
-		dup2(fd, STDOUT_FILENO);
-	return (fd);
-}
+// int	account_for_out_redirect(t_parser_info *p)
+// {
+// 	if (fd)
+// 		dup2(fd, STDOUT_FILENO);
+// 	return (fd);
+// }
