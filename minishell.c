@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/18 14:15:57 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/20 17:17:28 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,10 +119,27 @@ void	handle_signals(int signum)
 		rl_redisplay(); //redisplay prompt and rl_buffer
 	}
 	else if (signum == SIGQUIT)
+	{
+		rl_on_new_line();
 		rl_redisplay();
+	}
 	return ;
 }
-
+void	hide_signal_markers(void)
+{
+	int		pid;
+	char	*ptr[3];
+	ptr[0] = "stty";
+	ptr[1] = "-echoctl";
+	ptr[2] =  0;
+	pid = fork();
+	if (pid == -1)
+		return ;
+	else if (pid == 0)
+		execve("/bin/stty", ptr, NULL);
+	else
+		waitpid(-1, NULL, 0);
+}
 //
 int	main(int argc, char **argv, char **env)
 {
@@ -132,10 +149,10 @@ int	main(int argc, char **argv, char **env)
 	(void)argc;
 	(void)argv;
 	ft_bzero(&p, sizeof(t_parser_info));
+	hide_signal_markers();
 	signal(SIGINT, &handle_signals);
 	signal(SIGQUIT, &handle_signals);
 	p.env = dup_array(env);
-	rl_catch_signals = 0;
 	while (1)
 	{
 		input = readline("\033[1;35mbaby shell\033[2;35m> \e[0m");
@@ -146,22 +163,11 @@ int	main(int argc, char **argv, char **env)
 		}
 		if (input[0])
 			add_history(input);
-		else
-		{
-			free(input);
-			continue ;
-		}
 		if (check_repeated_meta(input) == -1)
 		{
 			printf("minishell: syntax error regarding the usage of metacharacters\n");
 			free(input);
 			continue ;
-		}
-		if (!ft_strncmp(input, "exit", 5))
-		{
-			free(input);
-			free_double_char(p.env);
-			exit(1);
 		}
 		save_cmds(input, &p);
 		/*-----------------*/

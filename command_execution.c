@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/18 19:13:36 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/20 17:00:04 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,11 @@ int	builtin_check(t_parser_info *p, int i)
 		return (env(p));
 	else if (!ft_strncmp(p->cmd[i][0], "clear", 6))
 		return (clear());
+	else if (!ft_strncmp(p->cmd[i][0], "exit", 5))
+	{
+		baby_exit(p, p->cmd[i]);//make sure it frees everyting
+		return (0);
+	}
 	return (-1);
 }
 
@@ -65,7 +70,7 @@ void	execute_command(t_parser_info *p)
 {
 	pid_t	child;
 
-	if (builtin_check(p, 0) == -1) // if builtin return 0 
+	if (p->cmd[0][0] && builtin_check(p, 0) == -1) // if builtin return 0 
 	{
 		child = fork();
 		if (!child)

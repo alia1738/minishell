@@ -6,18 +6,36 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 15:22:39 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/17 16:02:30 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/20 19:00:52 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+void	init_meta(char	**meta)
+{
+	meta[0] = "<<";
+	meta[1] = "<";
+	meta[2] = ">>";
+	meta[3] = ">";
+	meta[4] = "|";
+	meta[5] = "=";
+	meta[6] = "+";
+	meta[7] = ".";
+	meta[8] = ",";
+	meta[9] = ":";
+	meta[10] = "^";
+	meta[11] = "~";
+	meta[12] = 0;
+}
+
 static char	*ft_getenv(int i, char *str)
 {
 	int		j;
-	char	*meta[6] = {"<<", "<", ">>", ">", "|", 0};
+	char	*meta[13];//"=" is added bec echo "$USER=" is anasr= or echo "$=" is $=
 	char	temp[1024];
 
+	init_meta(meta);
 	j = 0;
 	ft_bzero(temp, 1024);
 	while (str[++i] != '$' && ft_ismeta(&str[i], meta) == 0 && ft_isquote(str[i]) == 0 && ft_isspace(str[i]) == 0 && str[i])
@@ -29,9 +47,10 @@ static char	*ft_getenv(int i, char *str)
 
 void	skip_dollar_content(int *i, char *str)
 {
-	char	*meta[6] = {"<<", "<", ">>", ">", "|", 0};
+	char	*meta[13];//check things with equal
 
 	(*i)++;
+	init_meta(meta);
 	while (str[*i] != '$' && ft_ismeta(&str[*i], meta) == 0 && ft_isquote(str[*i]) == 0 && ft_isspace(str[*i]) == 0 && str[*i])
 		(*i)++;
 	// if (str[*i] != '$')
@@ -42,9 +61,10 @@ int		len_with_expansion(char	*str) //keeping the quotes because i deal with them
 {
 	int	i;
 	int	len;
-	char	*meta[6] = {"<<", "<", ">>", ">", "|", 0};
+	char	*meta[13];
 	// char	*temp;
 
+	init_meta(meta);
 	i = 0;
 	len = 0;
 	while (str[i])
@@ -56,7 +76,7 @@ int		len_with_expansion(char	*str) //keeping the quotes because i deal with them
 		// 	i += 2;
 		// 	free(temp);
 		// }
-		if (str[i] == '$' && ft_isspace(str[i + 1]) == 0 && ft_ismeta(&str[i], meta) == 0 && str[i + 1])
+		if (str[i] == '$' && ft_isspace(str[i + 1]) == 0 && ft_ismeta(&str[i + 1], meta) == 0 && str[i + 1])
 		{
 			// printf("dollar expanded: %s\n", ft_getenv(i, str) ? ft_getenv(i, str) : "");
 			len += ft_strlen(ft_getenv(i, str));
@@ -72,7 +92,7 @@ int		len_with_expansion(char	*str) //keeping the quotes because i deal with them
 			while (ft_isquote(str[i]) != 2 && str[i])
 			{
 				// printf("currently: %s\n", str + i);
-				if (str[i] == '$' && ft_isspace(str[i + 1]) == 0 && ft_ismeta(&str[i], meta) == 0 && str[i + 1])
+				if (str[i] == '$' && ft_isspace(str[i + 1]) == 0 && ft_ismeta(&str[i + 1], meta) == 0 && str[i + 1])
 				{
 					// printf("dollar expanded: %s\n", ft_getenv(i, str) ? ft_getenv(i, str) : "");
 					len += ft_strlen(ft_getenv(i, str));
@@ -101,10 +121,11 @@ char	*expand_dollars_in_str(char *str)
 	int		i;
 	int		new_index;
 	char	*expanded;
-	char	*meta[6] = {"<<", "<", ">>", ">", "|", 0};
+	char	*meta[13];
 	// char	*temp;
 
 	// printf("LEN: %d\n", len_with_expansion(str));
+	init_meta(meta);
 	expanded = ft_calloc(len_with_expansion(str) + 1, sizeof(char));
 	i = 0;
 	new_index = 0;
@@ -119,7 +140,7 @@ char	*expand_dollars_in_str(char *str)
 		// 	free(temp);
 		// 	i += 2;
 		// }
-		/*else*/ if (str[i] == '$' && ft_isspace(str[i + 1]) == 0 && ft_ismeta(&str[i], meta) == 0 && str[i + 1])
+		/*else*/ if (str[i] == '$' && ft_isspace(str[i + 1]) == 0 && ft_ismeta(&str[i + 1], meta) == 0 && str[i + 1]) //last condition is for "echo $= "
 		{
 			// printf("dollar expanded: %s\n", ft_getenv(i, str) ? ft_getenv(i, str) : "");
 			ft_strcpy(&expanded[new_index], ft_getenv(i, str));
@@ -146,7 +167,7 @@ char	*expand_dollars_in_str(char *str)
 			while (ft_isquote(str[i]) != 2 && str[i])
 			{
 				// printf("currently: %s\n", str + i);
-				if (str[i] == '$' && ft_isspace(str[i + 1]) == 0 && ft_ismeta(&str[i], meta) == 0 && str[i + 1])
+				if (str[i] == '$' && ft_isspace(str[i + 1]) == 0 && ft_ismeta(&str[i + 1], meta) == 0 && str[i + 1])  //last condition is for "echo "$="" "
 				{
 					// printf("dollar expanded: %s\n", ft_getenv(i, str) ? ft_getenv(i, str) : "");
 					ft_strcpy(&expanded[new_index], ft_getenv(i, str));

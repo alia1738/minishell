@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 12:12:03 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/18 17:01:35 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/20 16:15:02 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,36 +96,48 @@ int	cd(t_parser_info *p, char **argv)
 		}
 		if (!opendir(temp) || chdir(temp) == -1)
 		{
-			perror(ft_strjoin("minishell: cd: ", argv[1]));
+			temp = ft_strjoin("minishell: cd: ", argv[1]);
+			perror(temp);
+			free(temp);
 			p->exit_code = 1;
 			return (0);
 		}
-	}
-	else if (access(argv[1], F_OK) != 0 || ft_strlen(argv[1]) > 255)
-	{
-		if (ft_strlen(argv[1]) > 255)
-			printf("minishell: cd: %s: File name too long\n", argv[1]);
-		else
-			printf("minishell: cd: %s: No such file or directory\n", argv[1]);
-		p->exit_code = 1;
-		return (0);
 	}
 	else
 	{
 		if (!opendir(argv[1]) || chdir(argv[1]) == -1)
 		{
+			temp = ft_strjoin("minishell: cd: ", argv[1]);
 			perror(ft_strjoin("minishell: cd: ", argv[1]));
+			free(temp);
 			p->exit_code = 1;
 			return (0);
 		}
 	}
 	if (p->exit_code == 0)//if cd succeeds
 	{
+		temp = ft_strjoin("OLDPWD=", local_getenv("PWD", p->env));
 		export_env(p, p->env, ft_strjoin("OLDPWD=", local_getenv("PWD", p->env)));
+		free(temp);
 		getcwd(cwd, sizeof(cwd));
+		temp = ft_strjoin("PWD=", cwd);
 		export_env(p, p->env, ft_strjoin("PWD=", cwd));
+		free(temp);
 	}
 	return(0);
+}
+
+
+int	ft_str_isdigit(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i] >= '0' && str[i] <= '9')
+		i++;
+	if (str[i] == '\0')
+		return (1);
+	return (0);
 }
 
 void	baby_exit(t_parser_info *p, char **cmd)
@@ -134,14 +146,23 @@ void	baby_exit(t_parser_info *p, char **cmd)
 	// if (!ft_strncmp(local_getenv("SHLVL"), "1", 2))
 	// 	printf("logout\n");
 	// else
+	bool	exit_flag;
+
+	exit_flag = true;
 	printf("exit\n");
 
 	if (!cmd[1])
 		p->exit_code = (unsigned char)p->exit_code;
 	else
 	{
-		if (ft_isdigit(cmd[1][0]) == 1)
+		if (ft_str_isdigit(cmd[1]) == 1 && !cmd[2])
 			p->exit_code = (unsigned char)ft_atoi(cmd[1]);
+		else if (ft_str_isdigit(cmd[1]) == 1 && cmd[2])
+		{
+			p->exit_code = 1;
+			exit_flag = false;
+			printf("minishell: exit: too many arguments\n");
+		}
 		else
 		{
 			p->exit_code = 255;
@@ -149,8 +170,22 @@ void	baby_exit(t_parser_info *p, char **cmd)
 		}
 	}
 	printf("code: %d\n", p->exit_code);
-	exit(p->exit_code);
+	if (exit_flag)
+	{
+		free_everything(p);
+		exit(p->exit_code);
+	}
 	//if cmd[0] is higer than longmax it should fail
 	//also other cases should be accounted for where exit fails
 	//too many cases!!!
 }
+/*
+Exit cases:
+
+> exit 4dns           -   should exit with 255
+> exit 42 dns         -   shouldn't exit and the exit code is 1
+> exit 42 4234 23     -   shouldn't exit and the exit code is 1
+> exit er42 4234 23   -   should exit 255
+ 
+
+*/
