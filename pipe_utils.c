@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipe_utils.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/20 19:14:46 by aalsuwai          #+#    #+#             */
+/*   Updated: 2022/03/20 19:14:47 by aalsuwai         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	**create_pipes(t_parser_info *p)
@@ -30,28 +42,16 @@ int	**create_pipe_append(t_parser_info *p)
 	return (pipe_append);
 }
 
-int	*get_in_fds(t_parser_info *p, int **pipe_append)
+void	get_in_out_fds(t_parser_info *p, int **pipe_append)
 {
 	int	i;
-	int	*in_fd;
 	
 	i = -1;
-	// in_fd = ft_calloc((p->pipes_count + 1), sizeof(int));
 	while (p->input_files_delimiters[++i])
-		in_fd[i] = final_in_fd(i, p, pipe_append[i]);
-	return (in_fd);
-}
-
-int	*get_out_fds(t_parser_info *p)
-{
-	int	i;
-	int	*out_fd;
-	
+		p->in_fds[i] = final_in_fd(i, p, pipe_append[i]);
 	i = -1;
-	// out_fd = ft_calloc((p->pipes_count + 1), sizeof(int));
 	while (p->output_files[++i])
-		out_fd[i] = final_out_fd(i, p);
-	return (out_fd);
+		p->out_fds[i] = final_out_fd(i, p);
 }
 
 void	check_in_fd(int in_fd, int *pipe_append, int **pip, int i)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/18 14:15:57 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/20 16:55:03 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,11 +146,11 @@ int	main(int argc, char **argv, char **env)
 		}
 		if (input[0])
 			add_history(input);
-		else
-		{
-			free(input);
-			continue ;
-		}
+		// else
+		// {
+		// 	free(input);
+		// 	continue ;
+		// }
 		if (check_repeated_meta(input) == -1)
 		{
 			printf("minishell: syntax error regarding the usage of metacharacters\n");

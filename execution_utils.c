@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 11:46:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/19 15:00:19 by Alia             ###   ########.fr       */
+/*   Updated: 2022/03/20 18:05:13 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	child_input_append(int array_i, t_parser_info *p, int i, int pipe_end[2])
 	char	*temp;
 	char	*input;
 
-	// signal()
+	// signal()      
 	while (1)
 	{
 		input = readline("> ");
@@ -53,8 +53,12 @@ int	final_in_fd(int array_i, t_parser_info *p, int pipe_end[2])
 	{
 		if (p->in_arrow_flag[array_i][i] == SINGLE_ARROW)
 		{
-			if (access(p->input_files_delimiters[array_i][i], F_OK) == 1)
+			if (access(p->input_files_delimiters[array_i][i], F_OK) == -1)
+			{
 				fd = -1; // perror, free && exit
+				printf("babyshell: %s: No such file or directory\n", p->input_files_delimiters[array_i][i]);
+				p->exit_code = 1;
+			}
 			if (!p->input_files_delimiters[array_i][i + 1])
 				fd = open(p->input_files_delimiters[array_i][i], O_RDONLY, 0640);
 		}
@@ -85,29 +89,25 @@ int	final_out_fd(int array_i, t_parser_info *p)
 	return(fd);
 }
 
-
 void	account_for_in_redirect(int *pipe_append, t_parser_info *p)
 {	
-	// if (fd == -1) ----------------------------> account for it in final_in_fd
-	// 	exit(1);
+	if (p->in_fds[0] == -1)
+	{
+		close(pipe_append[1]);
+		close(pipe_append[0]);
+		exit(p->exit_code);
+	}
 	if (p->in_fds[0] > 1)
 		dup2(p->in_fds[0], STDIN_FILENO);
-	if (p->in_fds[0] == 1) //dup pipe;
+	if (p->in_fds[0] == 1)
 	{
 		close(pipe_append[1]);
 		dup2(pipe_append[0], STDIN_FILENO);
 		close(pipe_append[0]);
 	}
-	else if (p->in_fds[0] != 1) //close both pipe ends
+	else if (p->in_fds[0] != 1)
 	{
 		close(pipe_append[1]);
 		close(pipe_append[0]);
 	}
 }
-
-// int	account_for_out_redirect(t_parser_info *p)
-// {
-// 	if (fd)
-// 		dup2(fd, STDOUT_FILENO);
-// 	return (fd);
-// }

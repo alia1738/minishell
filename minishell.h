@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/19 14:59:08 by Alia             ###   ########.fr       */
+/*   Updated: 2022/03/20 19:13:18 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,14 +160,11 @@ void	pipe_stuff(t_parser_info *p);
 
 /* --------------- ** pipe utils ** ------------- */
 
-int		*get_out_fds(t_parser_info *p);
 int		**create_pipes(t_parser_info *p);
 int		**create_pipe_append(t_parser_info *p);
-int		*get_in_fds(t_parser_info *p, int **pipe_append);
+void	get_in_out_fds(t_parser_info *p, int **pipe_append);
 void	check_out_fd(int in_fd, int **pip, int i, int pipe_count);
 void	check_in_fd(int in_fd, int *pipe_append, int **pip, int i);
-// void	check_inpipe_use(int flag, int index, int **pip);
-// void	check_outpipe_use(int flag, int index, int **pip);
 
 /* -------------- ** free utils ** -------------- */
 
