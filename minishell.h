@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/20 19:13:18 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/21 11:26:51 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,6 +165,11 @@ int		**create_pipe_append(t_parser_info *p);
 void	get_in_out_fds(t_parser_info *p, int **pipe_append);
 void	check_out_fd(int in_fd, int **pip, int i, int pipe_count);
 void	check_in_fd(int in_fd, int *pipe_append, int **pip, int i);
+
+/* ------------- ** pipe utils 2 ** ------------- */
+
+void	close_all_pipes_fds(t_parser_info *p, int **pip, int **pipe_append);
+void	close_pip_append(t_parser_info *p,int **pip, int **append, int pip_i);
 
 /* -------------- ** free utils ** -------------- */
 

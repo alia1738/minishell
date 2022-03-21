@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_export.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 13:56:18 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/17 15:59:14 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/21 11:36:08 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	error_check(char *new_var)
 
 char	**new_env(char **env, char *new_env_var, int save_index)
 {
-	int i;
+	int		i;
 	char	**new_env;
 
 	i = 0;
@@ -90,7 +90,7 @@ char	**new_env(char **env, char *new_env_var, int save_index)
 
 char	**export_env(char **env, char *new_env_var) // How To Use --> p->env = export_env(p->env, "NAME=value");
 {
-	int		save_index;
+	int	save_index;
 
 	if (!error_check(new_env_var))
 		return (env);

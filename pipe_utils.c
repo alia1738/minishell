@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/20 19:14:46 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/20 19:14:47 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/21 11:30:44 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	**create_pipes(t_parser_info *p)
 {
 	int	i;
 	int	**pip;
-	
+
 	i = -1;
 	pip = ft_calloc((p->pipes_count), sizeof(int *));
 	while (++i < p->pipes_count)
@@ -31,7 +31,7 @@ int	**create_pipe_append(t_parser_info *p)
 {
 	int	i;
 	int	**pipe_append;
-	
+
 	i = -1;
 	pipe_append = ft_calloc((p->pipes_count + 1), sizeof(int *));
 	while (++i <= p->pipes_count)
@@ -45,7 +45,7 @@ int	**create_pipe_append(t_parser_info *p)
 void	get_in_out_fds(t_parser_info *p, int **pipe_append)
 {
 	int	i;
-	
+
 	i = -1;
 	while (p->input_files_delimiters[++i])
 		p->in_fds[i] = final_in_fd(i, p, pipe_append[i]);

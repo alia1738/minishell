@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/20 18:43:17 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/21 11:32:10 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	builtin_execute(t_parser_info *p, int i)
 	else if (!ft_strncmp(p->cmd[i][0], "exit", 5))
 	{
 		// baby_exit();
-		return(0);
+		return (0);
 	}
 	return (-1);
 }
@@ -92,7 +92,7 @@ void	first_child_job(t_parser_info *p, int pipe_append[2], int flag)
 
 void	execute_command(t_parser_info *p)
 {
-	int		pipe_append[2];
+	int	pipe_append[2];
 
 	p->child_pids[0] = fork();
 	if (!p->child_pids[0])

@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 11:46:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/20 18:05:13 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/21 11:33:53 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int	final_in_fd(int array_i, t_parser_info *p, int pipe_end[2])
 			fd = child_input_append(array_i, p, i, pipe_end);
 		i++;
 	}
-	return(fd);
+	return (fd);
 }
 
 int	final_out_fd(int array_i, t_parser_info *p)
@@ -86,7 +86,7 @@ int	final_out_fd(int array_i, t_parser_info *p)
 			close(fd);
 		i++;
 	}
-	return(fd);
+	return (fd);
 }
 
 void	account_for_in_redirect(int *pipe_append, t_parser_info *p)

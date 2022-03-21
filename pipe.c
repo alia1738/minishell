@@ -6,49 +6,11 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 16:42:32 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/20 19:14:23 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/21 13:42:12 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	close_pip_append(t_parser_info *p,int **pip, int **append, int pip_i)
-{
-	int i;
-
-	i = -1;
-	while (++i <= p->pipes_count)
-	{
-		if (i != p->pipes_count && i != (pip_i - 1) && i != pip_i)
-		{
-			close(pip[i][0]);
-			close(pip[i][1]);
-		}
-		if (i != pip_i)
-		{
-			close(append[i][0]);
-			close(append[i][1]);
-		}
-	}
-}
-
-void	close_all_pipes_fds(t_parser_info *p, int **pip, int **pipe_append)
-{
-	int i;
-
-	i = -1;
-	while (++i < p->pipes_count)
-	{
-		close(pip[i][0]);
-		close(pip[i][1]);
-		close(pipe_append[i][0]);
-		close(pipe_append[i][1]);
-		if (p->in_fds[i] > 1)
-			close(p->in_fds[i]);
-		if (p->out_fds[i] > 1)
-			close(p->out_fds[i]);
-	}
-}
 
 /* ------------------------------- Child One ------------------------------- */
 void	first_child(t_parser_info *p, int **pip, int **pipe_append)
@@ -71,7 +33,7 @@ void	first_child(t_parser_info *p, int **pip, int **pipe_append)
 /* ------------------------------- Child Two ------------------------------- */
 void	middle_child(t_parser_info *p, int **pip, int pip_i, int **pipe_append)
 {
-	if (!p->cmd[0][0])
+	if (!p->cmd[pip_i][0])
 	{
 		close_all_pipes_fds(p, pip, pipe_append);
 		exit(1);
@@ -89,7 +51,7 @@ void	middle_child(t_parser_info *p, int **pip, int pip_i, int **pipe_append)
 /* ------------------------------ Child Three ------------------------------ */
 void	last_child(t_parser_info *p, int **pip, int pip_i, int **pipe_append)
 {
-	if (!p->cmd[0][0])
+	if (!p->cmd[pip_i][0])
 	{
 		close_all_pipes_fds(p, pip, pipe_append);
 		exit(1);
@@ -108,7 +70,7 @@ void	last_child(t_parser_info *p, int **pip, int pip_i, int **pipe_append)
 
 void	main_child_process(t_parser_info *p, int **pip, int **pipe_append)
 {
-	int		status;
+	int	status;
 
 	close_all_pipes_fds(p, pip, pipe_append);
 	while (waitpid(-1, &status, 0) > 0)
@@ -121,10 +83,10 @@ void	main_child_process(t_parser_info *p, int **pip, int **pipe_append)
 /* ----------------------------- Main function ----------------------------- */
 void	pipe_stuff(t_parser_info *p)
 {
-	int		i;
-	int		**pip;
-	int		**pipe_append;
-	
+	int	i;
+	int	**pip;
+	int	**pipe_append;
+
 	p->child_pids[0] = fork();
 	if (!p->child_pids[0])
 	{
