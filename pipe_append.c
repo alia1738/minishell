@@ -38,11 +38,9 @@ void	big_baby_job(t_parser_info *p, int **pipe_append)
 
 void	make_append_child(t_parser_info *p, int **pipe_append)
 {
-	int	child;
-
-	child = fork();
-	if (!child)
+	p->child_pids[0] = fork();
+	if (!p->child_pids[0])
 		big_baby_job(p, pipe_append);
 	else
-		waitpid(child, 0, 0);
+		waitpid(p->child_pids[0], 0, 0);
 }
