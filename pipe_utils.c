@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/20 19:14:46 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/22 14:23:49 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/22 17:24:46 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,8 @@ void	check_in_fd(int in_fd, int *pipe_append, int **pip, int i)
 
 void	check_out_fd(int out_fd, int **pip, int i, int pipe_count)
 {
+	// if (out_fd == -1)
+	// 	exit(-1); // free here
 	if (out_fd > 1)
 		dup2(out_fd, STDOUT_FILENO);
 	else if (!out_fd && i != pipe_count)
