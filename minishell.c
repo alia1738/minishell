@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/22 11:58:36 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/22 13:41:57 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ void	save_input_output_files_n_cmds(int array_index, char **specific_cmd, t_pars
 		}
 		else
 		{
+			if (cmd_index == 0 && ft_strchr(specific_cmd[i], '/'))
+				p->cmd_absolute_path[array_index] = true;
 			p->cmd[array_index][cmd_index++] = specific_cmd[i];
 		}
 		i++;

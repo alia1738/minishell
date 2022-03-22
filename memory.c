@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 02:46:33 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/22 12:00:30 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/22 13:27:44 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ void	allocate_meme_general(t_parser_info *p)
 	p->input_files_delimiters = (char ***)ft_calloc(p->pipes_count + 2, sizeof(char **));
 	//child pids
 	p->child_pids = (int *)ft_calloc(p->pipes_count + 1, sizeof(int));
-	
+	//
+	p->cmd_absolute_path = (bool *)ft_calloc(p->pipes_count + 1, sizeof(bool));	
 }
 
 void	allocate_meme_specific(char *str, int array_index,t_parser_info *p)

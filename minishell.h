@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/22 12:00:40 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/22 13:26:33 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ typedef struct s_parser_info
 {
 	char	**env;
 
+	bool	*cmd_absolute_path;
 	char	***cmd;
 	char	**cmd_path;
 	char	***cmd_part;
