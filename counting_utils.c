@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 02:49:02 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/16 12:56:17 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/22 12:00:10 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,14 +88,14 @@ int	count_out_redirections(char	*str)
 	return (count);
 }
 
-int	count_cmds_wout_meta(char *str)
+int	count_cmds_wout_meta(char *str, t_parser_info *p)
 {
 	int		i;
 	int		count;
 	char	**temp;
 	char	*meta[5] = {"<<", "<", ">>", ">", 0};
 
-	temp = ft_split_custom(str, meta);
+	temp = ft_split_custom(str, meta, p);
 	i = 0;
 	count = 0;
 	while (temp[i])
@@ -106,5 +106,6 @@ int	count_cmds_wout_meta(char *str)
 			count++;
 		i++;
 	}
+	free_double_char(temp);
 	return (count);
 }

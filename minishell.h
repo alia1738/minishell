@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/20 12:51:57 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/22 12:00:40 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,11 +115,11 @@ char	*get_cmd_path(char *cmd);
 int		ft_isquote(char c);
 int		ft_ismeta(char *current_c, char **meta);
 int		skip_quote_content(int *i, char *input);
-char	**ft_split_custom(char *input, char **meta);
+char	**ft_split_custom(char *input, char **meta, t_parser_info *p);
 
 /* ------------ ** expand dollar ** ------------- */
 
-char	*expand_dollars_in_str(char *str);
+char	*expand_dollars_in_str(char *str, t_parser_info *p);
 
 /* ----------- ** execution utils ** ------------ */
 
@@ -176,7 +176,7 @@ void	free_triple_char_partial(char ***array);
 /* ------------ ** counting utils ** ------------ */
 
 int		count_pipes(char *input);
-int		count_cmds_wout_meta(char *str);
+int		count_cmds_wout_meta(char *str, t_parser_info *p);
 int		count_in_redirections(char	*str);
 int		count_out_redirections(char	*str);
 

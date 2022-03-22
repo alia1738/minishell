@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/20 17:17:28 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/22 11:58:36 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	save_cmds(char *input, t_parser_info *p)
 	if (p->pipes_count == 0)
 	{
 		allocate_meme_specific(input, 0, p);
-		p->cmd_part[0] = ft_split_custom(input, meta);
+		p->cmd_part[0] = ft_split_custom(input, meta, p);
 		save_input_output_files_n_cmds(0, p->cmd_part[0], p);
 		execute_command(p);
 	}
@@ -70,7 +70,7 @@ void	save_cmds(char *input, t_parser_info *p)
 		while (array_index < p->pipes_count + 1)
 		{
 			allocate_meme_specific(p->cmd_array[array_index], array_index, p);
-			p->cmd_part[array_index] = ft_split_custom(p->cmd_array[array_index], meta);
+			p->cmd_part[array_index] = ft_split_custom(p->cmd_array[array_index], meta, p);
 			save_input_output_files_n_cmds(array_index, p->cmd_part[array_index], p);
 			array_index++;
 		}

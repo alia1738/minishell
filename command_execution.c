@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/20 17:00:04 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/22 12:03:52 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ int	builtin_check(t_parser_info *p, int i)
 void	execute_command(t_parser_info *p)
 {
 	pid_t	child;
+	int		status;
 
 	if (p->cmd[0][0] && builtin_check(p, 0) == -1) // if builtin return 0 
 	{
@@ -76,6 +77,9 @@ void	execute_command(t_parser_info *p)
 		if (!child)
 			child_job(p);
 		else
-			waitpid(-1, 0, 0);
+		{
+			waitpid(-1, &status, 0);
+			p->exit_code = WEXITSTATUS(status);
+		}
 	}
 }

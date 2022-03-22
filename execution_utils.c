@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 11:46:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/20 17:29:16 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/21 16:56:09 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	child_input_append(int array_i, t_parser_info *p, int i, int pipe_end[2])
 			break ;
 		if (!p->input_files_delimiters[array_i][i + 1])
 		{
-			temp = ft_strjoin(expand_dollars_in_str(input), "\n");//free expand_dollars_in_str(input)
+			temp = ft_strjoin(expand_dollars_in_str(input, p), "\n");//free expand_dollars_in_str(input)
 			ft_putstr_fd(temp, pipe_end[1]);
 			free(temp);
 		}

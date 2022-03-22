@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 02:46:33 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/18 14:13:57 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/22 12:00:30 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	allocate_meme_general(t_parser_info *p)
 
 void	allocate_meme_specific(char *str, int array_index,t_parser_info *p)
 {
-	p->cmd[array_index] = (char **)ft_calloc(count_cmds_wout_meta(str) + 1, sizeof(char *));
+	p->cmd[array_index] = (char **)ft_calloc(count_cmds_wout_meta(str, p) + 1, sizeof(char *));
 	if (count_in_redirections(str) > 0)
 		p->in_arrow_flag[array_index] = (int *)ft_calloc(count_in_redirections(str), sizeof(int));
 	if (count_out_redirections(str) > 0)

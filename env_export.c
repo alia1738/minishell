@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 13:56:18 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/18 17:01:17 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/22 13:20:16 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int	error_check(t_parser_info *p, char *new_var)
 			p->exit_code = 1;
 			return (0);
 		}
-		else if (!ft_isalnum(new_var[i]))
+		else if (!ft_isalnum(new_var[i]) && !(new_var[i] == '+' && new_var[i + 1] == '='))
 		{
 			printf("minishell: export: '%s': not valid identifier\n", new_var);
 			p->exit_code = 1;
@@ -57,7 +57,7 @@ int	error_check(t_parser_info *p, char *new_var)
 		}
 		i++;
 	}
-	if (new_var[i - 1] == '$') //there is an edge case (export name$=) that should be caught by this func but the parser expands "$=" when it shoudn't
+	if (new_var[i - 1] == '$')
 	{
 		printf("minishell: export: '%s': not valid identifier\n", new_var);
 		p->exit_code = 1;

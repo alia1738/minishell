@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/19 18:10:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/12 10:32:57 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/22 11:57:27 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,7 +177,7 @@ static int	get_next_word_len(int i, char *input, char **meta)
 	return (len);
 }
 
-static char	*get_next_word(int i, char *input, char **meta)
+static char	*get_next_word(int i, char *input, char **meta, t_parser_info *p)
 {
 	int		len;
 	char	*temp;
@@ -189,7 +189,7 @@ static char	*get_next_word(int i, char *input, char **meta)
 	// printf("word: %s.. len = %d\n", temp, len);
 	//where expanding the dollar occurs (commented at the moment)
 	if (ft_strchr(temp, '$'))
-		temp = expand_dollars_in_str(temp);
+		temp = expand_dollars_in_str(temp, p);
 	//
 	if (ft_strchr(temp, '\'') || ft_strchr(temp, '\"'))
 		result = strcpy_wout_quotes(temp);
@@ -199,7 +199,7 @@ static char	*get_next_word(int i, char *input, char **meta)
 	return (result);
 }
 
-char	**ft_split_custom(char *input, char **meta)
+char	**ft_split_custom(char *input, char **meta, t_parser_info *p)
 {
 	int	i;
 	int	word_count;
@@ -215,7 +215,7 @@ char	**ft_split_custom(char *input, char **meta)
 	skip_isspaces(&i, input);
 	while (word_index < word_count)
 	{
-		result[word_index] = get_next_word(i, input, meta);
+		result[word_index] = get_next_word(i, input, meta, p);
 		word_index++;
 		go_to_next_word(&i, input, meta);
 		skip_isspaces(&i, input);
