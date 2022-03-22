@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 11:46:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/21 11:33:53 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/22 13:46:45 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ int	child_input_append(int array_i, t_parser_info *p, int i, int pipe_end[2])
 	char	*temp;
 	char	*input;
 
-	// signal()      
 	while (1)
 	{
 		input = readline("> ");
@@ -89,23 +88,23 @@ int	final_out_fd(int array_i, t_parser_info *p)
 	return (fd);
 }
 
-void	account_for_in_redirect(int *pipe_append, t_parser_info *p)
+void	account_for_in_redirect(int *pipe_append, t_parser_info *p, int in_fd)
 {	
-	if (p->in_fds[0] == -1)
+	if (in_fd == -1)
 	{
 		close(pipe_append[1]);
 		close(pipe_append[0]);
 		exit(p->exit_code);
 	}
-	if (p->in_fds[0] > 1)
-		dup2(p->in_fds[0], STDIN_FILENO);
-	if (p->in_fds[0] == 1)
+	if (in_fd > 1)
+		dup2(in_fd, STDIN_FILENO);
+	if (in_fd == 1)
 	{
 		close(pipe_append[1]);
 		dup2(pipe_append[0], STDIN_FILENO);
 		close(pipe_append[0]);
 	}
-	else if (p->in_fds[0] != 1)
+	else if (in_fd != 1)
 	{
 		close(pipe_append[1]);
 		close(pipe_append[0]);

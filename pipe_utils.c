@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/20 19:14:46 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/21 11:30:44 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/22 14:23:49 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,18 +40,6 @@ int	**create_pipe_append(t_parser_info *p)
 		pipe(pipe_append[i]);
 	}
 	return (pipe_append);
-}
-
-void	get_in_out_fds(t_parser_info *p, int **pipe_append)
-{
-	int	i;
-
-	i = -1;
-	while (p->input_files_delimiters[++i])
-		p->in_fds[i] = final_in_fd(i, p, pipe_append[i]);
-	i = -1;
-	while (p->output_files[++i])
-		p->out_fds[i] = final_out_fd(i, p);
 }
 
 void	check_in_fd(int in_fd, int *pipe_append, int **pip, int i)

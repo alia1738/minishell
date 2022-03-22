@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/21 11:32:10 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/22 13:46:07 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,14 @@
 
 static void	second_child_job(t_parser_info *p, int pipe_append[2])
 {
-	account_for_in_redirect(pipe_append, p);
-	if (p->out_fds[0] > 1)
-		dup2(p->out_fds[0], STDOUT_FILENO);
+	int	in_fd;
+	int	out_fd;
+
+	in_fd = final_in_fd(0, p, pipe_append);
+	out_fd = final_out_fd(0, p);
+	account_for_in_redirect(pipe_append, p, in_fd);
+	if (out_fd > 1)
+		dup2(out_fd, STDOUT_FILENO);
 	p->cmd_path[0] = get_cmd_path(p->cmd[0][0]);
 	if (p->cmd_path[0])
 		execve(p->cmd_path[0], p->cmd[0], 0);
@@ -65,30 +70,30 @@ int	builtin_check(t_parser_info *p, int i)
 	return (1);
 }
 
-void	first_child_job(t_parser_info *p, int pipe_append[2], int flag)
-{
-	if (flag == 1)
-	{
-		close(pipe_append[0]);
-		close(pipe_append[1]);
-		if (p->in_fds[0] > 1)
-			close(p->in_fds[0]);
-		if (p->out_fds[0] > 1)
-			close(p->out_fds[0]);
-		waitpid(p->child_pids[1], 0, 0);
-		exit(1);
-	}
-	if (flag == 2)
-	{
-		close(pipe_append[0]);
-		close(pipe_append[1]);
-		if (p->in_fds[0] > 1)
-			close(p->in_fds[0]);
-		if (p->out_fds[0] > 1)
-			close(p->out_fds[0]);
-		exit(1);
-	}
-}
+// void	first_child_job(t_parser_info *p, int pipe_append[2], int flag)
+// {
+// 	if (flag == 1)
+// 	{
+// 		close(pipe_append[0]);
+// 		close(pipe_append[1]);
+// 		if (p->in_fds[0] > 1)
+// 			close(p->in_fds[0]);
+// 		if (p->out_fds[0] > 1)
+// 			close(p->out_fds[0]);
+// 		waitpid(p->child_pids[1], 0, 0);
+// 		exit(1);
+// 	}
+// 	if (flag == 2)
+// 	{
+// 		close(pipe_append[0]);
+// 		close(pipe_append[1]);
+// 		if (p->in_fds[0] > 1)
+// 			close(p->in_fds[0]);
+// 		if (p->out_fds[0] > 1)
+// 			close(p->out_fds[0]);
+// 		exit(1);
+// 	}
+// }
 
 void	execute_command(t_parser_info *p)
 {
@@ -98,8 +103,8 @@ void	execute_command(t_parser_info *p)
 	if (!p->child_pids[0])
 	{
 		pipe(pipe_append);
-		p->in_fds[0] = final_in_fd(0, p, pipe_append);
-		p->out_fds[0] = final_out_fd(0, p);
+		// p->in_fds[0] = final_in_fd(0, p, pipe_append);
+		// p->out_fds[0] = final_out_fd(0, p);
 		if (p->cmd[0][0] && builtin_check(p, 0))
 			second_child_job(p, pipe_append);
 	}

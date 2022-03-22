@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/21 11:26:51 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/22 13:49:40 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,8 @@ typedef struct s_parser_info
 	int		*child_pids;
 	char	**cmd_array;
 
-	int		*in_fds;
-	int		*out_fds;
+	// int		*in_fds;
+	// int		*out_fds;
 	int		**in_arrow_flag;
 	char	***output_files;
 	int		**out_arrow_flag;
@@ -126,9 +126,8 @@ char	*expand_dollars_in_str(char *str);
 /* ----------- ** execution utils ** ------------ */
 
 int		final_out_fd(int array_index, t_parser_info *p);
-int		account_for_out_redirect(int i, t_parser_info *p);
-void	account_for_in_redirect(int *pipe_append, t_parser_info *p);
 int		final_in_fd(int array_index, t_parser_info *p, int pipe_end[2]);
+void	account_for_in_redirect(int *pipe_append, t_parser_info *p, int in_fd);
 int		child_input_append(int array_index, t_parser_info *p, int i, int pipe_append[2]);
 
 /* ---------- ** command execution ** ----------- */
@@ -168,8 +167,15 @@ void	check_in_fd(int in_fd, int *pipe_append, int **pip, int i);
 
 /* ------------- ** pipe utils 2 ** ------------- */
 
+int		pipe_final_in_fd(int array_i, t_parser_info *p);
+int		pipe_final_out_fd(int array_i, t_parser_info *p);
 void	close_all_pipes_fds(t_parser_info *p, int **pip, int **pipe_append);
 void	close_pip_append(t_parser_info *p,int **pip, int **append, int pip_i);
+
+/* ------------- ** pipe append ** -------------- */
+
+void	big_baby_job(t_parser_info *p, int **pipe_append);
+void	make_append_child(t_parser_info *p, int **pipe_append);
 
 /* -------------- ** free utils ** -------------- */
 

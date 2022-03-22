@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/20 16:55:03 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/21 14:55:22 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,6 @@ void	save_cmds(char *input, t_parser_info *p)
 }
 
 //SIGNAL STUFF
-
 void	handle_signals(int signum)
 {
 	if (signum == SIGINT)
