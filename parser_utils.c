@@ -6,13 +6,13 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 13:22:51 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/17 11:58:41 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/23 14:07:42 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		check_repeated_meta(char *input)
+int		check_repeated_meta(char *input, t_parser_info *p)
 {
 	int		i;
 	bool	meta_place_taken;
@@ -28,7 +28,10 @@ int		check_repeated_meta(char *input)
 	while (input[i])
 	{
 		if ((ft_ismeta(&input[i], meta) > 0 && meta_place_taken) || (!ft_strncmp(&input[i], "|", 1) && meta_pipe))
+		{
+			p->exit_code = 258;
 			return (-1);
+		}
 		else if (ft_ismeta(&input[i], meta) > 0)
 		{
 			if (!ft_strncmp(&input[i], "|", 1))
@@ -49,7 +52,10 @@ int		check_repeated_meta(char *input)
 		}
 	}
 	if (meta_place_taken == true || meta_pipe == true) //for the case where the input ends with a meta character
+	{
+		p->exit_code = 258;
 		return (-1);
+	}
 	return (0);
 	// exit code is 258
 }

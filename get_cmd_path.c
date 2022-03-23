@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 16:55:09 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/17 17:10:38 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/23 13:56:44 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,9 @@ char	*get_cmd_path(char *cmd)
 	if (!cmd)
 		return (NULL);
 	temp_path = getenv("PATH"); //CHANGE TO local_getenv
+	// if (!temp_path)
+		//have something to catch when the user unsets "PATH"
+	//also for the access() that will be used on an absolute path to check if it exists
 	paths_array = ft_split(temp_path, ':');
 	while (paths_array[i])
 	{
