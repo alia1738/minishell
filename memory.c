@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   memory.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 02:46:33 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/18 14:13:57 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/22 13:51:01 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,9 @@ void	allocate_meme_general(t_parser_info *p)
 	p->input_files_delimiters = (char ***)ft_calloc(p->pipes_count + 2, sizeof(char **));
 	//child pids
 	p->child_pids = (int *)ft_calloc(p->pipes_count + 1, sizeof(int));
+	// p->in_fds = ft_calloc((p->pipes_count + 1), sizeof(int));
+	// p->out_fds = ft_calloc((p->pipes_count + 1), sizeof(int));
+
 	
 }
 

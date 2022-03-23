@@ -1,47 +1,55 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execution_utils.c                                  :+:      :+:    :+:   */
+/*   pipe_utils2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/02 11:46:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/22 17:07:02 by aalsuwai         ###   ########.fr       */
+/*   Created: 2022/03/21 11:25:34 by aalsuwai          #+#    #+#             */
+/*   Updated: 2022/03/22 18:48:00 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	child_input_append(int array_i, t_parser_info *p, int i, int pipe_end[2])
+void	close_pip_append(t_parser_info *p, int **pip, int **append, int pip_i)
 {
-	char	*temp;
-	char	*input;
+	int	i;
 
-	while (1)
+	i = -1;
+	while (++i <= p->pipes_count)
 	{
-		input = readline("> ");
-		if (!ft_strncmp(input, p->input_files_delimiters[array_i][i], \
-		ft_strlen(p->input_files_delimiters[array_i][i]) + 1))
-			break ;
-		if (!p->input_files_delimiters[array_i][i + 1])
+		if (i != p->pipes_count && i != (pip_i - 1) && i != pip_i)
 		{
-			temp = ft_strjoin(input, "\n");
-			ft_putstr_fd(temp, pipe_end[1]);
-			free(temp);
+			close(pip[i][0]);
+			close(pip[i][1]);
 		}
-		free(input);
+		if (i != pip_i)
+		{
+			close(append[i][0]);
+			close(append[i][1]);
+		}
 	}
-	free(input);
-	return (1);
 }
 
-/* ***************************************************************** *\
-|* ************* returns -1 if file cant be accessed *************** *|
-|* ************* returns 1 if << std_in is allowed ***************** *|
-|* ************* returns >1 if it was able to open the file ******** *|
-\* ***************************************************************** */
+void	close_all_pipes_fds(t_parser_info *p, int **pip, int **pipe_append)
+{
+	int	i;
 
-int	final_in_fd(int array_i, t_parser_info *p, int pipe_end[2])
+	i = -1;
+	while (++i <= p->pipes_count)
+	{
+		if (i != p->pipes_count)
+		{
+			close(pip[i][0]);
+			close(pip[i][1]);
+		}
+		close(pipe_append[i][0]);
+		close(pipe_append[i][1]);
+	}
+}
+
+int	pipe_final_in_fd(int array_i, t_parser_info *p)
 {
 	int	i;
 	int	fd;
@@ -54,27 +62,29 @@ int	final_in_fd(int array_i, t_parser_info *p, int pipe_end[2])
 		{
 			if (access(p->input_files_delimiters[array_i][i], F_OK) == -1)
 			{
-				fd = -1; // perror, free && exit
+				// fd = -1; // perror, free && exit
 				printf("babyshell: %s: No such file or directory\n", p->input_files_delimiters[array_i][i]);
 				p->exit_code = 1;
+				return (-1);
 			}
 			else if (access(p->input_files_delimiters[array_i][i], R_OK) == -1)
 			{
-				fd = -1; // perror, free && exit
-				printf("%s: %s: Permission denied\n", p->cmd[array_i][0], p->input_files_delimiters[array_i][i]);
+				// fd = -1; // perror, free && exit
+				printf("babyshell: %s: Permission denied\n",  p->input_files_delimiters[array_i][i]);
 				p->exit_code = 1;
+				return (-1);
 			}
-			if (!p->input_files_delimiters[array_i][i + 1])
+			else if (!p->input_files_delimiters[array_i][i + 1])
 				fd = open(p->input_files_delimiters[array_i][i], O_RDONLY, 0640);
 		}
 		else if (p->in_arrow_flag[array_i][i] == DOUBLE_ARROW)
-			fd = child_input_append(array_i, p, i, pipe_end);
+			fd = 1;
 		i++;
 	}
 	return (fd);
 }
 
-int	final_out_fd(int array_i, t_parser_info *p)
+int	pipe_final_out_fd(int array_i, t_parser_info *p)
 {
 	int	i;
 	int	fd;
@@ -102,27 +112,4 @@ int	final_out_fd(int array_i, t_parser_info *p)
 		i++;
 	}
 	return (fd);
-}
-
-void	account_for_in_redirect(int *pipe_append, t_parser_info *p, int in_fd)
-{	
-	if (in_fd == -1)
-	{
-		close(pipe_append[1]);
-		close(pipe_append[0]);
-		exit(p->exit_code); // free here
-	}
-	if (in_fd > 1)
-		dup2(in_fd, STDIN_FILENO);
-	if (in_fd == 1)
-	{
-		close(pipe_append[1]);
-		dup2(pipe_append[0], STDIN_FILENO);
-		close(pipe_append[0]);
-	}
-	else if (in_fd != 1)
-	{
-		close(pipe_append[1]);
-		close(pipe_append[0]);
-	}
 }

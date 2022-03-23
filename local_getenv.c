@@ -6,21 +6,11 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/14 15:50:10 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/15 13:11:17 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/21 11:35:08 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// int	find_equal(char *env)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (env[i] && env[i] != '=')
-// 		i++;
-// 	return (i);
-// }// remove from here after testing cuz this function is already in <env_export.c>
 
 static int	cmp_till_equal(char *p_env, char *var)
 {
