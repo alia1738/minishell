@@ -12,17 +12,14 @@
 
 #include "minishell.h"
 
-static void	second_child_job(t_parser_info *p, int pipe_append[2])
+static void	second_child_job(t_parser_info *p, int pipe_append[2], int *in_out)
 {
-	int	in_fd;
-	int	out_fd;
-
-	in_fd = final_in_fd(0, p, pipe_append);
-	out_fd = final_out_fd(0, p);
-	account_for_in_redirect(pipe_append, p, in_fd);
-	if (out_fd > 1)
-		dup2(out_fd, STDOUT_FILENO);
-	else if (out_fd == -1)
+// 	in_fd = final_in_fd(0, p, pipe_append);
+// 	out_fd = final_out_fd(0, p);
+	account_for_in_redirect(pipe_append, p, in_out[0]);
+	if (in_out[1] > 1)
+		dup2(in_out[1], STDOUT_FILENO);
+	else if (in_out[1] == -1)
 		exit(p->exit_code); // free here
 	p->cmd_path[0] = get_cmd_path(p->cmd[0][0]);
 	if (p->cmd_path[0])
@@ -71,15 +68,16 @@ int	builtin_check(t_parser_info *p, int i)
 
 void	execute_command(t_parser_info *p)
 {
+	int	in_out[2];
 	int	pipe_append[2];
 
 	p->child_pids[0] = fork();
 	if (!p->child_pids[0])
 	{
 		pipe(pipe_append);
-		// p->in_fds[0] = final_in_fd(0, p, pipe_append);
-		// p->out_fds[0] = final_out_fd(0, p);
-		if (p->cmd[0][0] && builtin_check(p, 0))
+		in_out[0] = final_in_fd(0, p, pipe_append);
+		in_out[1] = final_out_fd(0, p);
+		if (p->cmd[0][0] && builtin_check(p, 0), in_out)
 			second_child_job(p, pipe_append);
 		exit(0);
 	}
