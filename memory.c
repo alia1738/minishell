@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   memory.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 02:46:33 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/22 13:51:01 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/23 13:59:05 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	free_everything(t_parser_info *p)
 	free_triple_char_partial(p->input_files_delimiters);
 	//free single level
 	free(p->child_pids);
-	
+	// free(p->cmd_absolute_path);
 }
 
 void	allocate_meme_general(t_parser_info *p)
@@ -54,15 +54,12 @@ void	allocate_meme_general(t_parser_info *p)
 	p->input_files_delimiters = (char ***)ft_calloc(p->pipes_count + 2, sizeof(char **));
 	//child pids
 	p->child_pids = (int *)ft_calloc(p->pipes_count + 1, sizeof(int));
-	// p->in_fds = ft_calloc((p->pipes_count + 1), sizeof(int));
-	// p->out_fds = ft_calloc((p->pipes_count + 1), sizeof(int));
-
-	
+	p->cmd_absolute_path = (bool *)ft_calloc(p->pipes_count + 1, sizeof(bool));
 }
 
 void	allocate_meme_specific(char *str, int array_index,t_parser_info *p)
 {
-	p->cmd[array_index] = (char **)ft_calloc(count_cmds_wout_meta(str) + 1, sizeof(char *));
+	p->cmd[array_index] = (char **)ft_calloc(count_cmds_wout_meta(str, p) + 1, sizeof(char *));
 	if (count_in_redirections(str) > 0)
 		p->in_arrow_flag[array_index] = (int *)ft_calloc(count_in_redirections(str), sizeof(int));
 	if (count_out_redirections(str) > 0)

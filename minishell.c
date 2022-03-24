@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/21 14:55:22 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/23 14:08:07 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ void	save_input_output_files_n_cmds(int array_index, char **specific_cmd, t_pars
 		}
 		else
 		{
+			if (cmd_index == 0 && ft_strchr(specific_cmd[i], '/'))
+				p->cmd_absolute_path[array_index] = true;
 			p->cmd[array_index][cmd_index++] = specific_cmd[i];
 		}
 		i++;
@@ -59,7 +61,7 @@ void	save_cmds(char *input, t_parser_info *p)
 	if (p->pipes_count == 0)
 	{
 		allocate_meme_specific(input, 0, p);
-		p->cmd_part[0] = ft_split_custom(input, meta);
+		p->cmd_part[0] = ft_split_custom(input, meta, p);
 		save_input_output_files_n_cmds(0, p->cmd_part[0], p);
 		execute_command(p);
 	}
@@ -70,7 +72,7 @@ void	save_cmds(char *input, t_parser_info *p)
 		while (array_index < p->pipes_count + 1)
 		{
 			allocate_meme_specific(p->cmd_array[array_index], array_index, p);
-			p->cmd_part[array_index] = ft_split_custom(p->cmd_array[array_index], meta);
+			p->cmd_part[array_index] = ft_split_custom(p->cmd_array[array_index], meta, p);
 			save_input_output_files_n_cmds(array_index, p->cmd_part[array_index], p);
 			array_index++;
 		}
@@ -118,8 +120,27 @@ void	handle_signals(int signum)
 		rl_redisplay(); //redisplay prompt and rl_buffer
 	}
 	else if (signum == SIGQUIT)
+	{
+		rl_on_new_line();
 		rl_redisplay();
+	}
 	return ;
+}
+
+void	hide_signal_markers(void)
+{
+	int		pid;
+	char	*ptr[3];
+	ptr[0] = "stty";
+	ptr[1] = "-echoctl";
+	ptr[2] =  0;
+	pid = fork();
+	if (pid == -1)
+		return ;
+	else if (pid == 0)
+		execve("/bin/stty", ptr, NULL);
+	else
+		waitpid(-1, NULL, 0);
 }
 
 //
@@ -131,10 +152,10 @@ int	main(int argc, char **argv, char **env)
 	(void)argc;
 	(void)argv;
 	ft_bzero(&p, sizeof(t_parser_info));
+	hide_signal_markers();
 	signal(SIGINT, &handle_signals);
 	signal(SIGQUIT, &handle_signals);
 	p.env = dup_array(env);
-	rl_catch_signals = 0;
 	while (1)
 	{
 		input = readline("\033[1;35mbaby shell\033[2;35m> \e[0m");
@@ -145,22 +166,11 @@ int	main(int argc, char **argv, char **env)
 		}
 		if (input[0])
 			add_history(input);
-		// else
-		// {
-		// 	free(input);
-		// 	continue ;
-		// }
-		if (check_repeated_meta(input) == -1)
+		if (check_repeated_meta(input, &p) == -1)
 		{
 			printf("minishell: syntax error regarding the usage of metacharacters\n");
 			free(input);
 			continue ;
-		}
-		if (!ft_strncmp(input, "exit", 5))
-		{
-			free(input);
-			free_double_char(p.env);
-			exit(1);
 		}
 		save_cmds(input, &p);
 		/*-----------------*/

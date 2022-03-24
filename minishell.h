@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/22 13:49:40 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/23 16:51:06 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ typedef struct s_parser_info
 {
 	char	**env;
 
+	bool	*cmd_absolute_path;
 	char	***cmd;
 	char	**cmd_path;
 	char	***cmd_part;
@@ -79,12 +80,12 @@ typedef struct s_parser_info
 	int		*child_pids;
 	char	**cmd_array;
 
-	// int		*in_fds;
-	// int		*out_fds;
 	int		**in_arrow_flag;
 	char	***output_files;
 	int		**out_arrow_flag;
 	char	***input_files_delimiters;
+
+	bool	oldpwd_dont_update;
 
 	int		exit_code;
 }	t_parser_info;
@@ -92,13 +93,13 @@ typedef struct s_parser_info
 /* ------------------ > >> Global variables << < ------------------ */
 
 // extern char	**environ;
-extern int rl_catch_signals;
+// extern int rl_catch_signals;
 
 /* --------------------- > >> Prototypes << < --------------------- */
 
 /* ------------- ** parser utils ** ------------- */
 
-int		check_repeated_meta(char *input);
+int		check_repeated_meta(char *input, t_parser_info *p);
 
 /* ------------ ** simple helpers ** ------------ */
 
@@ -117,11 +118,11 @@ char	*get_cmd_path(char *cmd);
 int		ft_isquote(char c);
 int		ft_ismeta(char *current_c, char **meta);
 int		skip_quote_content(int *i, char *input);
-char	**ft_split_custom(char *input, char **meta);
+char	**ft_split_custom(char *input, char **meta, t_parser_info *p);
 
 /* ------------ ** expand dollar ** ------------- */
 
-char	*expand_dollars_in_str(char *str);
+char	*expand_dollars_in_str(char *str, t_parser_info *p);
 
 /* ----------- ** execution utils ** ------------ */
 
@@ -138,14 +139,20 @@ int		builtin_execute(t_parser_info *p, int i);
 /* --------------- ** export env ** ------------- */
 
 int		find_equal(char *env);
-char	**export_env(char **env, char *env_variable);
+int		error_check(t_parser_info *p, char *new_var);
+char	**export_env(t_parser_info *p, char **env, char *new_env_var);
+
+/* --------------- ** unset env ** -------------- */
+
+char	**unset_env(t_parser_info *p, char **env, char *to_be_removed_var);
 
 /* ---------------- ** builtins ** -------------- */
 
-int		pwd(void);
-int		cd(char **argv);
-int		echo(char **argv);
+int		pwd(t_parser_info *p);
 int		env(t_parser_info *p);
+int		cd(t_parser_info *p, char **argv);
+int		echo(t_parser_info *p, char **argv);
+int		unset(t_parser_info *p, char **cmd);
 int		export(t_parser_info *p, char **cmd);
 void	baby_exit(t_parser_info *p, char **cmd);
 
@@ -187,7 +194,7 @@ void	free_triple_char_partial(char ***array);
 /* ------------ ** counting utils ** ------------ */
 
 int		count_pipes(char *input);
-int		count_cmds_wout_meta(char *str);
+int		count_cmds_wout_meta(char *str, t_parser_info *p);
 int		count_in_redirections(char	*str);
 int		count_out_redirections(char	*str);
 
