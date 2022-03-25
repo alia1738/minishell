@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/25 13:45:41 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/25 14:46:13 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,20 +131,11 @@ void	handle_signals(int signum)
 	p = return_p(NULL);
 	if (signum == SIGINT)
 	{
-		if (p->command_in_action)
-		{
-			usleep(100);
-			while (++i < p->pipes_count + 1)
-			{
-				// printf("command is in action and pid is %d\n", p->child_pids[i]);
-				if (p->child_pids[i])
-					kill(p->child_pids[i], SIGTERM);
-			}
-		}
-		printf("\n");
+		write(1, "\n", 1);
 		rl_on_new_line();//tells (i think) readline that we moved to a newline
 		rl_replace_line("", 1); //replace the rl_buffer (whatever was written (without pressing enter) in readline before signal ctrl c occured) by ""
-		rl_redisplay(); //redisplay prompt and rl_buffer
+		if (!p->command_in_action)
+			rl_redisplay(); //redisplay prompt and rl_buffer
 	}
 	return ;
 }

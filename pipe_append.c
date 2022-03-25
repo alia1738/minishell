@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:46:03 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/25 12:50:01 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/25 14:43:09 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	big_baby_job(t_parser_info *p, int **pipe_append)
 	int	i;
 	int	array_i;
 
-	signal(SIGINT, SIG_IGN);
+	signal(SIGINT, SIG_DFL);
 	array_i = 0;
 	while (p->input_files_delimiters[array_i])
 	{

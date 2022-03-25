@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/25 12:11:31 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/25 14:30:35 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void	execute_command(t_parser_info *p)
 	p->child_pids[0] = fork();
 	if (!p->child_pids[0])
 	{
-		signal(SIGINT, SIG_IGN);
+		signal(SIGINT, SIG_DFL);
 		pipe(pipe_append);
 		in_out[0] = final_in_fd(0, p, pipe_append);
 		in_out[1] = final_out_fd(0, p);
