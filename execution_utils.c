@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 11:46:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/22 17:07:02 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/25 18:44:39 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,20 @@ int	child_input_append(int array_i, t_parser_info *p, int i, int pipe_end[2])
 |* ************* returns >1 if it was able to open the file ******** *|
 \* ***************************************************************** */
 
-int	final_in_fd(int array_i, t_parser_info *p, int pipe_end[2])
+void	do_in_append(t_parser_info *p, int array_i, int pipe_end[2])
+{
+	int	i;
+
+	i = 0;
+	while (p->input_files_delimiters[array_i][i])
+	{
+		if (p->in_arrow_flag[array_i][i] == DOUBLE_ARROW)
+			child_input_append(array_i, p, i, pipe_end);
+		i++;
+	}
+}
+
+int	final_in_fd(int array_i, t_parser_info *p)
 {
 	int	i;
 	int	fd;
@@ -61,14 +74,15 @@ int	final_in_fd(int array_i, t_parser_info *p, int pipe_end[2])
 			else if (access(p->input_files_delimiters[array_i][i], R_OK) == -1)
 			{
 				fd = -1; // perror, free && exit
-				printf("%s: %s: Permission denied\n", p->cmd[array_i][0], p->input_files_delimiters[array_i][i]);
+				printf("babyshell: %s: Permission denied\n", p->input_files_delimiters[array_i][i]);
 				p->exit_code = 1;
 			}
 			if (!p->input_files_delimiters[array_i][i + 1])
 				fd = open(p->input_files_delimiters[array_i][i], O_RDONLY, 0640);
 		}
 		else if (p->in_arrow_flag[array_i][i] == DOUBLE_ARROW)
-			fd = child_input_append(array_i, p, i, pipe_end);
+			fd = 1;
+			// fd = child_input_append(array_i, p, i, pipe_end);
 		i++;
 	}
 	return (fd);
@@ -104,14 +118,8 @@ int	final_out_fd(int array_i, t_parser_info *p)
 	return (fd);
 }
 
-void	account_for_in_redirect(int *pipe_append, t_parser_info *p, int in_fd)
+void	account_for_in_redirect(int *pipe_append, int in_fd)
 {	
-	if (in_fd == -1)
-	{
-		close(pipe_append[1]);
-		close(pipe_append[0]);
-		exit(p->exit_code); // free here
-	}
 	if (in_fd > 1)
 		dup2(in_fd, STDIN_FILENO);
 	if (in_fd == 1)

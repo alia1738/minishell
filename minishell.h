@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/23 16:51:06 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/25 20:59:16 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,9 @@ typedef struct s_parser_info
 	int		**out_arrow_flag;
 	char	***input_files_delimiters;
 
+	int		in_fd;
+	int		out_fd;
+
 	bool	oldpwd_dont_update;
 
 	int		exit_code;
@@ -111,7 +114,8 @@ char	*ft_strcpy(char *dst, const char *src);
 
 /* ------------- ** command path ** ------------- */
 
-char	*get_cmd_path(char *cmd);
+void	change_cmd(t_parser_info *p, int array_i);
+char	*get_cmd_path(char *cmd, t_parser_info *p);
 
 /* ----------------- ** split ** ---------------- */
 
@@ -126,14 +130,16 @@ char	*expand_dollars_in_str(char *str, t_parser_info *p);
 
 /* ----------- ** execution utils ** ------------ */
 
+int		final_in_fd(int array_index, t_parser_info *p);
 int		final_out_fd(int array_index, t_parser_info *p);
-int		final_in_fd(int array_index, t_parser_info *p, int pipe_end[2]);
-void	account_for_in_redirect(int *pipe_append, t_parser_info *p, int in_fd);
+void	account_for_in_redirect(int *pipe_append, int in_fd);
+void	do_in_append(t_parser_info *p, int array_i, int pipe_end[2]);
 int		child_input_append(int array_index, t_parser_info *p, int i, int pipe_append[2]);
 
 /* ---------- ** command execution ** ----------- */
 
 void	execute_command(t_parser_info *p);
+int		builtin_check(t_parser_info *p, int i);
 int		builtin_execute(t_parser_info *p, int i);
 
 /* --------------- ** export env ** ------------- */
@@ -174,9 +180,10 @@ void	check_in_fd(int in_fd, int *pipe_append, int **pip, int i);
 
 /* ------------- ** pipe utils 2 ** ------------- */
 
-int		pipe_final_in_fd(int array_i, t_parser_info *p);
-int		pipe_final_out_fd(int array_i, t_parser_info *p);
+void	free_n_close(t_parser_info *p, int **pip, int **pipe_append);
 void	close_all_pipes_fds(t_parser_info *p, int **pip, int **pipe_append);
+void	close_remaining_pipes(int **pipe_append, int **pip, int i, int max);
+void	before_command(t_parser_info *p, int **pip, int **pipe_append, int i);
 void	close_pip_append(t_parser_info *p,int **pip, int **append, int pip_i);
 
 /* ------------- ** pipe append ** -------------- */

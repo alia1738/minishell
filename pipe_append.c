@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:46:03 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/22 14:09:34 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/25 18:32:45 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,19 @@
 
 void	big_baby_job(t_parser_info *p, int **pipe_append)
 {
-	int	i;
-	int	fd;
 	int	array_i;
 
-	fd = 0;
 	array_i = 0;
 	while (p->input_files_delimiters[array_i])
 	{
-		i = 0;
-		while (p->input_files_delimiters[array_i][i])
-		{
-			if (p->in_arrow_flag[array_i][i] == DOUBLE_ARROW)
-				child_input_append(array_i, p, i, pipe_append[array_i]);
-			i++;
-		}
+		do_in_append(p, array_i, pipe_append[array_i]);
 		close(pipe_append[array_i][0]);
 		close(pipe_append[array_i][1]);
 		array_i++;
 	}
+	free_everything(p);
+	free_double_int(pipe_append, (p->pipes_count + 1));
+	free(p->env);
 	exit(0);
 }
 
