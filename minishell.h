@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/25 12:22:14 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/25 14:56:42 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ typedef struct s_parser_info
 
 	bool	oldpwd_dont_update;
 
+	bool	in_append_inprogress;
 	bool	command_in_action;
 
 	int		exit_code;

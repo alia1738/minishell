@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:46:03 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/25 14:43:09 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/25 14:57:37 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,5 +41,9 @@ void	make_append_child(t_parser_info *p, int **pipe_append)
 	if (!p->child_pids[0])
 		big_baby_job(p, pipe_append);
 	else
+	{
+		p->in_append_inprogress = true;
 		waitpid(p->child_pids[0], 0, 0);
+		p->in_append_inprogress = false;
+	}
 }

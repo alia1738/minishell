@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 16:42:32 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/25 12:49:11 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/25 15:01:41 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	first_child(t_parser_info *p, int **pip, int **pipe_append)
 	int	in_fd;
 	int	out_fd;
 
-	signal(SIGINT, SIG_IGN);
+	signal(SIGINT, SIG_DFL);
 	if (!p->cmd[0][0])
 	{
 		close_all_pipes_fds(p, pip, pipe_append);
@@ -51,7 +51,7 @@ void	middle_child(t_parser_info *p, int **pip, int pip_i, int **pipe_append)
 	int	in_fd;
 	int	out_fd;
 
-	signal(SIGINT, SIG_IGN);
+	signal(SIGINT, SIG_DFL);
 	if (!p->cmd[pip_i][0])
 	{
 		close_all_pipes_fds(p, pip, pipe_append);
@@ -85,7 +85,7 @@ void	last_child(t_parser_info *p, int **pip, int pip_i, int **pipe_append)
 	int	in_fd;
 	int	out_fd;
 	
-	signal(SIGINT, SIG_IGN);
+	signal(SIGINT, SIG_DFL);
 	if (!p->cmd[pip_i][0])
 	{
 		close_all_pipes_fds(p, pip, pipe_append);
@@ -133,10 +133,19 @@ void	pipe_stuff(t_parser_info *p)
 	int	**pip;
 	int	**pipe_append;
 
-	pip = create_pipes(p);	
 	pipe_append = create_pipe_append(p);
 	make_append_child(p, pipe_append);
 	i = -1;
+	if (p->in_append_inprogress == false)
+	{
+		while (++i <= p->pipes_count)
+		{
+			close(pipe_append[i][0]);
+			close(pipe_append[i][1]);
+		}
+		return ;
+	}
+	pip = create_pipes(p);	
 	while (++i <= p->pipes_count)
 	{
 		p->child_pids[i] = fork();
