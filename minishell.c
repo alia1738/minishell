@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/25 13:31:54 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/25 13:45:41 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ void	handle_signals(int signum)
 			{
 				// printf("command is in action and pid is %d\n", p->child_pids[i]);
 				if (p->child_pids[i])
-					kill(p->child_pids[i], SIGINT);
+					kill(p->child_pids[i], SIGTERM);
 			}
 		}
 		printf("\n");
