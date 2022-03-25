@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 16:42:32 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/25 15:01:41 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/25 15:23:05 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ void	pipe_stuff(t_parser_info *p)
 	pipe_append = create_pipe_append(p);
 	make_append_child(p, pipe_append);
 	i = -1;
-	if (p->in_append_inprogress == false)
+	if (p->in_append_inprogress)
 	{
 		while (++i <= p->pipes_count)
 		{
