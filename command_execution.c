@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/25 14:30:35 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/25 15:15:10 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	second_child_job(t_parser_info *p, int pipe_append[2], int *in_out)
 	if (p->cmd_path[0])
 		execve(p->cmd_path[0], p->cmd[0], 0);
 	//free here
-	exit (1);
+	exit (127); //check this later
 }
 
 int	builtin_execute(t_parser_info *p, int i)
@@ -68,6 +68,7 @@ int	builtin_check(t_parser_info *p, int i)
 
 void	execute_command(t_parser_info *p)
 {
+	int	status;
 	int	in_out[2];
 	int	pipe_append[2];
 
@@ -84,7 +85,8 @@ void	execute_command(t_parser_info *p)
 	}
 	else
 	{
-		waitpid(p->child_pids[0], 0, 0);
+		waitpid(p->child_pids[0], &status, 0);
+		p->exit_code = WEXITSTATUS(status); //check the logic of getting the exit code
 		if (p->cmd[0][0] && !builtin_check(p, 0))
 			builtin_execute(p, 0);
 	}
