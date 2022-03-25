@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 16:42:32 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/22 18:42:16 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/25 12:49:11 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	first_child(t_parser_info *p, int **pip, int **pipe_append)
 	int	in_fd;
 	int	out_fd;
 
+	signal(SIGINT, SIG_IGN);
 	if (!p->cmd[0][0])
 	{
 		close_all_pipes_fds(p, pip, pipe_append);
@@ -49,6 +50,8 @@ void	middle_child(t_parser_info *p, int **pip, int pip_i, int **pipe_append)
 {
 	int	in_fd;
 	int	out_fd;
+
+	signal(SIGINT, SIG_IGN);
 	if (!p->cmd[pip_i][0])
 	{
 		close_all_pipes_fds(p, pip, pipe_append);
@@ -81,7 +84,8 @@ void	last_child(t_parser_info *p, int **pip, int pip_i, int **pipe_append)
 {
 	int	in_fd;
 	int	out_fd;
-
+	
+	signal(SIGINT, SIG_IGN);
 	if (!p->cmd[pip_i][0])
 	{
 		close_all_pipes_fds(p, pip, pipe_append);

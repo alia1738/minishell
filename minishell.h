@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/23 16:51:06 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/25 12:22:14 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,13 +87,15 @@ typedef struct s_parser_info
 
 	bool	oldpwd_dont_update;
 
+	bool	command_in_action;
+
 	int		exit_code;
 }	t_parser_info;
 
 /* ------------------ > >> Global variables << < ------------------ */
 
 // extern char	**environ;
-// extern int rl_catch_signals;
+extern int rl_catch_signals;
 
 /* --------------------- > >> Prototypes << < --------------------- */
 
