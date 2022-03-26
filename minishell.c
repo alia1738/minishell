@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/23 14:08:07 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/25 14:46:13 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ void	save_cmds(char *input, t_parser_info *p)
 		allocate_meme_specific(input, 0, p);
 		p->cmd_part[0] = ft_split_custom(input, meta, p);
 		save_input_output_files_n_cmds(0, p->cmd_part[0], p);
+		p->command_in_action = true;
 		execute_command(p);
 	}
 	else
@@ -76,8 +77,10 @@ void	save_cmds(char *input, t_parser_info *p)
 			save_input_output_files_n_cmds(array_index, p->cmd_part[array_index], p);
 			array_index++;
 		}
+		p->command_in_action = true;
 		pipe_stuff(p);
 	}
+	p->command_in_action = false;
 	//TESTING
 	// int i = -1, j = -1;
 	// while (++j < p->pipes_count + 1)
@@ -109,20 +112,30 @@ void	save_cmds(char *input, t_parser_info *p)
 	// }
 }
 
+t_parser_info	*return_p(t_parser_info *p)
+{
+	static t_parser_info	*save_p;
+
+	if (p != NULL)
+		save_p = p;
+	return (save_p);
+}
+
 //SIGNAL STUFF
 void	handle_signals(int signum)
 {
+	int				i;
+	t_parser_info	*p;
+
+	i = -1;
+	p = return_p(NULL);
 	if (signum == SIGINT)
 	{
-		printf("\n");
+		write(1, "\n", 1);
 		rl_on_new_line();//tells (i think) readline that we moved to a newline
 		rl_replace_line("", 1); //replace the rl_buffer (whatever was written (without pressing enter) in readline before signal ctrl c occured) by ""
-		rl_redisplay(); //redisplay prompt and rl_buffer
-	}
-	else if (signum == SIGQUIT)
-	{
-		rl_on_new_line();
-		rl_redisplay();
+		if (!p->command_in_action)
+			rl_redisplay(); //redisplay prompt and rl_buffer
 	}
 	return ;
 }
@@ -153,11 +166,13 @@ int	main(int argc, char **argv, char **env)
 	(void)argv;
 	ft_bzero(&p, sizeof(t_parser_info));
 	hide_signal_markers();
+	rl_catch_signals = 1;
 	signal(SIGINT, &handle_signals);
-	signal(SIGQUIT, &handle_signals);
+	signal(SIGQUIT, SIG_IGN);
 	p.env = dup_array(env);
 	while (1)
 	{
+		return_p(&p);
 		input = readline("\033[1;35mbaby shell\033[2;35m> \e[0m");
 		if (!input)
 		{

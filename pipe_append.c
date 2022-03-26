@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_append.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:46:03 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/22 14:09:34 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/25 15:25:17 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,9 @@
 void	big_baby_job(t_parser_info *p, int **pipe_append)
 {
 	int	i;
-	int	fd;
 	int	array_i;
 
-	fd = 0;
+	signal(SIGINT, SIG_DFL);
 	array_i = 0;
 	while (p->input_files_delimiters[array_i])
 	{
@@ -38,9 +37,15 @@ void	big_baby_job(t_parser_info *p, int **pipe_append)
 
 void	make_append_child(t_parser_info *p, int **pipe_append)
 {
+	int	status;
 	p->child_pids[0] = fork();
 	if (!p->child_pids[0])
 		big_baby_job(p, pipe_append);
 	else
-		waitpid(p->child_pids[0], 0, 0);
+	{
+		p->in_append_inprogress = true;
+		waitpid(p->child_pids[0], &status, 0);
+		if (WIFSIGNALED(status) == false)
+			p->in_append_inprogress = false;
+	}
 }

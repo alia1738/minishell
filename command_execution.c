@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/23 14:05:40 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/25 15:15:10 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	second_child_job(t_parser_info *p, int pipe_append[2], int *in_out)
 	if (p->cmd_path[0])
 		execve(p->cmd_path[0], p->cmd[0], 0);
 	//free here
-	exit (1);
+	exit (127); //check this later
 }
 
 int	builtin_execute(t_parser_info *p, int i)
@@ -68,22 +68,25 @@ int	builtin_check(t_parser_info *p, int i)
 
 void	execute_command(t_parser_info *p)
 {
+	int	status;
 	int	in_out[2];
 	int	pipe_append[2];
 
 	p->child_pids[0] = fork();
 	if (!p->child_pids[0])
 	{
+		signal(SIGINT, SIG_DFL);
 		pipe(pipe_append);
 		in_out[0] = final_in_fd(0, p, pipe_append);
 		in_out[1] = final_out_fd(0, p);
-		if (p->cmd[0][0] && builtin_check(p, 0), in_out)
-			second_child_job(p, pipe_append);
+		if (p->cmd[0][0] && builtin_check(p, 0))
+			second_child_job(p, pipe_append, in_out);
 		exit(0);
 	}
 	else
 	{
-		waitpid(p->child_pids[0], 0, 0);
+		waitpid(p->child_pids[0], &status, 0);
+		p->exit_code = WEXITSTATUS(status); //check the logic of getting the exit code
 		if (p->cmd[0][0] && !builtin_check(p, 0))
 			builtin_execute(p, 0);
 	}
