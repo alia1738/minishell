@@ -3,14 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   get_cmd_path.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 16:55:09 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/23 13:56:44 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/26 17:10:19 by Alia             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	change_cmd(t_parser_info *p, int array_i)
+{
+	if (access(p->cmd[array_i][0], F_OK) == -1)
+	{
+		printf("babyshell: %s: No such file or directory\n", p->cmd[array_i][0]);
+		p->exit_code = 127;
+	}
+	else if (access(p->cmd[array_i][0], X_OK) == -1)
+	{
+		printf("babyshell: %s: Permission denied\n", p->cmd[array_i][0]);
+		p->exit_code = 126;
+	}
+	else
+	{
+		p->cmd_path[array_i] = ft_strdup(p->cmd[array_i][0]);
+		free(p->cmd[array_i][0]);
+		p->cmd[array_i][0] = ft_strdup(ft_strrchr(p->cmd_path[array_i], '/') + 1);
+	}
+}
 
 char	*join_cmd_to_path(char *path, char *cmd)
 {
@@ -25,19 +45,22 @@ char	*join_cmd_to_path(char *path, char *cmd)
 
 /*Malloc occurs here*/
 
-char	*get_cmd_path(char *cmd)
+char	*get_cmd_path(char *cmd, t_parser_info *p)
 {
 	int		i;
-	char	**paths_array;
 	char	*temp_path;
+	char	**paths_array;
 
 	i = 0;
 	if (!cmd)
 		return (NULL);
-	temp_path = getenv("PATH"); //CHANGE TO local_getenv
-	// if (!temp_path)
-		//have something to catch when the user unsets "PATH"
-	//also for the access() that will be used on an absolute path to check if it exists
+	temp_path = local_getenv("PATH", p->env);
+	if (!temp_path)
+	{
+		printf("babyshell: %s: No such file or directory\n", cmd);
+		p->exit_code = 127;
+		return (0);
+	}
 	paths_array = ft_split(temp_path, ':');
 	while (paths_array[i])
 	{
