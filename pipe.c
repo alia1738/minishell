@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 16:42:32 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/27 16:54:01 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/27 17:44:40 by Alia             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static void	pipe_child_process(t_parser_info *p, int **pip, int pip_i, int **pip
 {
 	signal(SIGINT, SIG_DFL);
 	before_command(p, pip, pipe_append, pip_i);
-	if (p->cmd_path[pip_i] && builtin_check(p, pip_i) < 2)
+	if (builtin_check(p, pip_i) < 2)
 	{
 		builtin_execute(p, pip_i);
 		close_remaining_pipes(pipe_append, pip, pip_i, p->pipes_count);

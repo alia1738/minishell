@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_execution.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/27 17:08:04 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/27 17:41:10 by Alia             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,7 @@ static void	single_child_process(t_parser_info *p, int pipe_append[2])
 		free(p->env);
 		exit(p->exit_code);
 	}
-	if (p->cmd_absolute_path[0] == true)
-		change_cmd(p, 0);
-	else
-		p->cmd_path[0] = get_cmd_path(p->cmd[0][0], p);
-	if (p->cmd_path[0])
-		execve(p->cmd_path[0], p->cmd[0], 0);
+	execve(p->cmd_path[0], p->cmd[0], 0);
 	if (p->in_fd > 1)
 		close(p->in_fd);
 // 	else if (p->in_fd == 1) // i don't think i need it cuz i close both ends after duping
@@ -110,7 +105,11 @@ void	execute_single_command(t_parser_info *p)
 			free(p->env);
 			exit(p->exit_code);
 		}
-		if (p->cmd[0][0] && builtin_check(p, 0))
+		if (builtin_check(p, 0) == 2 && p->cmd_absolute_path[0] == true)
+			change_cmd(p, 0);
+		else if (builtin_check(p, 0) == 2)
+			p->cmd_path[0] = get_cmd_path(p->cmd[0][0], p);
+		if (p->cmd_path[0] && p->cmd[0][0] && builtin_check(p, 0))
 			single_child_process(p, pipe_append);
 		free_double_char(p->cmd_path);
 		free(p->env);

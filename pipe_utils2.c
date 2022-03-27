@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_utils2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 11:25:34 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/27 16:58:35 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/27 17:43:47 by Alia             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,9 +100,9 @@ void	before_command(t_parser_info *p, int **pip, int **pipe_append, int i)
 		free_n_close(p, pip, pipe_append);
 		exit(1);
 	}
-	if (p->cmd_absolute_path[i] == true)
+	if (builtin_check(p, 0) == 2 && p->cmd_absolute_path[i] == true)
 		change_cmd(p, i);
-	else
+	else if (builtin_check(p, 0) == 2)
 		p->cmd_path[i] = get_cmd_path(p->cmd[i][0], p);
 	close_pip_append(p, pip, pipe_append, i);
 	if (!p->cmd_path[i])
