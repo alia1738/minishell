@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 16:42:32 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/27 12:48:50 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/27 16:54:01 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,13 @@ static void	pipe_child_process(t_parser_info *p, int **pip, int pip_i, int **pip
 {
 	signal(SIGINT, SIG_DFL);
 	before_command(p, pip, pipe_append, pip_i);
-	if (!builtin_check(p, pip_i))
+	if (p->cmd_path[pip_i] && builtin_check(p, pip_i) < 2)
 	{
 		builtin_execute(p, pip_i);
 		close_remaining_pipes(pipe_append, pip, pip_i, p->pipes_count);
 		free_n_close(p, pip, pipe_append);
 		exit(p->exit_code);
 	}
-	if (p->cmd_absolute_path[pip_i] == true)
-		change_cmd(p, pip_i);
-	else
-		p->cmd_path[pip_i] = get_cmd_path(p->cmd[pip_i][0], p);
 	if (p->cmd_path[pip_i])
 		execve(p->cmd_path[pip_i], p->cmd[pip_i], 0);
 	close_remaining_pipes(pipe_append, pip, pip_i, p->pipes_count);

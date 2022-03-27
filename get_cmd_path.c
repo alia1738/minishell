@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_cmd_path.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 16:55:09 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/26 17:10:19 by Alia             ###   ########.fr       */
+/*   Updated: 2022/03/27 16:50:09 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ char	*get_cmd_path(char *cmd, t_parser_info *p)
 	}
 	printf("minishell: %s:  command not found\n", cmd);
 	free_double_char(paths_array);
+	p->exit_code = 127;
 	return (NULL);
 	// exit (127); // error message
 }

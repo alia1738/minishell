@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/27 13:16:54 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/27 17:08:04 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,13 @@ static void	single_child_process(t_parser_info *p, int pipe_append[2])
 	account_for_in_redirect(pipe_append, p->in_fd);
 	if (p->out_fd > 1)
 		dup2(p->out_fd, STDOUT_FILENO);
-	else if (p->in_fd == -1 || p->out_fd == -1)
+	if (builtin_check(p, 0) == 1)
 	{
-		free_double_char(p->cmd_path);
+		builtin_execute(p, 0);
+		if (p->in_fd > 1)
+			close(p->in_fd);
+		if (p->out_fd)
+			close(p->out_fd);
 		free_everything(p);
 		free(p->env);
 		exit(p->exit_code);
@@ -68,16 +72,17 @@ int	builtin_execute(t_parser_info *p, int i)
 
 int	builtin_check(t_parser_info *p, int i)
 {
-	if (!ft_strncmp(p->cmd[i][0], "echo", 5) || \
-	!ft_strncmp(p->cmd[i][0], "cd", 3) || \
-	!ft_strncmp(p->cmd[i][0], "pwd", 4) || \
+	if (!ft_strncmp(p->cmd[i][0], "cd", 3) || \
 	!ft_strncmp(p->cmd[i][0], "export", 7) || \
 	!ft_strncmp(p->cmd[i][0], "unset", 6) || \
-	!ft_strncmp(p->cmd[i][0], "env", 4) || \
 	!ft_strncmp(p->cmd[i][0], "clear", 6) || \
 	!ft_strncmp(p->cmd[i][0], "exit", 5))
 		return (0);
-	return (1);
+	else if (!ft_strncmp(p->cmd[i][0], "echo", 5) || \
+	!ft_strncmp(p->cmd[i][0], "pwd", 4) || \
+	!ft_strncmp(p->cmd[i][0], "env", 4))
+		return (1);
+	return (2);
 }
 
 void	execute_single_command(t_parser_info *p)
@@ -92,9 +97,22 @@ void	execute_single_command(t_parser_info *p)
 		pipe(pipe_append);
 		do_in_append(p, 0, pipe_append);
 		p->in_fd = final_in_fd(0, p);
+		if (p->in_fd == -1)
+		{
+			free_everything(p);
+			free(p->env);
+			exit(p->exit_code);
+		}
 		p->out_fd = final_out_fd(0, p);
+		if (p->out_fd == -1)
+		{
+			free_everything(p);
+			free(p->env);
+			exit(p->exit_code);
+		}
 		if (p->cmd[0][0] && builtin_check(p, 0))
 			single_child_process(p, pipe_append);
+		free_double_char(p->cmd_path);
 		free(p->env);
 		free_everything(p);
 		exit(p->exit_code);

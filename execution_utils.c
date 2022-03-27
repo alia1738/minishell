@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 11:46:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/27 13:03:11 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/27 16:29:49 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,15 +69,15 @@ int	final_in_fd(int array_i, t_parser_info *p)
 		{
 			if (access(p->input_files_delimiters[array_i][i], F_OK) == -1)
 			{
-				fd = -1;
 				printf("babyshell: %s: No such file or directory\n", p->input_files_delimiters[array_i][i]);
 				p->exit_code = 1;
+				return (-1);
 			}
 			else if (access(p->input_files_delimiters[array_i][i], R_OK) == -1)
 			{
-				fd = -1;
 				printf("babyshell: %s: Permission denied\n", p->input_files_delimiters[array_i][i]);
 				p->exit_code = 1;
+				return (-1);
 			}
 			else if (!p->input_files_delimiters[array_i][i + 1])
 				fd = open(p->input_files_delimiters[array_i][i], O_RDONLY, 0640);
@@ -102,10 +102,9 @@ int	final_out_fd(int array_i, t_parser_info *p)
 		{
 			if (access(p->output_files[array_i][i], W_OK) == -1)
 			{
-				fd = -1;
 				printf("babyshell: %s: Permission denied\n", p->output_files[array_i][i]);
 				p->exit_code = 1;
-				continue ;
+				return (-1);
 			}
 		}
 		if (p->out_arrow_flag[array_i][i] == SINGLE_ARROW)
