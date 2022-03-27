@@ -30,6 +30,12 @@ static void	single_child_process(t_parser_info *p, int pipe_append[2])
 		p->cmd_path[0] = get_cmd_path(p->cmd[0][0], p);
 	if (p->cmd_path[0])
 		execve(p->cmd_path[0], p->cmd[0], 0);
+	if (p->in_fd > 1)
+		close(p->in_fd);
+// 	else if (p->in_fd == 1) // i don't think i need it cuz i close both ends after duping
+// 		close(pipe_append[0]);
+	if (p->out_fd)
+		close(p->out_fd);
 	free_double_char(p->cmd_path);
 	free_everything(p);
 	free(p->env);
