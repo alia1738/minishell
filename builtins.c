@@ -156,7 +156,8 @@ void	baby_exit(t_parser_info *p, char **cmd)
 	bool	exit_flag;
 
 	exit_flag = true;
-	printf("exit\n");
+	if (!p->pipes_count)
+		printf("exit\n");
 
 	if (!cmd[1])
 		p->exit_code = (unsigned char)p->exit_code;
@@ -176,8 +177,8 @@ void	baby_exit(t_parser_info *p, char **cmd)
 			printf("minishell: exit: %s: numeric argument required\n", cmd[1]);
 		}
 	}
-	printf("code: %d\n", p->exit_code);
-	if (exit_flag)
+	// printf("code: %d\n", p->exit_code);
+	if (exit_flag && !p->pipes_count)
 	{
 		free_everything(p);
 		free_double_char(p->env);

@@ -67,9 +67,9 @@ void	close_remaining_pipes(int **pipe_append, int **pip, int i, int max)
 
 void	free_n_close(t_parser_info *p, int **pip, int **pipe_append)
 {
-	if (p->in_fd > 0)
+	if (p->in_fd > 1)
 		close(p->in_fd);
-	if (p->out_fd > 0)
+	if (p->out_fd > 1)
 		close(p->out_fd);
 	free(p->env);
 	free_everything(p);
@@ -80,17 +80,18 @@ void	free_n_close(t_parser_info *p, int **pip, int **pipe_append)
 
 void	before_command(t_parser_info *p, int **pip, int **pipe_append, int i)
 {
+	close_pip_append(p, pip, pipe_append, i);
 	p->in_fd = final_in_fd(i, p);
 	if (p->in_fd == -1)
 	{
-		close_all_pipes_fds(p, pip, pipe_append);
+		close_remaining_pipes(pipe_append, pip, i, p->pipes_count);
 		free_n_close(p, pip, pipe_append);
 		exit(p->exit_code);
 	}
 	p->out_fd = final_out_fd(i, p);
 	if (p->out_fd == -1)
 	{
-		close_all_pipes_fds(p, pip, pipe_append);
+		close_remaining_pipes(pipe_append, pip, i, p->pipes_count);
 		free_n_close(p, pip, pipe_append);
 		exit(1);
 	}
@@ -100,13 +101,10 @@ void	before_command(t_parser_info *p, int **pip, int **pipe_append, int i)
 		free_n_close(p, pip, pipe_append);
 		exit(1);
 	}
-	if (builtin_check(p, 0) == 2 && p->cmd_absolute_path[i] == true)
+	if (builtin_check(p, i) == 2 && p->cmd_absolute_path[i] == true)
 		change_cmd(p, i);
-	else if (builtin_check(p, 0) == 2)
+	else if (builtin_check(p, i) == 2)
 		p->cmd_path[i] = get_cmd_path(p->cmd[i][0], p);
-	close_pip_append(p, pip, pipe_append, i);
-	if (!p->cmd_path[i])
-		return ;
 	check_in_fd(p->in_fd, pipe_append[i], pip, i);
 	check_out_fd(p->out_fd, pip, i, p->pipes_count);
 }

@@ -28,7 +28,8 @@ static void	single_child_process(t_parser_info *p, int pipe_append[2])
 		free(p->env);
 		exit(p->exit_code);
 	}
-	execve(p->cmd_path[0], p->cmd[0], 0);
+	if (p->cmd_path[0])
+		execve(p->cmd_path[0], p->cmd[0], 0);
 	if (p->in_fd > 1)
 		close(p->in_fd);
 // 	else if (p->in_fd == 1) // i don't think i need it cuz i close both ends after duping
@@ -109,7 +110,7 @@ void	execute_single_command(t_parser_info *p)
 			change_cmd(p, 0);
 		else if (builtin_check(p, 0) == 2)
 			p->cmd_path[0] = get_cmd_path(p->cmd[0][0], p);
-		if (p->cmd_path[0] && p->cmd[0][0] && builtin_check(p, 0))
+		if (p->cmd[0][0] && builtin_check(p, 0))
 			single_child_process(p, pipe_append);
 		free_double_char(p->cmd_path);
 		free(p->env);
