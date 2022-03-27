@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 11:46:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/26 17:09:06 by Alia             ###   ########.fr       */
+/*   Updated: 2022/03/27 13:03:11 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ int	child_input_append(int array_i, t_parser_info *p, int i, int pipe_end[2])
 		if (!p->input_files_delimiters[array_i][i + 1])
 		{
 			temp = ft_strjoin(input, "\n");
+			if (ft_strchr(temp, '$'))
+				temp = expand_dollars_in_str(temp, p, true);
 			ft_putstr_fd(temp, pipe_end[1]);
 			free(temp);
 		}

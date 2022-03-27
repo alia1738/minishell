@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   command_execution.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/26 17:16:43 by Alia             ###   ########.fr       */
+/*   Updated: 2022/03/27 13:16:54 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	child_job(t_parser_info *p, int pipe_append[2])
+static void	single_child_process(t_parser_info *p, int pipe_append[2])
 {
 	account_for_in_redirect(pipe_append, p->in_fd);
 	if (p->out_fd > 1)
@@ -21,7 +21,6 @@ static void	child_job(t_parser_info *p, int pipe_append[2])
 	{
 		free_double_char(p->cmd_path);
 		free_everything(p);
-		free(pipe_append);
 		free(p->env);
 		exit(p->exit_code);
 	}
@@ -75,7 +74,7 @@ int	builtin_check(t_parser_info *p, int i)
 	return (1);
 }
 
-void	execute_command(t_parser_info *p)
+void	execute_single_command(t_parser_info *p)
 {
 	int	status;
 	int	pipe_append[2];
@@ -89,7 +88,7 @@ void	execute_command(t_parser_info *p)
 		p->in_fd = final_in_fd(0, p);
 		p->out_fd = final_out_fd(0, p);
 		if (p->cmd[0][0] && builtin_check(p, 0))
-			child_job(p, pipe_append);
+			single_child_process(p, pipe_append);
 		free(p->env);
 		free_everything(p);
 		exit(p->exit_code);

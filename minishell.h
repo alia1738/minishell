@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/26 17:01:13 by Alia             ###   ########.fr       */
+/*   Updated: 2022/03/27 13:11:57 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ char	**ft_split_custom(char *input, char **meta, t_parser_info *p);
 
 /* ------------ ** expand dollar ** ------------- */
 
-char	*expand_dollars_in_str(char *str, t_parser_info *p);
+char	*expand_dollars_in_str(char *str, t_parser_info *p, bool append_flag);
 
 /* ----------- ** execution utils ** ------------ */
 
@@ -141,7 +141,7 @@ int		child_input_append(int array_index, t_parser_info *p, int i, int pipe_appen
 
 /* ---------- ** command execution ** ----------- */
 
-void	execute_command(t_parser_info *p);
+void	execute_single_command(t_parser_info *p);
 int		builtin_check(t_parser_info *p, int i);
 int		builtin_execute(t_parser_info *p, int i);
 
@@ -171,7 +171,7 @@ char	*local_getenv(char *var, char **p_env);
 
 /* ------------------ ** pipe ** ---------------- */
 
-void	pipe_stuff(t_parser_info *p);
+void	execute_pipe_execution(t_parser_info *p);
 
 /* --------------- ** pipe utils ** ------------- */
 

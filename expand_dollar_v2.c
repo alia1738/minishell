@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_dollar_v2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 15:22:39 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/23 13:34:26 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/27 13:10:57 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ int		len_with_expansion(char	*str, t_parser_info *p) //keeping the quotes becaus
 	return (len);
 }
 
-char	*expand_dollars_in_str(char *str, t_parser_info *p)
+char	*expand_dollars_in_str(char *str, t_parser_info *p, bool append_flag)
 {
 	int		i;
 	int		new_index;
@@ -149,7 +149,7 @@ char	*expand_dollars_in_str(char *str, t_parser_info *p)
 			skip_dollar_content(&i, str);
 			// printf("length of $: %d\n", len);
 		}
-		else if (ft_isquote(str[i]) == 1)
+		else if (ft_isquote(str[i]) == 1 && append_flag != true)
 		{
 			expanded[new_index++] = str[i++];
 			// printf("expanded: %s\n", expanded);
@@ -161,11 +161,11 @@ char	*expand_dollars_in_str(char *str, t_parser_info *p)
 			if (str[i])
 				expanded[new_index++] = str[i++];
 		}
-		else if (ft_isquote(str[i]) == 2)
+		else if (ft_isquote(str[i]) == 2 || (ft_isquote(str[i]) == 1 && append_flag == true))
 		{
 			expanded[new_index++] = str[i];
 			i++;
-			while (ft_isquote(str[i]) != 2 && str[i])
+			while ((ft_isquote(str[i]) != 2 && str[i]) || (ft_isquote(str[i]) != 1 && str[i] && append_flag == true))
 			{
 				// printf("currently: %s\n", str + i);
 				if (str[i] == '$' && ft_isspace(str[i + 1]) == 0 && ft_ismeta(&str[i + 1], meta) == 0 && str[i + 1] && ft_isquote(str[i + 1]) == 0)  //last condition is for "echo "heyey$" "
@@ -184,7 +184,6 @@ char	*expand_dollars_in_str(char *str, t_parser_info *p)
 			}
 			if (str[i])
 				expanded[new_index++] = str[i++];
-			
 		}
 		else
 		{
