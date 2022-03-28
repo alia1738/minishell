@@ -3,14 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   get_cmd_path.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 16:55:09 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/27 16:50:09 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/28 14:38:58 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	nested_minishell(t_parser_info *p)
+{
+	int		save;
+	char	*temp;
+	char	*shlvl;
+
+	temp = local_getenv("SHLVL", p->env);
+	if (temp)
+	{
+		save = ft_atoi(temp);
+		++save;
+		temp = ft_itoa(save);
+		shlvl = ft_strjoin("SHLVL=", temp);
+		free(temp);
+		export_env(p, p->env, shlvl);
+		free(shlvl);
+	}
+}
 
 void	change_cmd(t_parser_info *p, int array_i)
 {
@@ -26,6 +45,8 @@ void	change_cmd(t_parser_info *p, int array_i)
 	}
 	else
 	{
+		if (!ft_strncmp(ft_strrchr(p->cmd[array_i][0], '/') + 1, "minishell", 10))
+			nested_minishell(p);
 		p->cmd_path[array_i] = ft_strdup(p->cmd[array_i][0]);
 		free(p->cmd[array_i][0]);
 		p->cmd[array_i][0] = ft_strdup(ft_strrchr(p->cmd_path[array_i], '/') + 1);

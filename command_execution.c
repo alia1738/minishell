@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_execution.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/27 17:41:10 by Alia             ###   ########.fr       */
+/*   Updated: 2022/03/28 14:48:01 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static void	single_child_process(t_parser_info *p, int pipe_append[2])
 		exit(p->exit_code);
 	}
 	if (p->cmd_path[0])
-		execve(p->cmd_path[0], p->cmd[0], 0);
+		execve(p->cmd_path[0], p->cmd[0], p->env);
 	if (p->in_fd > 1)
 		close(p->in_fd);
 // 	else if (p->in_fd == 1) // i don't think i need it cuz i close both ends after duping
@@ -119,7 +119,11 @@ void	execute_single_command(t_parser_info *p)
 	}
 	else
 	{
+		if (ft_strrchr(p->cmd[0][0], '/') && !ft_strncmp(ft_strrchr(p->cmd[0][0], '/') + 1, "minishell", 10))
+			signal(SIGINT, SIG_IGN);
 		waitpid(p->child_pids[0], &status, 0);
+		if (ft_strrchr(p->cmd[0][0], '/') && !ft_strncmp(ft_strrchr(p->cmd[0][0], '/') + 1, "minishell", 10))
+			signal(SIGINT, handle_signals);
 		p->exit_code = WEXITSTATUS(status); //check the logic of getting the exit code
 		if (p->cmd[0][0] && !builtin_check(p, 0))
 			builtin_execute(p, 0);
