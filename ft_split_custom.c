@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split_custom.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/19 18:10:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/27 13:13:05 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/28 15:33:54 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,11 +185,14 @@ static char	*get_next_word(int i, char *input, char **meta, t_parser_info *p)
 
 	len = get_next_word_len(i, input, meta);
 	temp = ft_substr(input, i, len);
-	// printf("word: %s.. len = %d\n", temp, len);
-	//where expanding the dollar occurs (commented at the moment)
-	if (ft_strchr(temp, '$'))
+
+	if (ft_strchr(temp, '$') && p->was_there_delim == false)
 		temp = expand_dollars_in_str(temp, p, false);
-	//
+
+	if (!ft_strncmp(temp, "<<", 3))
+		p->was_there_delim = true;
+	else
+		p->was_there_delim = false;
 	if (ft_strchr(temp, '\'') || ft_strchr(temp, '\"'))
 		result = strcpy_wout_quotes(temp);
 	else
