@@ -3,119 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 16:42:32 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/25 15:23:05 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/27 17:44:40 by Alia             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/* ------------------------------- Child One ------------------------------- */
-void	first_child(t_parser_info *p, int **pip, int **pipe_append)
+/* --------------------------------- Child --------------------------------- */
+static void	pipe_child_process(t_parser_info *p, int **pip, int pip_i, int **pipe_append)
 {
-	int	in_fd;
-	int	out_fd;
-
 	signal(SIGINT, SIG_DFL);
-	if (!p->cmd[0][0])
+	before_command(p, pip, pipe_append, pip_i);
+	if (builtin_check(p, pip_i) < 2)
 	{
-		close_all_pipes_fds(p, pip, pipe_append);
-		exit(1);
+		builtin_execute(p, pip_i);
+		close_remaining_pipes(pipe_append, pip, pip_i, p->pipes_count);
+		free_n_close(p, pip, pipe_append);
+		exit(p->exit_code);
 	}
-	p->cmd_path[0] = get_cmd_path(p->cmd[0][0]);
-	close_pip_append(p, pip, pipe_append, 0);
-	in_fd = pipe_final_in_fd(0, p);
-	if (in_fd == -1)
-	{
-		close_all_pipes_fds(p, pip, pipe_append);
-		exit(1); // free here
-	}
-	out_fd = pipe_final_out_fd(0, p);
-	if (out_fd == -1)	{
-		close_all_pipes_fds(p, pip, pipe_append);
-		exit(1); // free here
-	}
-	check_in_fd(in_fd, pipe_append[0], pip, 0);
-	check_out_fd(out_fd, pip, 0, p->pipes_count);
-	if (builtin_execute(p, 0) != -1)
-		exit(p->exit_code); //free and exit with correct code
-	if (p->cmd_path[0])
-		execve(p->cmd_path[0], p->cmd[0], 0);
-}
-
-/* ------------------------------- Child Two ------------------------------- */
-void	middle_child(t_parser_info *p, int **pip, int pip_i, int **pipe_append)
-{
-	int	in_fd;
-	int	out_fd;
-
-	signal(SIGINT, SIG_DFL);
-	if (!p->cmd[pip_i][0])
-	{
-		close_all_pipes_fds(p, pip, pipe_append);
-		exit(1);
-	}
-	p->cmd_path[pip_i] = get_cmd_path(p->cmd[pip_i][0]);
-	close_pip_append(p, pip, pipe_append, pip_i);
-	in_fd = pipe_final_in_fd(pip_i, p);
-	if (in_fd == -1)
-	{
-		close_all_pipes_fds(p, pip, pipe_append);
-		exit(1); // free here
-	}
-	out_fd = pipe_final_out_fd(pip_i, p);
-	if (out_fd == -1)
-	{
-		close_all_pipes_fds(p, pip, pipe_append);
-		exit(1); // free here
-	}
-	check_in_fd(in_fd, pipe_append[pip_i], pip, pip_i);
-	check_out_fd(out_fd, pip, pip_i, p->pipes_count);
-	if (builtin_execute(p, pip_i) != -1)
-		exit(p->exit_code); //free and exit with correct code
 	if (p->cmd_path[pip_i])
 		execve(p->cmd_path[pip_i], p->cmd[pip_i], 0);
-}
-
-/* ------------------------------ Child Three ------------------------------ */
-void	last_child(t_parser_info *p, int **pip, int pip_i, int **pipe_append)
-{
-	int	in_fd;
-	int	out_fd;
-	
-	signal(SIGINT, SIG_DFL);
-	if (!p->cmd[pip_i][0])
-	{
-		close_all_pipes_fds(p, pip, pipe_append);
-		exit(1);
-	}
-	p->cmd_path[pip_i] = get_cmd_path(p->cmd[pip_i][0]);
-	close_pip_append(p, pip, pipe_append, pip_i);
-	in_fd = pipe_final_in_fd(pip_i, p);
-	if (in_fd == -1)
-	{
-		close_all_pipes_fds(p, pip, pipe_append);
-		exit(-1); // free here
-	}
-	out_fd = pipe_final_out_fd(pip_i, p);
-	if (out_fd == -1)
-	{
-		close_all_pipes_fds(p, pip, pipe_append);
-		exit(-1); // free here
-	}
-	check_in_fd(in_fd, pipe_append[pip_i], pip, pip_i);
-	check_out_fd(out_fd, pip, pip_i, p->pipes_count);
-	if (builtin_execute(p, pip_i) != -1)
-		exit(p->exit_code); //free and exit with correct code
-	if (p->cmd_path[pip_i])
-		execve(p->cmd_path[pip_i], p->cmd[pip_i], 0);
+	close_remaining_pipes(pipe_append, pip, pip_i, p->pipes_count);
+	free_n_close(p, pip, pipe_append);
+	exit(p->exit_code);
 }
 
 /* --------------------------------- Parent -------------------------------- */
-
-void	parent_process(t_parser_info *p, int **pip, int **pipe_append)
+static void	parent_process(t_parser_info *p, int **pip, int **pipe_append)
 {
 	int	status;
 
@@ -127,15 +44,15 @@ void	parent_process(t_parser_info *p, int **pip, int **pipe_append)
 }
 
 /* ----------------------------- Main function ----------------------------- */
-void	pipe_stuff(t_parser_info *p)
+void	execute_pipe_execution(t_parser_info *p)
 {
 	int	i;
 	int	**pip;
 	int	**pipe_append;
 
+	i = -1;
 	pipe_append = create_pipe_append(p);
 	make_append_child(p, pipe_append);
-	i = -1;
 	if (p->in_append_inprogress)
 	{
 		while (++i <= p->pipes_count)
@@ -143,18 +60,15 @@ void	pipe_stuff(t_parser_info *p)
 			close(pipe_append[i][0]);
 			close(pipe_append[i][1]);
 		}
+		free_double_int(pipe_append, (p->pipes_count + 1));
 		return ;
 	}
 	pip = create_pipes(p);	
 	while (++i <= p->pipes_count)
 	{
 		p->child_pids[i] = fork();
-		if (!i && !p->child_pids[i])
-			first_child(p, pip, pipe_append);
-		else if (i != p->pipes_count && !p->child_pids[i])
-			middle_child(p, pip, i, pipe_append);
-		else if (!p->child_pids[i])
-			last_child(p, pip, i, pipe_append);
+		if (!p->child_pids[i])
+			pipe_child_process(p, pip, i, pipe_append);
 	}
 	parent_process(p, pip, pipe_append);
 }

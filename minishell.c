@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/25 14:46:13 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/27 12:49:17 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	save_cmds(char *input, t_parser_info *p)
 		p->cmd_part[0] = ft_split_custom(input, meta, p);
 		save_input_output_files_n_cmds(0, p->cmd_part[0], p);
 		p->command_in_action = true;
-		execute_command(p);
+		execute_single_command(p);
 	}
 	else
 	{
@@ -78,7 +78,7 @@ void	save_cmds(char *input, t_parser_info *p)
 			array_index++;
 		}
 		p->command_in_action = true;
-		pipe_stuff(p);
+		execute_pipe_execution(p);
 	}
 	p->command_in_action = false;
 	//TESTING
@@ -124,10 +124,8 @@ t_parser_info	*return_p(t_parser_info *p)
 //SIGNAL STUFF
 void	handle_signals(int signum)
 {
-	int				i;
 	t_parser_info	*p;
 
-	i = -1;
 	p = return_p(NULL);
 	if (signum == SIGINT)
 	{
@@ -190,6 +188,7 @@ int	main(int argc, char **argv, char **env)
 		save_cmds(input, &p);
 		/*-----------------*/
 		free_everything(&p);
+		free(p.cmd_path);
 		free(input);
 	}
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_utils2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 11:25:34 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/22 18:48:00 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/27 17:43:47 by Alia             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,67 +49,62 @@ void	close_all_pipes_fds(t_parser_info *p, int **pip, int **pipe_append)
 	}
 }
 
-int	pipe_final_in_fd(int array_i, t_parser_info *p)
+void	close_remaining_pipes(int **pipe_append, int **pip, int i, int max)
 {
-	int	i;
-	int	fd;
-
-	i = 0;
-	fd = 0;
-	while (p->input_files_delimiters[array_i][i])
-	{
-		if (p->in_arrow_flag[array_i][i] == SINGLE_ARROW)
-		{
-			if (access(p->input_files_delimiters[array_i][i], F_OK) == -1)
-			{
-				// fd = -1; // perror, free && exit
-				printf("babyshell: %s: No such file or directory\n", p->input_files_delimiters[array_i][i]);
-				p->exit_code = 1;
-				return (-1);
-			}
-			else if (access(p->input_files_delimiters[array_i][i], R_OK) == -1)
-			{
-				// fd = -1; // perror, free && exit
-				printf("babyshell: %s: Permission denied\n",  p->input_files_delimiters[array_i][i]);
-				p->exit_code = 1;
-				return (-1);
-			}
-			else if (!p->input_files_delimiters[array_i][i + 1])
-				fd = open(p->input_files_delimiters[array_i][i], O_RDONLY, 0640);
-		}
-		else if (p->in_arrow_flag[array_i][i] == DOUBLE_ARROW)
-			fd = 1;
-		i++;
+	if (i < max)
+	{	
+		close(pip[i][0]);
+		close(pip[i][1]);
 	}
-	return (fd);
+	if (i)
+	{
+		close(pip[i - 1][0]);
+		close(pip[i - 1][1]);
+	}
+	close(pipe_append[i][0]);
+	close(pipe_append[i][1]);
 }
 
-int	pipe_final_out_fd(int array_i, t_parser_info *p)
+void	free_n_close(t_parser_info *p, int **pip, int **pipe_append)
 {
-	int	i;
-	int	fd;
+	if (p->in_fd > 1)
+		close(p->in_fd);
+	if (p->out_fd > 1)
+		close(p->out_fd);
+	free(p->env);
+	free_everything(p);
+	free_double_char(p->cmd_path);
+	free_double_int(pip, p->pipes_count);
+	free_double_int(pipe_append, (p->pipes_count + 1));
+}
 
-	i = 0;
-	fd = 0;
-	while (p->output_files[array_i][i])
+void	before_command(t_parser_info *p, int **pip, int **pipe_append, int i)
+{
+	close_pip_append(p, pip, pipe_append, i);
+	p->in_fd = final_in_fd(i, p);
+	if (p->in_fd == -1)
 	{
-		if (!access(p->output_files[array_i][i], F_OK))
-		{
-			if (access(p->output_files[array_i][i], W_OK) == -1)
-			{
-				// perror, free && exit
-				printf("babyshell: %s: Permission denied\n", p->output_files[array_i][i]);
-				p->exit_code = 1;
-				return (-1);
-			}
-		}
-		if (p->out_arrow_flag[array_i][i] == SINGLE_ARROW)
-			fd = open(p->output_files[array_i][i], O_CREAT | O_WRONLY | O_TRUNC, 0640);
-		else if (p->out_arrow_flag[array_i][i] == DOUBLE_ARROW)
-			fd = open(p->output_files[array_i][i], O_CREAT | O_WRONLY | O_APPEND, 0640);
-		if (p->output_files[array_i][i + 1])
-			close(fd);
-		i++;
+		close_remaining_pipes(pipe_append, pip, i, p->pipes_count);
+		free_n_close(p, pip, pipe_append);
+		exit(p->exit_code);
 	}
-	return (fd);
+	p->out_fd = final_out_fd(i, p);
+	if (p->out_fd == -1)
+	{
+		close_remaining_pipes(pipe_append, pip, i, p->pipes_count);
+		free_n_close(p, pip, pipe_append);
+		exit(1);
+	}
+	if (!p->cmd[i][0])
+	{
+		close_all_pipes_fds(p, pip, pipe_append);
+		free_n_close(p, pip, pipe_append);
+		exit(1);
+	}
+	if (builtin_check(p, i) == 2 && p->cmd_absolute_path[i] == true)
+		change_cmd(p, i);
+	else if (builtin_check(p, i) == 2)
+		p->cmd_path[i] = get_cmd_path(p->cmd[i][0], p);
+	check_in_fd(p->in_fd, pipe_append[i], pip, i);
+	check_out_fd(p->out_fd, pip, i, p->pipes_count);
 }
