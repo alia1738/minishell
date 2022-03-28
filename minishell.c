@@ -188,6 +188,7 @@ int	main(int argc, char **argv, char **env)
 		save_cmds(input, &p);
 		/*-----------------*/
 		free_everything(&p);
+		free(p.cmd_path);
 		free(input);
 	}
 }
