@@ -6,13 +6,13 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 12:12:03 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/23 17:15:42 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/29 12:51:53 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	env(t_parser_info *p)
+int	env(t_parser_info *p)//change to accept uppercase like ENV, EnV, Env
 {
 	int	i;
 
@@ -22,7 +22,7 @@ int	env(t_parser_info *p)
 	return(0);
 }
 
-int	pwd(t_parser_info *p)
+int	pwd(t_parser_info *p) //change to accept uppercase
 {
 	char	cwd[PATH_MAX];
 	if (!getcwd(cwd, sizeof(cwd)))
@@ -36,7 +36,7 @@ int	pwd(t_parser_info *p)
 	return (0);
 }
 
-int	echo(t_parser_info *p, char **argv)
+int	echo(t_parser_info *p, char **argv)//change to accept uppercase AND to accept -nnnn -n -n
 {
 	int		i;
 	bool	newline_flag;
@@ -134,19 +134,6 @@ int	cd(t_parser_info *p, char **argv)
 	return(0);
 }
 
-
-int	ft_str_isdigit(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i] >= '0' && str[i] <= '9')
-		i++;
-	if (str[i] == '\0')
-		return (1);
-	return (0);
-}
-
 void	baby_exit(t_parser_info *p, char **cmd)
 {
 	//catch cases of failure
@@ -158,7 +145,6 @@ void	baby_exit(t_parser_info *p, char **cmd)
 	exit_flag = true;
 	if (!p->pipes_count)
 		printf("exit\n");
-
 	if (!cmd[1])
 		p->exit_code = (unsigned char)p->exit_code;
 	else

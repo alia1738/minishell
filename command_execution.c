@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/28 14:48:01 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/29 12:49:03 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,17 +44,17 @@ static void	single_child_process(t_parser_info *p, int pipe_append[2])
 
 int	builtin_execute(t_parser_info *p, int i)
 {
-	if (!ft_strncmp(p->cmd[i][0], "echo", 5))
+	if (!ft_strncmp(ft_str_tolower(p->cmd[i][0]), "echo", 5))
 		return (echo(p, p->cmd[i]));
 	else if (!ft_strncmp(p->cmd[i][0], "cd", 3))
 		return (cd(p, p->cmd[i]));
-	else if (!ft_strncmp(p->cmd[i][0], "pwd", 4))
+	else if (!ft_strncmp(ft_str_tolower(p->cmd[i][0]), "pwd", 4))
 		return (pwd(p));
 	else if (!ft_strncmp(p->cmd[i][0], "export", 7))
 		return (export(p, p->cmd[i]));
 	else if (!ft_strncmp(p->cmd[i][0], "unset", 6))
 		return (unset(p, p->cmd[i]));
-	else if (!ft_strncmp(p->cmd[i][0], "env", 4))
+	else if (!ft_strncmp(ft_str_tolower(p->cmd[i][0]), "env", 4))
 		return (env(p));
 	else if (!ft_strncmp(p->cmd[i][0], "clear", 6))
 		return (clear());
@@ -74,9 +74,9 @@ int	builtin_check(t_parser_info *p, int i)
 	!ft_strncmp(p->cmd[i][0], "clear", 6) || \
 	!ft_strncmp(p->cmd[i][0], "exit", 5))
 		return (0);
-	else if (!ft_strncmp(p->cmd[i][0], "echo", 5) || \
-	!ft_strncmp(p->cmd[i][0], "pwd", 4) || \
-	!ft_strncmp(p->cmd[i][0], "env", 4))
+	else if (!ft_strncmp(ft_str_tolower(p->cmd[i][0]), "echo", 5) || \
+	!ft_strncmp(ft_str_tolower(p->cmd[i][0]), "pwd", 4) || \
+	!ft_strncmp(ft_str_tolower(p->cmd[i][0]), "env", 4))
 		return (1);
 	return (2);
 }

@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 17:52:09 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/17 14:02:23 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/29 12:49:43 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,27 @@ char	**dup_array(char **a1)
 	}
 	new_a[i] = 0;
 	return (new_a);
+}
+
+int		ft_str_isdigit(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i] >= '0' && str[i] <= '9')
+		i++;
+	if (str[i] == '\0')
+		return (1);
+	return (0);
+}
+
+
+char	*ft_str_tolower(char *str)
+{
+	int	i;
+
+	i = -1;
+	while (str[++i])
+		str[i] = ft_tolower(str[i]);
+	return (str);
 }

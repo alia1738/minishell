@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/27 12:49:17 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/28 19:27:20 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,11 @@ void	handle_signals(int signum)
 	t_parser_info	*p;
 
 	p = return_p(NULL);
+	//this is not working as of yet for some unknown reason
+	if (!p->command_in_action)
+		p->exit_code = 130;
+	else
+		p->exit_code = 1;
 	if (signum == SIGINT)
 	{
 		write(1, "\n", 1);
@@ -175,7 +180,7 @@ int	main(int argc, char **argv, char **env)
 		if (!input)
 		{
 			free_double_char(p.env);
-			exit(0);
+			exit(p.exit_code);
 		}
 		if (input[0])
 			add_history(input);
