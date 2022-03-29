@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 16:55:09 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/28 14:38:58 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/29 15:02:20 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ char	*get_cmd_path(char *cmd, t_parser_info *p)
 	while (paths_array[i])
 	{
 		temp_path = join_cmd_to_path(paths_array[i], cmd);
-		if (!access(temp_path, F_OK))
+		if (!access(temp_path, F_OK) && !access(temp_path, X_OK))
 			return (temp_path);
 		free(temp_path);
 		i++;

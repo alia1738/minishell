@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/29 12:47:47 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/29 14:31:22 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,13 +110,14 @@ int		check_repeated_meta(char *input, t_parser_info *p);
 
 /* ------------ ** simple helpers ** ------------ */
 
-int		clear(void);
 char	**dup_array(char **a1);
+int		clear(t_parser_info *p);
 char	*ft_strndup(const char *s1, int n);
 void	skip_isspaces(int *index, char *input);
 char	*ft_strcpy(char *dst, const char *src);
 int		ft_str_isdigit(char *str);
 char	*ft_str_tolower(char *str);
+int		check_longmax(char *str);
 
 /* ------------- ** command path ** ------------- */
 

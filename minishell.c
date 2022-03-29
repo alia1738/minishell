@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/28 19:27:20 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/29 15:09:09 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ void	handle_signals(int signum)
 
 	p = return_p(NULL);
 	//this is not working as of yet for some unknown reason
-	if (!p->command_in_action)
+	if (p->command_in_action)
 		p->exit_code = 130;
 	else
 		p->exit_code = 1;

@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 16:42:32 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/28 14:35:13 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/29 14:26:17 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,18 @@ static void	pipe_child_process(t_parser_info *p, int **pip, int pip_i, int **pip
 /* --------------------------------- Parent -------------------------------- */
 static void	parent_process(t_parser_info *p, int **pip, int **pipe_append)
 {
+	int	i;
 	int	status;
 
+	i = -1;
 	close_all_pipes_fds(p, pip, pipe_append);
-	while (waitpid(-1, &status, 0) > 0)
+	while (++i < p->pipes_count + 1)
+	{
+		waitpid(p->child_pids[i], &status, 0);
 		p->exit_code = WEXITSTATUS(status);
+	}
+	// while (waitpid(-1, &status, 0) > 0)
+	// 	p->exit_code = WEXITSTATUS(status);
 	free_double_int(pip, p->pipes_count);
 	free_double_int(pipe_append, (p->pipes_count + 1));
 }

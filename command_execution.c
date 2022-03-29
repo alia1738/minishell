@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/29 12:49:03 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/29 15:07:46 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,8 @@ int	builtin_execute(t_parser_info *p, int i)
 		return (unset(p, p->cmd[i]));
 	else if (!ft_strncmp(ft_str_tolower(p->cmd[i][0]), "env", 4))
 		return (env(p));
-	else if (!ft_strncmp(p->cmd[i][0], "clear", 6))
-		return (clear());
+	else if (!ft_strncmp(ft_str_tolower(p->cmd[i][0]), "clear", 6))
+		return (clear(p));
 	else if (!ft_strncmp(p->cmd[i][0], "exit", 5))
 	{
 		baby_exit(p, p->cmd[i]);
@@ -71,7 +71,7 @@ int	builtin_check(t_parser_info *p, int i)
 	if (!ft_strncmp(p->cmd[i][0], "cd", 3) || \
 	!ft_strncmp(p->cmd[i][0], "export", 7) || \
 	!ft_strncmp(p->cmd[i][0], "unset", 6) || \
-	!ft_strncmp(p->cmd[i][0], "clear", 6) || \
+	!ft_strncmp(ft_str_tolower(p->cmd[i][0]), "clear", 6) || \
 	!ft_strncmp(p->cmd[i][0], "exit", 5))
 		return (0);
 	else if (!ft_strncmp(ft_str_tolower(p->cmd[i][0]), "echo", 5) || \

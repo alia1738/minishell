@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 17:52:09 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/29 12:49:43 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/29 14:30:59 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,18 @@ void	skip_isspaces(int *index, char *input)
 		(*index)++;
 }
 
-int		clear(void)
+int		clear(t_parser_info *p)
 {
 	printf("\e[1;1H\e[2J"); //this one doesn't delete history
 	// printf("\033c"); //this one deletes the history of the terminal
+	p->exit_code = 0;
 	return (0);
 }
 
 char	*ft_strcpy(char *dst, const char *src)
 {
-	int i;
+	int	i;
+
 	i = 0;
 	while (src && src[i])
 	{
@@ -60,7 +62,7 @@ char	*ft_strcpy(char *dst, const char *src)
 
 char	**dup_array(char **a1)
 {
-	int	i;
+	int		i;
 	char	**new_a;
 
 	i = 0;
@@ -77,18 +79,19 @@ char	**dup_array(char **a1)
 	return (new_a);
 }
 
-int		ft_str_isdigit(char *str)
+int	ft_str_isdigit(char *str)
 {
 	int	i;
 
 	i = 0;
+	if (str[i] == '-')
+		i++;
 	while (str[i] >= '0' && str[i] <= '9')
 		i++;
 	if (str[i] == '\0')
 		return (1);
 	return (0);
 }
-
 
 char	*ft_str_tolower(char *str)
 {
@@ -98,4 +101,33 @@ char	*ft_str_tolower(char *str)
 	while (str[++i])
 		str[i] = ft_tolower(str[i]);
 	return (str);
+}
+
+int		check_longmax(char *str)
+{
+	int			i;
+	int			sign;
+	int			count;
+	long long	result;
+
+	i = 0;
+	sign = 1;
+	count = 0;
+	result = 0;
+	if (str[i] == '-')
+	{
+		sign = -1;
+		i++;
+	}
+	while (ft_isdigit(str[i]) == 1)
+	{
+		if (result >= 9223372036854775807 / 10 && str[i] > '7' && sign == 1)
+			return (1);
+		if ((result >= 9223372036854775807 / 10 && str[i] > '8') || count > 19)
+			return (1);
+		result = 10 * result + (str[i] - 48);
+		i++;
+		count++;
+	}
+	return (0);
 }
