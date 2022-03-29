@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/29 15:09:09 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/29 16:51:15 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,11 +127,8 @@ void	handle_signals(int signum)
 	t_parser_info	*p;
 
 	p = return_p(NULL);
-	//this is not working as of yet for some unknown reason
 	if (p->command_in_action)
-		p->exit_code = 130;
-	else
-		p->exit_code = 1;
+		p->signal_in_cmd = true;
 	if (signum == SIGINT)
 	{
 		write(1, "\n", 1);

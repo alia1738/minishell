@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/29 15:07:46 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/29 16:51:06 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,6 @@ static void	single_child_process(t_parser_info *p, int pipe_append[2])
 		execve(p->cmd_path[0], p->cmd[0], p->env);
 	if (p->in_fd > 1)
 		close(p->in_fd);
-// 	else if (p->in_fd == 1) // i don't think i need it cuz i close both ends after duping
-// 		close(pipe_append[0]);
 	if (p->out_fd)
 		close(p->out_fd);
 	free_double_char(p->cmd_path);
@@ -85,13 +83,23 @@ void	execute_single_command(t_parser_info *p)
 {
 	int	status;
 	int	pipe_append[2];
+	int	exit_code_fd[2];
+	char	temp[3];
 
+	ft_bzero(temp, 3);
+	pipe(exit_code_fd);
 	p->child_pids[0] = fork();
 	if (!p->child_pids[0])
 	{
 		signal(SIGINT, SIG_DFL);
 		pipe(pipe_append);
+		//
+		close(exit_code_fd[0]);
+		write(exit_code_fd[1], "1", 1);
 		do_in_append(p, 0, pipe_append);
+		//
+		write(exit_code_fd[1], "30", 3);
+		close(exit_code_fd[1]);
 		p->in_fd = final_in_fd(0, p);
 		if (p->in_fd == -1)
 		{
@@ -125,6 +133,14 @@ void	execute_single_command(t_parser_info *p)
 		if (ft_strrchr(p->cmd[0][0], '/') && !ft_strncmp(ft_strrchr(p->cmd[0][0], '/') + 1, "minishell", 10))
 			signal(SIGINT, handle_signals);
 		p->exit_code = WEXITSTATUS(status); //check the logic of getting the exit code
+		if (p->signal_in_cmd)
+		{
+			close(exit_code_fd[1]);
+			read(exit_code_fd[0], temp, 3);
+			close(exit_code_fd[0]);
+			p->exit_code = ft_atoi(temp);
+			p->signal_in_cmd = false;
+		}
 		if (p->cmd[0][0] && !builtin_check(p, 0))
 			builtin_execute(p, 0);
 	}
