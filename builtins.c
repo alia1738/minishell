@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 12:12:03 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/29 14:20:37 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/29 17:29:33 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,18 +36,37 @@ int	pwd(t_parser_info *p)
 	return (0);
 }
 
-int	echo(t_parser_info *p, char **argv)//change to accept -nnnn -n -n
+int	echo_index(char **argv)
+{
+	int	index;
+	int	array_index;
+
+	array_index = 1;
+	while (argv[array_index])
+	{
+		if (argv[array_index][0] != '-')
+			return (array_index);
+		index = 1;
+		while (argv[array_index][index])
+		{
+			if (argv[array_index][index] != 'n')
+				return (array_index);
+			index++;
+		}
+		array_index++;
+	}
+	return (array_index);
+}
+
+int	echo(t_parser_info *p, char **argv)
 {
 	int		i;
 	bool	newline_flag;
 
+	i = echo_index(argv);
 	newline_flag = true;
-	i = 1;
-	if (argv[1] && !ft_strncmp(argv[1], "-n", 3))
-	{
+	if (i > 1)
 		newline_flag = false;
-		i = 2;
-	}
 	if (argv[i])
 		printf("%s", argv[i++]);
 	while (argv[i] && printf(" "))
@@ -57,38 +76,6 @@ int	echo(t_parser_info *p, char **argv)//change to accept -nnnn -n -n
 	p->exit_code = 0;
 	return (0);
 }
-
-// int	echo(t_parser_info *p, char **argv)//change to accept uppercase AND to accept -nnnn -n -n
-// {
-// 	int		i;
-// 	bool	found_word;
-// 	bool	newline_flag;
-
-// 	i = 1;
-// 	newline_flag = true;
-// 	found_word = false;
-// 	while (argv[i])
-// 	{
-// 		if (!found_word && !ft_strncmp(argv[1], "-n", 2))
-// 		{
-// 			while ()
-// 			newline_flag = false;
-// 			i++;
-// 		}
-// 		else
-// 		{
-// 			printf("%s", argv[i++]);
-// 			if (argv[i + 1])
-// 				printf(" ");
-// 			found_word = true;
-// 			i++;
-// 		}
-// 	}
-// 	if (newline_flag)
-// 		printf("\n");
-// 	p->exit_code = 0;
-// 	return (0);
-// }
 
 int	export(t_parser_info *p, char **cmd)
 {
