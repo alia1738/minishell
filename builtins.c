@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 12:12:03 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/23 17:15:42 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/29 17:29:33 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,18 +36,37 @@ int	pwd(t_parser_info *p)
 	return (0);
 }
 
+int	echo_index(char **argv)
+{
+	int	index;
+	int	array_index;
+
+	array_index = 1;
+	while (argv[array_index])
+	{
+		if (argv[array_index][0] != '-')
+			return (array_index);
+		index = 1;
+		while (argv[array_index][index])
+		{
+			if (argv[array_index][index] != 'n')
+				return (array_index);
+			index++;
+		}
+		array_index++;
+	}
+	return (array_index);
+}
+
 int	echo(t_parser_info *p, char **argv)
 {
 	int		i;
 	bool	newline_flag;
 
+	i = echo_index(argv);
 	newline_flag = true;
-	i = 1;
-	if (argv[1] && !ft_strncmp(argv[1], "-n", 3))
-	{
+	if (i > 1)
 		newline_flag = false;
-		i = 2;
-	}
 	if (argv[i])
 		printf("%s", argv[i++]);
 	while (argv[i] && printf(" "))
@@ -60,21 +79,37 @@ int	echo(t_parser_info *p, char **argv)
 
 int	export(t_parser_info *p, char **cmd)
 {
-	int	i;
+	int		i;
+	bool	failed;
 	
 	i = 1;
+	failed = false;
 	while (cmd[i])
+	{
 		p->env = export_env(p, p->env, cmd[i++]);
+		if (p->exit_code == 1)
+			failed = true;	
+	}
+	if (failed)
+		p->exit_code = 1;
 	return (0);
 }
 
 int	unset(t_parser_info *p, char **cmd)
 {
-	int	i;
+	int		i;
+	bool	failed;
 	
 	i = 1;
+	failed = false;
 	while (cmd[i])
+	{
 		p->env = unset_env(p, p->env, cmd[i++]);
+		if (p->exit_code == 1)
+			failed = true;
+	}
+	if (failed)
+		p->exit_code = 1;
 	return (0);
 }
 
@@ -98,7 +133,7 @@ int	cd(t_parser_info *p, char **argv)
 		}
 		else if (!opendir(temp) || chdir(temp) == -1)
 		{
-			temp = ft_strjoin("minishell: cd: ", argv[1]);
+			temp = ft_strjoin("minishell: cd: ", temp);
 			perror(temp);
 			free(temp);
 			p->exit_code = 1;
@@ -109,7 +144,7 @@ int	cd(t_parser_info *p, char **argv)
 		if (!opendir(argv[1]) || chdir(argv[1]) == -1)
 		{
 			temp = ft_strjoin("minishell: cd: ", argv[1]);
-			perror(ft_strjoin("minishell: cd: ", argv[1]));
+			perror(temp);
 			free(temp);
 			p->exit_code = 1;
 		}
@@ -134,19 +169,6 @@ int	cd(t_parser_info *p, char **argv)
 	return(0);
 }
 
-
-int	ft_str_isdigit(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i] >= '0' && str[i] <= '9')
-		i++;
-	if (str[i] == '\0')
-		return (1);
-	return (0);
-}
-
 void	baby_exit(t_parser_info *p, char **cmd)
 {
 	//catch cases of failure
@@ -158,14 +180,13 @@ void	baby_exit(t_parser_info *p, char **cmd)
 	exit_flag = true;
 	if (!p->pipes_count)
 		printf("exit\n");
-
 	if (!cmd[1])
 		p->exit_code = (unsigned char)p->exit_code;
 	else
 	{
-		if (ft_str_isdigit(cmd[1]) == 1 && !cmd[2])
+		if (ft_str_isdigit(cmd[1]) == 1 && !cmd[2] && !check_longmax(cmd[1]))
 			p->exit_code = (unsigned char)ft_atoi(cmd[1]);
-		else if (ft_str_isdigit(cmd[1]) == 1 && cmd[2])
+		else if (ft_str_isdigit(cmd[1]) == 1 && cmd[2] && !check_longmax(cmd[1]))
 		{
 			p->exit_code = 1;
 			exit_flag = false;
@@ -187,6 +208,7 @@ void	baby_exit(t_parser_info *p, char **cmd)
 	//if cmd[0] is higer than longmax it should fail
 	//also other cases should be accounted for where exit fails
 	//too many cases!!!
+	//exit 9223372036854775807 .. -9223372036854775808
 }
 /*
 Exit cases:

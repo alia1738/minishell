@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/27 13:11:57 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/03/29 16:40:26 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,9 @@ typedef struct s_parser_info
 
 	bool	in_append_inprogress;
 	bool	command_in_action;
+	bool	was_there_delim;
+
+	bool	signal_in_cmd;
 
 	int		exit_code;
 }	t_parser_info;
@@ -109,11 +112,14 @@ int		check_repeated_meta(char *input, t_parser_info *p);
 
 /* ------------ ** simple helpers ** ------------ */
 
-int		clear(void);
 char	**dup_array(char **a1);
+int		clear(t_parser_info *p);
 char	*ft_strndup(const char *s1, int n);
 void	skip_isspaces(int *index, char *input);
 char	*ft_strcpy(char *dst, const char *src);
+int		ft_str_isdigit(char *str);
+char	*ft_str_tolower(char *str);
+int		check_longmax(char *str);
 
 /* ------------- ** command path ** ------------- */
 
@@ -129,7 +135,16 @@ char	**ft_split_custom(char *input, char **meta, t_parser_info *p);
 
 /* ------------ ** expand dollar ** ------------- */
 
+void	skip_dollar_content(int *i, char *str);
+char	*ft_getenv(int i, char *str, t_parser_info *p);
 char	*expand_dollars_in_str(char *str, t_parser_info *p, bool append_flag);
+
+/* ---------- ** expand dollar utils ** --------- */
+
+
+void	len_dollar_question(int *i, int *len, t_parser_info *p);
+void	expand_dollar_question(int *i, int *new_index, char *expanded, t_parser_info *p);
+void	len_dollar_general(int *i, int *len, char *str, t_parser_info *p);
 
 /* ----------- ** execution utils ** ------------ */
 
