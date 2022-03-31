@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   simple_helpers.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 17:52:09 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/29 14:30:59 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/31 17:58:58 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ int	ft_str_isdigit(char *str)
 	int	i;
 
 	i = 0;
-	if (str[i] == '-')
+	if (str[i] == '-' || str[i] == '+')
 		i++;
 	while (str[i] >= '0' && str[i] <= '9')
 		i++;
@@ -95,12 +95,29 @@ int	ft_str_isdigit(char *str)
 
 char	*ft_str_tolower(char *str)
 {
-	int	i;
+	int		i;
 
 	i = -1;
 	while (str[++i])
 		str[i] = ft_tolower(str[i]);
 	return (str);
+}
+
+int	compare_caseless(const char *s_unknown, const char *s_lowercase)
+{
+	int		i;
+	char	c;
+
+	if (ft_strlen(s_unknown) != ft_strlen(s_lowercase))
+		return (0);
+	i = -1;
+	while (s_lowercase[++i])
+	{
+		c = s_unknown[i];
+		if (ft_tolower(c) != s_lowercase[i])
+			return (0);
+	}
+	return (1);
 }
 
 int		check_longmax(char *str)
@@ -114,9 +131,10 @@ int		check_longmax(char *str)
 	sign = 1;
 	count = 0;
 	result = 0;
-	if (str[i] == '-')
+	if (str[i] == '-' || str[i] == '+')
 	{
-		sign = -1;
+		if (str[i] == '-')
+			sign = -1;
 		i++;
 	}
 	while (ft_isdigit(str[i]) == 1)

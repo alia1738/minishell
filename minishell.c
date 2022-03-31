@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/29 16:51:15 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/31 19:14:39 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	save_input_output_files_n_cmds(int array_index, char **specific_cmd, t_pars
 	int	in_index;
 	int	out_index;
 	int	cmd_index;
+	char	*temp;
 
 	i = 0;
 	in_index = 0;
@@ -31,6 +32,17 @@ void	save_input_output_files_n_cmds(int array_index, char **specific_cmd, t_pars
 				p->in_arrow_flag[array_index][in_index] = DOUBLE_ARROW;
 			else
 				p->in_arrow_flag[array_index][in_index] = SINGLE_ARROW;
+			if (p->in_arrow_flag[array_index][in_index] == SINGLE_ARROW && ft_strchr(specific_cmd[i + 1], '$'))
+			{
+				temp = expand_dollars_in_str(specific_cmd[i + 1], p, false);
+				if (!temp[0])
+				{
+					printf("babyshell: %s: ambiguous redirect\n", specific_cmd[i + 1]);
+					p->in_arrow_flag[array_index][in_index] = -1;
+				}
+				free(specific_cmd[i + 1]);
+				specific_cmd[i + 1] = temp;
+			}
 			p->input_files_delimiters[array_index][in_index++] = specific_cmd[++i];
 		}
 		else if ((!ft_strncmp(specific_cmd[i], ">>", 2) || !ft_strncmp(specific_cmd[i], ">", 1)) && specific_cmd[i + 1])
@@ -39,12 +51,35 @@ void	save_input_output_files_n_cmds(int array_index, char **specific_cmd, t_pars
 				p->out_arrow_flag[array_index][out_index] = DOUBLE_ARROW;
 			else
 				p->out_arrow_flag[array_index][out_index] = SINGLE_ARROW;
+
+			if (ft_strchr(specific_cmd[i + 1], '$'))
+			{
+				
+				temp = expand_dollars_in_str(specific_cmd[i + 1], p, false);
+				if (!temp[0])
+				{
+					printf("babyshell: %s: ambiguous redirect\n", specific_cmd[i + 1]);
+					p->out_arrow_flag[array_index][out_index] = -1;
+				}
+				free(specific_cmd[i + 1]);
+				specific_cmd[i + 1] = temp;
+			}
 			p->output_files[array_index][out_index++] = specific_cmd[++i];
 		}
 		else
 		{
 			if (cmd_index == 0 && ft_strchr(specific_cmd[i], '/'))
 				p->cmd_absolute_path[array_index] = true;
+			//
+			if (ft_strchr(specific_cmd[i], '$'))
+				specific_cmd[i] = expand_dollars_in_str(specific_cmd[i], p, false);
+			// if (!ft_strncmp(specific_cmd[i], "<<", 3))
+			// 	p->was_there_delim = true;
+			// else
+			// 	p->was_there_delim = false;
+			if (ft_strchr(specific_cmd[i], '\'') || ft_strchr(specific_cmd[i], '\"'))
+				specific_cmd[i] = strcpy_wout_quotes(specific_cmd[i]);//u have to free old str
+			//
 			p->cmd[array_index][cmd_index++] = specific_cmd[i];
 		}
 		i++;

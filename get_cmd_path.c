@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_cmd_path.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 16:55:09 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/29 15:02:20 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/31 17:22:57 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ char	*get_cmd_path(char *cmd, t_parser_info *p)
 		return (0);
 	}
 	paths_array = ft_split(temp_path, ':');
-	while (paths_array[i])
+	while (paths_array[i] && cmd[0])
 	{
 		temp_path = join_cmd_to_path(paths_array[i], cmd);
 		if (!access(temp_path, F_OK) && !access(temp_path, X_OK))

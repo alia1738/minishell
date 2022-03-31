@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/29 16:40:26 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/31 18:28:21 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,7 @@ void	skip_isspaces(int *index, char *input);
 char	*ft_strcpy(char *dst, const char *src);
 int		ft_str_isdigit(char *str);
 char	*ft_str_tolower(char *str);
+int		compare_caseless(const char *s_unknown, const char *s_lowercase);
 int		check_longmax(char *str);
 
 /* ------------- ** command path ** ------------- */
@@ -129,6 +130,7 @@ char	*get_cmd_path(char *cmd, t_parser_info *p);
 /* ----------------- ** split ** ---------------- */
 
 int		ft_isquote(char c);
+char	*strcpy_wout_quotes(char *str);
 int		ft_ismeta(char *current_c, char **meta);
 int		skip_quote_content(int *i, char *input);
 char	**ft_split_custom(char *input, char **meta, t_parser_info *p);

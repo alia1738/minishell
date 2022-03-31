@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_execution.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/29 16:51:06 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/31 18:02:42 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,24 +16,27 @@ static void	single_child_process(t_parser_info *p, int pipe_append[2])
 {
 	account_for_in_redirect(pipe_append, p->in_fd);
 	if (p->out_fd > 1)
+	{
 		dup2(p->out_fd, STDOUT_FILENO);
+		close(p->out_fd);
+	}
 	if (builtin_check(p, 0) == 1)
 	{
 		builtin_execute(p, 0);
-		if (p->in_fd > 1)
-			close(p->in_fd);
-		if (p->out_fd)
-			close(p->out_fd);
+		// if (p->in_fd > 1)
+		// 	close(p->in_fd);
+		// if (p->out_fd)
+		// 	close(p->out_fd);
 		free_everything(p);
 		free(p->env);
 		exit(p->exit_code);
 	}
 	if (p->cmd_path[0])
 		execve(p->cmd_path[0], p->cmd[0], p->env);
-	if (p->in_fd > 1)
-		close(p->in_fd);
-	if (p->out_fd)
-		close(p->out_fd);
+	// if (p->in_fd > 1)
+	// 	close(p->in_fd);
+	// if (p->out_fd)
+	// 	close(p->out_fd);
 	free_double_char(p->cmd_path);
 	free_everything(p);
 	free(p->env);
@@ -42,19 +45,19 @@ static void	single_child_process(t_parser_info *p, int pipe_append[2])
 
 int	builtin_execute(t_parser_info *p, int i)
 {
-	if (!ft_strncmp(ft_str_tolower(p->cmd[i][0]), "echo", 5))
+	if (!ft_strncmp(p->cmd[i][0], "echo", 5) || compare_caseless(p->cmd[i][0], "echo"))
 		return (echo(p, p->cmd[i]));
 	else if (!ft_strncmp(p->cmd[i][0], "cd", 3))
 		return (cd(p, p->cmd[i]));
-	else if (!ft_strncmp(ft_str_tolower(p->cmd[i][0]), "pwd", 4))
+	else if (!ft_strncmp(p->cmd[i][0], "pwd", 4) || compare_caseless(p->cmd[i][0], "pwd"))
 		return (pwd(p));
 	else if (!ft_strncmp(p->cmd[i][0], "export", 7))
 		return (export(p, p->cmd[i]));
 	else if (!ft_strncmp(p->cmd[i][0], "unset", 6))
 		return (unset(p, p->cmd[i]));
-	else if (!ft_strncmp(ft_str_tolower(p->cmd[i][0]), "env", 4))
+	else if (!ft_strncmp(p->cmd[i][0], "env", 4) || compare_caseless(p->cmd[i][0], "env"))
 		return (env(p));
-	else if (!ft_strncmp(ft_str_tolower(p->cmd[i][0]), "clear", 6))
+	else if (!ft_strncmp(p->cmd[i][0], "clear", 6))
 		return (clear(p));
 	else if (!ft_strncmp(p->cmd[i][0], "exit", 5))
 	{
@@ -69,12 +72,15 @@ int	builtin_check(t_parser_info *p, int i)
 	if (!ft_strncmp(p->cmd[i][0], "cd", 3) || \
 	!ft_strncmp(p->cmd[i][0], "export", 7) || \
 	!ft_strncmp(p->cmd[i][0], "unset", 6) || \
-	!ft_strncmp(ft_str_tolower(p->cmd[i][0]), "clear", 6) || \
+	!ft_strncmp(p->cmd[i][0], "clear", 6) || \
 	!ft_strncmp(p->cmd[i][0], "exit", 5))
 		return (0);
-	else if (!ft_strncmp(ft_str_tolower(p->cmd[i][0]), "echo", 5) || \
-	!ft_strncmp(ft_str_tolower(p->cmd[i][0]), "pwd", 4) || \
-	!ft_strncmp(ft_str_tolower(p->cmd[i][0]), "env", 4))
+	else if (!ft_strncmp(p->cmd[i][0], "echo", 5) || \
+	compare_caseless(p->cmd[i][0], "echo") || \
+	!ft_strncmp(p->cmd[i][0], "pwd", 4) || \
+	compare_caseless(p->cmd[i][0], "pwd") || \
+	!ft_strncmp(p->cmd[i][0], "env", 4) || \
+	compare_caseless(p->cmd[i][0], "env"))
 		return (1);
 	return (2);
 }

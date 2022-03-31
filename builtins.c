@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 12:12:03 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/29 17:29:33 by anasr            ###   ########.fr       */
+/*   Updated: 2022/03/31 18:04:26 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,9 @@ int	echo_index(char **argv)
 	array_index = 1;
 	while (argv[array_index])
 	{
-		if (argv[array_index][0] != '-')
+		if (argv[array_index][0] != '-' || argv[array_index][1] != 'n')
 			return (array_index);
-		index = 1;
+		index = 2;
 		while (argv[array_index][index])
 		{
 			if (argv[array_index][index] != 'n')

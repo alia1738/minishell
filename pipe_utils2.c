@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_utils2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 11:25:34 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/27 17:43:47 by Alia             ###   ########.fr       */
+/*   Updated: 2022/03/31 17:39:01 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,21 +49,21 @@ void	close_all_pipes_fds(t_parser_info *p, int **pip, int **pipe_append)
 	}
 }
 
-void	close_remaining_pipes(int **pipe_append, int **pip, int i, int max)
-{
-	if (i < max)
-	{	
-		close(pip[i][0]);
-		close(pip[i][1]);
-	}
-	if (i)
-	{
-		close(pip[i - 1][0]);
-		close(pip[i - 1][1]);
-	}
-	close(pipe_append[i][0]);
-	close(pipe_append[i][1]);
-}
+// void	close_remaining_pipes(int **pipe_append, int **pip, int i, int max)
+// {
+// 	if (i < max)
+// 	{	
+// 		close(pip[i][0]);
+// 		close(pip[i][1]);
+// 	}
+// 	if (i)
+// 	{
+// 		close(pip[i - 1][0]);
+// 		close(pip[i - 1][1]);
+// 	}
+// 	close(pipe_append[i][0]);
+// 	close(pipe_append[i][1]);
+// }
 
 void	free_n_close(t_parser_info *p, int **pip, int **pipe_append)
 {
@@ -84,14 +84,16 @@ void	before_command(t_parser_info *p, int **pip, int **pipe_append, int i)
 	p->in_fd = final_in_fd(i, p);
 	if (p->in_fd == -1)
 	{
-		close_remaining_pipes(pipe_append, pip, i, p->pipes_count);
+		// close_remaining_pipes(pipe_append, pip, i, p->pipes_count);
+		close_all_pipes_fds(p, pip, pipe_append);
 		free_n_close(p, pip, pipe_append);
 		exit(p->exit_code);
 	}
 	p->out_fd = final_out_fd(i, p);
 	if (p->out_fd == -1)
 	{
-		close_remaining_pipes(pipe_append, pip, i, p->pipes_count);
+		// close_remaining_pipes(pipe_append, pip, i, p->pipes_count);
+		close_all_pipes_fds(p, pip, pipe_append);
 		free_n_close(p, pip, pipe_append);
 		exit(1);
 	}
