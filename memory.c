@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   memory.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 02:46:33 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/23 13:59:05 by anasr            ###   ########.fr       */
+/*   Updated: 2022/04/01 17:01:49 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 /*
 ********
 cmd_part                  --  char *** -- allocated fully     -- (p->pipes_count + 2) char** -- each char** implicit allocation through split function
-cmd_path                  --  char **  -- allocated fully     -- (p->pipes_count + 2) char*  -- each char* implicit allocation through get_cmd_path function
 cmd                       --  char *** -- allocated partially -- (p->pipes_count + 2) char** -- allocated count_cmds_wout_meta() char*'s for each char**
 in_arrow_flag             --  int**    -- allocated fully     -- (p->pipes_count + 1) int*   -- allocated count_in_redirection() int's for each int* 
 out_arrow_flag            --  int**    -- allocated fully     -- (p->pipes_count + 1) int*   -- allocated count_out_redirection() int's for each int*
@@ -33,19 +32,20 @@ void	free_everything(t_parser_info *p)
 	if (p->pipes_count > 0)
 		free_double_char(p->cmd_array);
 	//free partially
-	free_triple_char_partial(p->cmd);
-	free_triple_char_partial(p->output_files);
-	free_triple_char_partial(p->input_files_delimiters);
+	free_triple_char_partial(p->cmd, p);
+	free_triple_char_partial(p->output_files, p);
+	free_triple_char_partial(p->input_files_delimiters, p);
 	//free single level
 	free(p->child_pids);
-	// free(p->cmd_absolute_path);
+	free(p->cmd_absolute_path);
+	free(p->input);//readline allocation/shit
+
 }
 
 void	allocate_meme_general(t_parser_info *p)
 {
 	//thats all of the allocation required
 	p->cmd_part = (char ***)ft_calloc(p->pipes_count + 2, sizeof(char **)); //protect
-	p->cmd_path = (char **)ft_calloc(p->pipes_count + 2, sizeof(char *));
 	//more allocation will come later
 	p->cmd = (char ***)ft_calloc(p->pipes_count + 2, sizeof(char **));
 	p->in_arrow_flag = (int **)ft_calloc(p->pipes_count + 1, sizeof(int *));

@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/31 19:14:39 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/01 17:02:00 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,11 +191,23 @@ void	hide_signal_markers(void)
 		waitpid(-1, NULL, 0);
 }
 
+int	check_empty_input(char	*input)
+{
+	int	i;
+
+	i = 0;
+	skip_isspaces(&i, input);
+	if (input[i])
+		return (1);
+	free(input);
+	return (0);
+}
+
+
 //
 int	main(int argc, char **argv, char **env)
 {
 	t_parser_info	p;
-	char			*input;
 
 	(void)argc;
 	(void)argv;
@@ -208,25 +220,26 @@ int	main(int argc, char **argv, char **env)
 	while (1)
 	{
 		return_p(&p);
-		input = readline("\033[1;35mbaby shell\033[2;35m> \e[0m");
-		if (!input)
+		p.input = readline("\033[1;35mbaby shell\033[2;35m> \e[0m");
+		if (!p.input)
 		{
 			free_double_char(p.env);
 			exit(p.exit_code);
 		}
-		if (input[0])
-			add_history(input);
-		if (check_repeated_meta(input, &p) == -1)
+		if (p.input[0])
+			add_history(p.input);
+		if (!check_empty_input(p.input))
+			continue ;
+		if (check_repeated_meta(p.input, &p) == -1)
 		{
 			printf("minishell: syntax error regarding the usage of metacharacters\n");
-			free(input);
+			free(p.input);
 			continue ;
 		}
-		save_cmds(input, &p);
+		save_cmds(p.input, &p);
 		/*-----------------*/
 		free_everything(&p);
 		free(p.cmd_path);
-		free(input);
 	}
 }
 

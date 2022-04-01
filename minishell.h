@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/31 18:28:21 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/01 17:01:06 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,11 +69,13 @@
 
 typedef struct s_parser_info
 {
+	char	*input;
+
 	char	**env;
 
 	bool	*cmd_absolute_path;
 	char	***cmd;
-	char	**cmd_path;
+	char	*cmd_path;
 	char	***cmd_part;
 
 	int		pipes_count;
@@ -213,10 +215,10 @@ void	make_append_child(t_parser_info *p, int **pipe_append);
 
 /* -------------- ** free utils ** -------------- */
 
+void	free_double_int(int **array, int rows);
 void	free_double_char(char **array);
 void	free_triple_char(char ***array);
-void	free_double_int(int **array, int rows);
-void	free_triple_char_partial(char ***array);
+void	free_triple_char_partial(char ***array, t_parser_info  *p);
 
 /* ------------ ** counting utils ** ------------ */
 

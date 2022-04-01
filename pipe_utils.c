@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/20 19:14:46 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/31 17:28:02 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/01 12:59:41 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ void	check_in_fd(int in_fd, int *pipe_append, int **pip, int i)
 	{
 		dup2(in_fd, STDIN_FILENO);
 		close(in_fd);
+		in_fd = 0;
 	}
 	else if (in_fd == 1)
 	{
@@ -79,6 +80,7 @@ void	check_out_fd(int out_fd, int **pip, int i, int pipe_count)
 	{
 		dup2(out_fd, STDOUT_FILENO);
 		close(out_fd);
+		out_fd = 0;
 	}
 	else if (!out_fd && i != pipe_count)
 	{

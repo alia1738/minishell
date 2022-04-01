@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 02:49:02 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/31 18:56:13 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/01 17:49:09 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,6 @@ int	count_out_redirections(char	*str)
 		else
 			i++;
 	}
-	// printf("%s%d%s\n", GREEN1, count, RESET);
 	return (count);
 }
 

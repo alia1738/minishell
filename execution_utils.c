@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 11:46:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/31 19:17:23 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/01 13:28:45 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 int	child_input_append(int array_i, t_parser_info *p, int i, int pipe_end[2])
 {
 	char	*temp;
+	char	*temp_dollar;
 	char	*input;
 
 	while (1)
@@ -27,7 +28,11 @@ int	child_input_append(int array_i, t_parser_info *p, int i, int pipe_end[2])
 		{
 			temp = ft_strjoin(input, "\n");
 			if (ft_strchr(temp, '$'))
-				temp = expand_dollars_in_str(temp, p, true);
+			{
+				temp_dollar = expand_dollars_in_str(temp, p, true);
+				free(temp);
+				temp = temp_dollar;
+			}
 			ft_putstr_fd(temp, pipe_end[1]);
 			free(temp);
 		}
@@ -136,6 +141,7 @@ void	account_for_in_redirect(int *pipe_append, int in_fd)
 	{
 		dup2(in_fd, STDIN_FILENO);
 		close(in_fd);
+		in_fd = 0;
 	}
 	if (in_fd == 1)
 	{

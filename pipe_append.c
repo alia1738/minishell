@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_append.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:46:03 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/26 16:41:22 by Alia             ###   ########.fr       */
+/*   Updated: 2022/04/01 17:02:12 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,9 @@ void	big_baby_job(t_parser_info *p, int **pipe_append)
 		array_i++;
 	}
 	free_everything(p);
+	free(p->cmd_path);
 	free_double_int(pipe_append, (p->pipes_count + 1));
-	free(p->env);
+	free_double_char(p->env);
 	exit(0);
 }
 

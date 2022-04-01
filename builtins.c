@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 12:12:03 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/31 18:04:26 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/01 17:38:42 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,10 +128,11 @@ int	cd(t_parser_info *p, char **argv)
 		temp = local_getenv("HOME", p->env);
 		if (!temp)
 		{
-			printf("minishell cd: HOME not set\n");
+			printf("minishell: cd: HOME not set\n");
 			p->exit_code = 1;
+
 		}
-		else if (!opendir(temp) || chdir(temp) == -1)
+		else if (chdir(temp) == -1)
 		{
 			temp = ft_strjoin("minishell: cd: ", temp);
 			perror(temp);
@@ -141,7 +142,7 @@ int	cd(t_parser_info *p, char **argv)
 	}
 	else
 	{
-		if (!opendir(argv[1]) || chdir(argv[1]) == -1)
+		if (chdir(argv[1]) == -1)
 		{
 			temp = ft_strjoin("minishell: cd: ", argv[1]);
 			perror(temp);
@@ -161,7 +162,7 @@ int	cd(t_parser_info *p, char **argv)
 		if (local_getenv("PWD", p->env))
 		{
 			temp = ft_strjoin("PWD=", cwd);
-			p->env = export_env(p, p->env, ft_strjoin("PWD=", cwd));
+			p->env = export_env(p, p->env, temp);
 			free(temp);
 		}
 	}
@@ -203,6 +204,7 @@ void	baby_exit(t_parser_info *p, char **cmd)
 	{
 		free_everything(p);
 		free_double_char(p->env);
+		free(p->cmd_path);
 		exit(p->exit_code);
 	}
 	//if cmd[0] is higer than longmax it should fail

@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 16:42:32 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/31 17:34:09 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/01 17:54:47 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,13 @@ static void	pipe_child_process(t_parser_info *p, int **pip, int pip_i, int **pip
 	if (builtin_check(p, pip_i) < 2)
 	{
 		builtin_execute(p, pip_i);
-		// close_remaining_pipes(pipe_append, pip, pip_i, p->pipes_count);
+		close_remaining_pipes(pipe_append, pip, pip_i, p->pipes_count);
 		free_n_close(p, pip, pipe_append);
 		exit(p->exit_code);
 	}
-	if (p->cmd_path[pip_i])
-		execve(p->cmd_path[pip_i], p->cmd[pip_i], p->env);
-	// close_remaining_pipes(pipe_append, pip, pip_i, p->pipes_count);
+	if (p->cmd_path)
+		execve(p->cmd_path, p->cmd[pip_i], p->env);
+	close_remaining_pipes(pipe_append, pip, pip_i, p->pipes_count);
 	free_n_close(p, pip, pipe_append);
 	exit(p->exit_code);
 }
@@ -44,8 +44,6 @@ static void	parent_process(t_parser_info *p, int **pip, int **pipe_append)
 		waitpid(p->child_pids[i], &status, 0);
 		p->exit_code = WEXITSTATUS(status);
 	}
-	// while (waitpid(-1, &status, 0) > 0)
-	// 	p->exit_code = WEXITSTATUS(status);
 	free_double_int(pip, p->pipes_count);
 	free_double_int(pipe_append, (p->pipes_count + 1));
 }

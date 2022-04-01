@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/31 18:02:42 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/01 17:00:49 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,18 +28,19 @@ static void	single_child_process(t_parser_info *p, int pipe_append[2])
 		// if (p->out_fd)
 		// 	close(p->out_fd);
 		free_everything(p);
-		free(p->env);
+		free(p->cmd_path);
+		free_double_char(p->env);
 		exit(p->exit_code);
 	}
-	if (p->cmd_path[0])
-		execve(p->cmd_path[0], p->cmd[0], p->env);
+	if (p->cmd_path)
+		execve(p->cmd_path, p->cmd[0], p->env);
 	// if (p->in_fd > 1)
 	// 	close(p->in_fd);
 	// if (p->out_fd)
 	// 	close(p->out_fd);
-	free_double_char(p->cmd_path);
+	free(p->cmd_path);
 	free_everything(p);
-	free(p->env);
+	free_double_char(p->env);
 	exit (p->exit_code);
 }
 
@@ -87,10 +88,10 @@ int	builtin_check(t_parser_info *p, int i)
 
 void	execute_single_command(t_parser_info *p)
 {
-	int	status;
-	int	pipe_append[2];
-	int	exit_code_fd[2];
+	int		status;
 	char	temp[3];
+	int		pipe_append[2];
+	int		exit_code_fd[2];
 
 	ft_bzero(temp, 3);
 	pipe(exit_code_fd);
@@ -110,24 +111,27 @@ void	execute_single_command(t_parser_info *p)
 		if (p->in_fd == -1)
 		{
 			free_everything(p);
-			free(p->env);
+			free_double_char(p->env);
 			exit(p->exit_code);
 		}
 		p->out_fd = final_out_fd(0, p);
 		if (p->out_fd == -1)
 		{
 			free_everything(p);
-			free(p->env);
+			free_double_char(p->env);
 			exit(p->exit_code);
 		}
 		if (builtin_check(p, 0) == 2 && p->cmd_absolute_path[0] == true)
 			change_cmd(p, 0);
 		else if (builtin_check(p, 0) == 2)
-			p->cmd_path[0] = get_cmd_path(p->cmd[0][0], p);
+			p->cmd_path = get_cmd_path(p->cmd[0][0], p);
 		if (p->cmd[0][0] && builtin_check(p, 0))
 			single_child_process(p, pipe_append);
-		free_double_char(p->cmd_path);
-		free(p->env);
+		account_for_in_redirect(pipe_append, p->in_fd);
+		if (p->out_fd > 1)
+			close(p->out_fd);
+		free(p->cmd_path);
+		free_double_char(p->env);
 		free_everything(p);
 		exit(p->exit_code);
 	}
@@ -139,14 +143,14 @@ void	execute_single_command(t_parser_info *p)
 		if (ft_strrchr(p->cmd[0][0], '/') && !ft_strncmp(ft_strrchr(p->cmd[0][0], '/') + 1, "minishell", 10))
 			signal(SIGINT, handle_signals);
 		p->exit_code = WEXITSTATUS(status); //check the logic of getting the exit code
+		close(exit_code_fd[1]);
 		if (p->signal_in_cmd)
 		{
-			close(exit_code_fd[1]);
 			read(exit_code_fd[0], temp, 3);
-			close(exit_code_fd[0]);
 			p->exit_code = ft_atoi(temp);
 			p->signal_in_cmd = false;
 		}
+		close(exit_code_fd[0]);
 		if (p->cmd[0][0] && !builtin_check(p, 0))
 			builtin_execute(p, 0);
 	}

@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 16:55:09 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/31 17:22:57 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/01 17:01:25 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,9 @@ void	change_cmd(t_parser_info *p, int array_i)
 	{
 		if (!ft_strncmp(ft_strrchr(p->cmd[array_i][0], '/') + 1, "minishell", 10))
 			nested_minishell(p);
-		p->cmd_path[array_i] = ft_strdup(p->cmd[array_i][0]);
+		p->cmd_path = ft_strdup(p->cmd[array_i][0]);
 		free(p->cmd[array_i][0]);
-		p->cmd[array_i][0] = ft_strdup(ft_strrchr(p->cmd_path[array_i], '/') + 1);
+		p->cmd[array_i][0] = ft_strdup(ft_strrchr(p->cmd_path, '/') + 1);
 	}
 }
 
