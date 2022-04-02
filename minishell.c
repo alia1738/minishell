@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/02 15:41:42 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/02 17:39:19 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,8 @@ void	handle_signals(int signum)
 	p = return_p(NULL);
 	if (p->command_in_action)
 		p->signal_in_cmd = true;
+	else
+		p->exit_code = 1;
 	if (signum == SIGINT)
 	{
 		write(1, "\n", 1);
@@ -186,6 +188,7 @@ int	main(int argc, char **argv, char **env)
 	signal(SIGINT, &handle_signals);
 	signal(SIGQUIT, SIG_IGN);
 	p.env = dup_array(env);
+	nested_minishell(&p);
 	while (1)
 	{
 		return_p(&p);

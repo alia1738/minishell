@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 15:22:39 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/31 19:06:42 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/02 16:45:33 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,14 @@ static void	init_meta(char	**meta)
 	meta[10] = "^";
 	meta[11] = "~";
 	meta[12] = "-";
-	meta[13] = 0;
+	meta[13] = "/";
+	meta[14] = 0;
 }
 
 char	*ft_getenv(int i, char *str, t_parser_info *p)
 {
 	int		j;
-	char	*meta[14];//"=" is added bec echo "$USER=" is anasr= or echo "$=" is $=
+	char	*meta[15];//"=" is added bec echo "$USER=" is anasr= or echo "$=" is $=
 	char	temp[1024];
 
 	init_meta(meta);
@@ -48,7 +49,7 @@ char	*ft_getenv(int i, char *str, t_parser_info *p)
 
 void	skip_dollar_content(int *i, char *str)
 {
-	char	*meta[14];//check things with equal
+	char	*meta[15];//check things with equal
 
 	(*i)++;
 	init_meta(meta);
@@ -62,7 +63,7 @@ int		len_with_expansion(char	*str, t_parser_info *p, bool append_flag) //keeping
 {
 	int		i;
 	int		len;
-	char	*meta[14];
+	char	*meta[15];
 	// char	*temp;
 
 	init_meta(meta);
@@ -168,7 +169,7 @@ char	*expand_dollars_in_str(char *str, t_parser_info *p, bool append_flag)
 	int		i;
 	int		new_index;
 	char	*expanded;
-	char	*meta[14];
+	char	*meta[15];
 	// char	*temp;
 
 	// printf("LEN: %d\n", len_with_expansion(str));

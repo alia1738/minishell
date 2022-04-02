@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 12:12:03 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/04/01 17:38:42 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/02 16:44:15 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,10 +67,12 @@ int	echo(t_parser_info *p, char **argv)
 	newline_flag = true;
 	if (i > 1)
 		newline_flag = false;
-	if (argv[i])
-		printf("%s", argv[i++]);
-	while (argv[i] && printf(" "))
-		printf("%s", argv[i++]);
+	while (argv[i])
+	{
+		printf("%s", argv[i]);
+		if (argv[++i])
+			printf(" ");
+	}
 	if (newline_flag)
 		printf("\n");
 	p->exit_code = 0;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 13:22:51 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/23 14:07:42 by anasr            ###   ########.fr       */
+/*   Updated: 2022/04/02 17:26:52 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,10 @@ int		check_repeated_meta(char *input, t_parser_info *p)
 	meta_pipe = false;
 	skip_isspaces(&i, input);
 	if (!ft_strncmp("|", &input[i], 1))
+	{
+		p->exit_code = 258;
 		return (-1);
+	}
 	while (input[i])
 	{
 		if ((ft_ismeta(&input[i], meta) > 0 && meta_place_taken) || (!ft_strncmp(&input[i], "|", 1) && meta_pipe))

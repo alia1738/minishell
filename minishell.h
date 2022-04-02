@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/01 17:01:06 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/02 17:38:39 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,6 +126,7 @@ int		check_longmax(char *str);
 
 /* ------------- ** command path ** ------------- */
 
+void	nested_minishell(t_parser_info *p);
 void	change_cmd(t_parser_info *p, int array_i);
 char	*get_cmd_path(char *cmd, t_parser_info *p);
 

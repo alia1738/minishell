@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 13:56:18 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/04/02 14:17:17 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/02 17:08:31 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	error_check(t_parser_info *p, char *new_var)
 	index = 1;
 	while (new_var[index] && new_var[index] != '=')
 	{
-		if (!ft_isalnum(new_var[index]) && new_var[index] != '+' && new_var[index] != '_')
+		if ((!ft_isalnum(new_var[index]) && new_var[index] != '_' && new_var[index] != '+') || (new_var[index] == '+' && new_var[index + 1] != '='))
 		{
 			printf("minishell: export: '%s': not valid identifier\n", new_var);
 			p->exit_code = 1;
