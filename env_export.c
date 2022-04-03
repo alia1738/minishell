@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_export.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 13:56:18 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/23 16:51:27 by anasr            ###   ########.fr       */
+/*   Updated: 2022/04/03 17:34:39 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,79 +14,92 @@
 
 int	find_equal(char *env)
 {
-	int	i;
+	int	index;
 
-	i = 0;
-	while (env[i] && env[i] != '=')
-		i++;
-	return (i);
+	index = 0;
+	while (env[index] && env[index] != '=')
+		index++;
+	return (index);
 }
 
-static int	check_env(char *env_variable, char **env)
+bool	append_env_check(char *new_env_var)
 {
-	int	i;
+	if (new_env_var[find_equal(new_env_var) - 1] == '+')
+		return (true);
+	return (false);
+}
 
-	i = 0;
-	while (env[i])
+static int	get_index(char *env_variable, char **env)
+{
+	int	index;
+	int	array_index;
+
+	array_index = -1;
+	while (env[++array_index])
 	{
-		if (!ft_strncmp(env[i], env_variable, find_equal(env[i])))
-			return (i);
-		i++;
+		index = 0;
+		while (env[array_index][index] == env_variable[index] && env[array_index][index] != '=')
+			index++;
+		if (env[array_index][index] == '=' && ((env_variable[index] == '+' && env_variable[index + 1] == '=') || env_variable[index] == '='))
+			return (array_index);
 	}
 	return (-1);
 }
 
-int	error_check(t_parser_info *p, char *new_var)
+int	error_check(t_parser_info *p, char *new_var, char *type)
 {
-	int	i;
+	int	index;
 
-	i = 0;
-	while (new_var[i] && new_var[i] != '=')
+	if (!ft_isalpha(new_var[0]) && (new_var[0] != '_'))
 	{
-		if (!i && !ft_isalpha(new_var[i]))
-		{
-			printf("minishell: export: '%s': not valid identifier\n", new_var);
-			p->exit_code = 1;
-			return (0);
-		}
-		else if (!ft_isalnum(new_var[i]) && !(new_var[i] == '+' && new_var[i + 1] == '='))
-		{
-			printf("minishell: export: '%s': not valid identifier\n", new_var);
-			p->exit_code = 1;
-			return (0);
-		}
-		i++;
-	}
-	if (new_var[i - 1] == '$')
-	{
-		printf("minishell: export: '%s': not valid identifier\n", new_var);
+		printf("babyshell: %s: '%s': not valid identifier\n", type, new_var);
 		p->exit_code = 1;
 		return (0);
 	}
-	return (i);
+	index = 1;
+	while (new_var[index] && new_var[index] != '=')
+	{
+		if ((!ft_isalnum(new_var[index]) && new_var[index] != '_' && new_var[index] != '+') || (new_var[index] == '+' && new_var[index + 1] != '='))
+		{
+			printf("babyshell: %s: '%s': not valid identifier\n", type, new_var);
+			p->exit_code = 1;
+			return (0);
+		}
+		index++;
+	}
+	return (index);
 }
 
 char	**new_env(char **env, char *new_env_var, int save_index)
 {
-	int		i;
+	int		index;
 	char	**new_env;
+	char	*append_var;
 
-	i = 0;
+	index = 0;
 	if (save_index >= 0)
 	{
+		if (append_env_check(new_env_var) == true)
+			append_var = ft_strdup(env[save_index]);
 		free(env[save_index]);
-		env[save_index] = ft_strdup(new_env_var);
+		if (append_env_check(new_env_var) == true)
+		{
+			env[save_index] = ft_strjoin(append_var, &new_env_var[find_equal(new_env_var) + 1]);
+			free(append_var);
+		}
+		else
+			env[save_index] = ft_strdup(new_env_var);
 		return (env);
 	}
 	else if (save_index == -1)
 	{
-		while (env[i])
-			i++;
-		new_env = ft_calloc((i + 2), sizeof(char *));
-		i = -1;
-		while (env[++i])
-			new_env[i] = ft_strdup(env[i]);
-		new_env[i] = ft_strdup(new_env_var);
+		while (env[index])
+			index++;
+		new_env = ft_calloc((index + 2), sizeof(char *));
+		index = -1;
+		while (env[++index])
+			new_env[index] = ft_strdup(env[index]);
+		new_env[index] = ft_strdup(new_env_var);
 		free_double_char(env);
 		return (new_env);
 	}
@@ -98,52 +111,13 @@ char	**export_env(t_parser_info *p, char **env, char *new_env_var) // How To Use
 	int		save_index;
 	
 	p->exit_code = 0;
-	if (!error_check(p, new_env_var))
+	if (!error_check(p, new_env_var, "export"))
 		return (env);
 	if (!ft_strchr(new_env_var, '='))
 		return (env);
-	save_index = check_env(new_env_var, env);
+	save_index = get_index(new_env_var, env);
 	env = new_env(env, new_env_var, save_index);
 	if (!ft_strncmp(new_env_var, "OLDPWD=", 7))
 		p->oldpwd_dont_update = false;
 	return (env);
 }
-
-// int	main()
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	// while (environ[i])
-// 	// 	printf("%s%s%s\n", YELLOW, environ[i++], RESET);
-// 	// export_env(environ, "HIIIIIIIIIIIIIII=:D");
-// 	// i = 0;
-// 	// while (environ[i])
-// 	// 	printf("%s%s%s\n", LIGHT_BLUE, environ[i++], RESET);
-
-// 	/* ---------------------------------------------------- */
-
-// 	pid_t	child;
-// 	char	*cmd[3];
-// 	cmd[0] = "cd";
-// 	cmd[1] =  0;
-// 	cmd[2] = 0;
-
-// 	child = fork();
-// 	if (!child)
-// 	{
-// 		export_env(environ, "PWD=:o");
-// 		i = 0;
-// 		while (environ[i])
-// 			printf("%s%s%s\n", MAGENTA, environ[i++], RESET);
-// 		execve("builtins/cd", cmd, environ);
-// 		printf("HEYEY");
-// 	}
-// 	else
-// 	{
-// 		waitpid(-1, 0, 0);
-// 		i = 0;
-// 		while (environ[i])
-// 			printf("%s%s%s\n", GREEN, environ[i++], RESET);
-// 	}
-// }

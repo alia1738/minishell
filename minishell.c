@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/29 16:51:15 by anasr            ###   ########.fr       */
+/*   Updated: 2022/04/03 17:34:52 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	save_input_output_files_n_cmds(int array_index, char **specific_cmd, t_pars
 	int	in_index;
 	int	out_index;
 	int	cmd_index;
+	char	*temp;
 
 	i = 0;
 	in_index = 0;
@@ -31,6 +32,17 @@ void	save_input_output_files_n_cmds(int array_index, char **specific_cmd, t_pars
 				p->in_arrow_flag[array_index][in_index] = DOUBLE_ARROW;
 			else
 				p->in_arrow_flag[array_index][in_index] = SINGLE_ARROW;
+			if (p->in_arrow_flag[array_index][in_index] == SINGLE_ARROW && ft_strchr(specific_cmd[i + 1], '$'))
+			{
+				temp = expand_dollars_in_str(specific_cmd[i + 1], p, false);
+				if (!temp[0])
+				{
+					printf("babyshell: %s: ambiguous redirect\n", specific_cmd[i + 1]);
+					p->in_arrow_flag[array_index][in_index] = -1;
+				}
+				free(specific_cmd[i + 1]);
+				specific_cmd[i + 1] = temp;
+			}
 			p->input_files_delimiters[array_index][in_index++] = specific_cmd[++i];
 		}
 		else if ((!ft_strncmp(specific_cmd[i], ">>", 2) || !ft_strncmp(specific_cmd[i], ">", 1)) && specific_cmd[i + 1])
@@ -39,12 +51,33 @@ void	save_input_output_files_n_cmds(int array_index, char **specific_cmd, t_pars
 				p->out_arrow_flag[array_index][out_index] = DOUBLE_ARROW;
 			else
 				p->out_arrow_flag[array_index][out_index] = SINGLE_ARROW;
+
+			if (ft_strchr(specific_cmd[i + 1], '$'))
+			{
+				
+				temp = expand_dollars_in_str(specific_cmd[i + 1], p, false);
+				if (!temp[0])
+				{
+					printf("babyshell: %s: ambiguous redirect\n", specific_cmd[i + 1]);
+					p->out_arrow_flag[array_index][out_index] = -1;
+				}
+				free(specific_cmd[i + 1]);
+				specific_cmd[i + 1] = temp;
+			}
 			p->output_files[array_index][out_index++] = specific_cmd[++i];
 		}
 		else
 		{
 			if (cmd_index == 0 && ft_strchr(specific_cmd[i], '/'))
 				p->cmd_absolute_path[array_index] = true;
+			if (ft_strchr(specific_cmd[i], '$'))
+			{
+				temp = expand_dollars_in_str(specific_cmd[i], p, false);
+				free(specific_cmd[i]);
+				specific_cmd[i] = temp;
+			}
+			if (ft_strchr(specific_cmd[i], '\'') || ft_strchr(specific_cmd[i], '\"'))
+				specific_cmd[i] = strcpy_wout_quotes(specific_cmd[i]);//u have to free old str
 			p->cmd[array_index][cmd_index++] = specific_cmd[i];
 		}
 		i++;
@@ -81,35 +114,6 @@ void	save_cmds(char *input, t_parser_info *p)
 		execute_pipe_execution(p);
 	}
 	p->command_in_action = false;
-	//TESTING
-	// int i = -1, j = -1;
-	// while (++j < p->pipes_count + 1)
-	// {
-	// 	i = -1;
-	// 	while (p->cmd[j][++i])
-	// 		printf("*%s* ", p->cmd[j][i]);
-	// 	printf("\n");
-	// }
-	
-	
-	/* ----------------------TESTING REDIRECTION-------------------------- */
-	// int i, j;	
-	// for (j = 0; j < p->pipes_count + 1; j++)
-	// {
-	// 	printf("COMMAND: %s\n", p->cmd[j][0]);
-	// 	for (i = 0; p->input_files_delimiters[j][i]; i++)
-	// 	{
-	// 		printf("%s Infile/Delimiters: %s ",YELLOW, p->input_files_delimiters[j][i]);
-	// 		printf(".. %sInfile Flag: %d ..", BLUE, p->in_arrow_flag[j][i]);
-	// 	}
-	// 	printf("\n");
-	// 	for (i = 0; p->output_files[j][i]; i++)
-	// 	{
-	// 		printf(" %sInfile/Delimiters: %s ", GREEN, p->output_files[j][i]);
-	// 		printf(".. %sInfile Flag: %d ..", MAGENTA, p->out_arrow_flag[j][i]);
-	// 	}
-	// 	printf("%s\n", RESET);
-	// }
 }
 
 t_parser_info	*return_p(t_parser_info *p)
@@ -129,6 +133,8 @@ void	handle_signals(int signum)
 	p = return_p(NULL);
 	if (p->command_in_action)
 		p->signal_in_cmd = true;
+	else
+		p->exit_code = 1;
 	if (signum == SIGINT)
 	{
 		write(1, "\n", 1);
@@ -156,11 +162,23 @@ void	hide_signal_markers(void)
 		waitpid(-1, NULL, 0);
 }
 
+int	check_empty_input(char	*input)
+{
+	int	i;
+
+	i = 0;
+	skip_isspaces(&i, input);
+	if (input[i])
+		return (1);
+	free(input);
+	return (0);
+}
+
+
 //
 int	main(int argc, char **argv, char **env)
 {
 	t_parser_info	p;
-	char			*input;
 
 	(void)argc;
 	(void)argv;
@@ -170,61 +188,29 @@ int	main(int argc, char **argv, char **env)
 	signal(SIGINT, &handle_signals);
 	signal(SIGQUIT, SIG_IGN);
 	p.env = dup_array(env);
+	nested_minishell(&p);
 	while (1)
 	{
 		return_p(&p);
-		input = readline("\033[1;35mbaby shell\033[2;35m> \e[0m");
-		if (!input)
+		p.input = readline("\033[1;35mbaby shell\033[2;35m> \e[0m");
+		if (!p.input)
 		{
 			free_double_char(p.env);
 			exit(p.exit_code);
 		}
-		if (input[0])
-			add_history(input);
-		if (check_repeated_meta(input, &p) == -1)
+		if (p.input[0])
+			add_history(p.input);
+		if (!check_empty_input(p.input))
+			continue ;
+		if (check_repeated_meta(p.input, &p) == -1)
 		{
-			printf("minishell: syntax error regarding the usage of metacharacters\n");
-			free(input);
+			printf("babyshell: syntax error regarding the usage of metacharacters\n");
+			free(p.input);
 			continue ;
 		}
-		save_cmds(input, &p);
+		save_cmds(p.input, &p);
 		/*-----------------*/
 		free_everything(&p);
 		free(p.cmd_path);
-		free(input);
 	}
 }
-
-	// printf("count_in_redirection: %d\n➡️", count_in_redirections(input));
-	// printf("count_out_redirection: %d\n➡️", count_out_redirections(input));
-	// printf("count_wout_meta: %d\n➡️", count_cmds_wout_meta(input));
-	
-	// int	i = 0;
-		// //TESTING - START
-		// i = 0;
-		// printf("\e[36m****START PRINTING INPUT****\n\e[0m");
-		// while (p.cmd_part[i])
-		// 	printf("%s\n", p.cmd_part[i++]);
-		// printf("\e[36m****END PRINTING INPUT****\n\e[0m");
-
-		// i = 0;
-		// printf("\e[32m****START PRINTING COMMANDS****\n\e[0m");
-		// printf("{");
-		// while (p.cmd[i])
-		// 	printf("%s, ", p.cmd[i++]);
-		// printf("\b\b}\n");
-		// printf("\e[32m****END PRINTING COMMANDS****\n\e[0m");
-
-
-		// i = 0;
-		// printf("****START PRINTING INPUT FILES****\n");
-		// while (p.input_files[i])
-		// 	printf("%s\n", p.input_files[i++]);
-		// printf("****END PRINTING INPUT FILES****\n");
-
-		// i = 0;
-		// printf("****START PRINTING OUTPUT FILES****\n");
-		// while (p.output_files[i])
-		// 	printf("%s\n", p.output_files[i++]);
-		// printf("****END PRINTING OUTPUT FILES****\n");
-		// //TESTING - END

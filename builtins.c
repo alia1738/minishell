@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 12:12:03 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/29 17:29:33 by anasr            ###   ########.fr       */
+/*   Updated: 2022/04/03 17:34:30 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	pwd(t_parser_info *p)
 	char	cwd[PATH_MAX];
 	if (!getcwd(cwd, sizeof(cwd)))
 	{
-		perror("minishell: pwd");
+		perror("babyshell: pwd");
 		p->exit_code = 1;
 	}
 	else
@@ -44,9 +44,9 @@ int	echo_index(char **argv)
 	array_index = 1;
 	while (argv[array_index])
 	{
-		if (argv[array_index][0] != '-')
+		if (argv[array_index][0] != '-' || argv[array_index][1] != 'n')
 			return (array_index);
-		index = 1;
+		index = 2;
 		while (argv[array_index][index])
 		{
 			if (argv[array_index][index] != 'n')
@@ -67,14 +67,36 @@ int	echo(t_parser_info *p, char **argv)
 	newline_flag = true;
 	if (i > 1)
 		newline_flag = false;
-	if (argv[i])
-		printf("%s", argv[i++]);
-	while (argv[i] && printf(" "))
-		printf("%s", argv[i++]);
+	while (argv[i])
+	{
+		printf("%s", argv[i]);
+		if (argv[++i])
+			printf(" ");
+	}
 	if (newline_flag)
 		printf("\n");
 	p->exit_code = 0;
 	return (0);
+}
+
+void	lonely_export(t_parser_info *p)
+{
+	int	i;
+	int	env_index;
+
+	env_index = 0;
+	while (p->env[env_index])
+	{
+		i = 0;
+		printf("declare -x ");
+		while (p->env[env_index][i] != '=')
+			printf("%c", p->env[env_index][i++]);
+		printf("=\"");
+		while (p->env[env_index][++i])
+			printf("%c", p->env[env_index][i]);
+		printf("\"\n");
+		env_index++;
+	}
 }
 
 int	export(t_parser_info *p, char **cmd)
@@ -84,6 +106,12 @@ int	export(t_parser_info *p, char **cmd)
 	
 	i = 1;
 	failed = false;
+	if (!cmd[1])
+	{
+		lonely_export(p);
+		p->exit_code = 0;
+		return (0);
+	}
 	while (cmd[i])
 	{
 		p->env = export_env(p, p->env, cmd[i++]);
@@ -128,12 +156,13 @@ int	cd(t_parser_info *p, char **argv)
 		temp = local_getenv("HOME", p->env);
 		if (!temp)
 		{
-			printf("minishell cd: HOME not set\n");
+			printf("babyshell: cd: HOME not set\n");
 			p->exit_code = 1;
+
 		}
-		else if (!opendir(temp) || chdir(temp) == -1)
+		else if (chdir(temp) == -1)
 		{
-			temp = ft_strjoin("minishell: cd: ", temp);
+			temp = ft_strjoin("babyshell: cd: ", temp);
 			perror(temp);
 			free(temp);
 			p->exit_code = 1;
@@ -141,9 +170,9 @@ int	cd(t_parser_info *p, char **argv)
 	}
 	else
 	{
-		if (!opendir(argv[1]) || chdir(argv[1]) == -1)
+		if (chdir(argv[1]) == -1)
 		{
-			temp = ft_strjoin("minishell: cd: ", argv[1]);
+			temp = ft_strjoin("babyshell: cd: ", argv[1]);
 			perror(temp);
 			free(temp);
 			p->exit_code = 1;
@@ -161,7 +190,7 @@ int	cd(t_parser_info *p, char **argv)
 		if (local_getenv("PWD", p->env))
 		{
 			temp = ft_strjoin("PWD=", cwd);
-			p->env = export_env(p, p->env, ft_strjoin("PWD=", cwd));
+			p->env = export_env(p, p->env, temp);
 			free(temp);
 		}
 	}
@@ -171,10 +200,6 @@ int	cd(t_parser_info *p, char **argv)
 
 void	baby_exit(t_parser_info *p, char **cmd)
 {
-	//catch cases of failure
-	// if (!ft_strncmp(local_getenv("SHLVL"), "1", 2))
-	// 	printf("logout\n");
-	// else
 	bool	exit_flag;
 
 	exit_flag = true;
@@ -190,33 +215,19 @@ void	baby_exit(t_parser_info *p, char **cmd)
 		{
 			p->exit_code = 1;
 			exit_flag = false;
-			printf("minishell: exit: too many arguments\n");
+			printf("babyshell: exit: too many arguments\n");
 		}
 		else
 		{
 			p->exit_code = 255;
-			printf("minishell: exit: %s: numeric argument required\n", cmd[1]);
+			printf("babyshell: exit: %s: numeric argument required\n", cmd[1]);
 		}
 	}
-	// printf("code: %d\n", p->exit_code);
 	if (exit_flag && !p->pipes_count)
 	{
 		free_everything(p);
 		free_double_char(p->env);
+		free(p->cmd_path);
 		exit(p->exit_code);
 	}
-	//if cmd[0] is higer than longmax it should fail
-	//also other cases should be accounted for where exit fails
-	//too many cases!!!
-	//exit 9223372036854775807 .. -9223372036854775808
 }
-/*
-Exit cases:
-
-> exit 4dns           -   should exit with 255
-> exit 42 dns         -   shouldn't exit and the exit code is 1
-> exit 42 4234 23     -   shouldn't exit and the exit code is 1
-> exit er42 4234 23   -   should exit 255
- 
-
-*/

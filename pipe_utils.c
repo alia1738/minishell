@@ -3,23 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Alia <Alia@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/20 19:14:46 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/03/26 16:42:18 by Alia             ###   ########.fr       */
+/*   Updated: 2022/04/03 16:22:16 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	**create_pipes(t_parser_info *p)
+int	**create_pipes(int size)
 {
 	int	i;
 	int	**pip;
 
 	i = -1;
-	pip = ft_calloc((p->pipes_count), sizeof(int *));
-	while (++i < p->pipes_count)
+	pip = ft_calloc(size, sizeof(int *));
+	while (++i < size)
 	{
 		pip[i] = ft_calloc(2, sizeof(int));
 		pipe(pip[i]);
@@ -27,25 +27,14 @@ int	**create_pipes(t_parser_info *p)
 	return (pip);
 }
 
-int	**create_pipe_append(t_parser_info *p)
-{
-	int	i;
-	int	**pipe_append;
-
-	i = -1;
-	pipe_append = ft_calloc((p->pipes_count + 1), sizeof(int *));
-	while (++i <= p->pipes_count)
-	{
-		pipe_append[i] = ft_calloc(2, sizeof(int));
-		pipe(pipe_append[i]);
-	}
-	return (pipe_append);
-}
-
 void	check_in_fd(int in_fd, int *pipe_append, int **pip, int i)
 {
 	if (in_fd > 1)
+	{
 		dup2(in_fd, STDIN_FILENO);
+		close(in_fd);
+		in_fd = 0;
+	}
 	else if (in_fd == 1)
 	{
 		close(pipe_append[1]);
@@ -73,7 +62,11 @@ void	check_in_fd(int in_fd, int *pipe_append, int **pip, int i)
 void	check_out_fd(int out_fd, int **pip, int i, int pipe_count)
 {
 	if (out_fd > 1)
+	{
 		dup2(out_fd, STDOUT_FILENO);
+		close(out_fd);
+		out_fd = 0;
+	}
 	else if (!out_fd && i != pipe_count)
 	{
 		close(pip[i][0]);
