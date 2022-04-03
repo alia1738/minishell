@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 16:55:09 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/03 12:27:16 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/03 17:34:45 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ char	*get_cmd_path(char *cmd, t_parser_info *p)
 		free(temp_path);
 		i++;
 	}
-	printf("minishell: %s:  command not found\n", cmd);
+	printf("babyshell: %s:  command not found\n", cmd);
 	free_double_char(paths_array);
 	p->exit_code = 127;
 	return (NULL);

@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/02 17:39:19 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/03 17:34:52 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,7 +204,7 @@ int	main(int argc, char **argv, char **env)
 			continue ;
 		if (check_repeated_meta(p.input, &p) == -1)
 		{
-			printf("minishell: syntax error regarding the usage of metacharacters\n");
+			printf("babyshell: syntax error regarding the usage of metacharacters\n");
 			free(p.input);
 			continue ;
 		}

@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:15:43 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/03 12:25:52 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/03 17:35:03 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ char	**unset_env(t_parser_info *p, char **env, char *to_be_removed_var)
 		return (env);
 	if (ft_strchr(to_be_removed_var, '='))
 	{
-		printf("minishell: export: '%s': not valid identifier\n", to_be_removed_var);
+		printf("babyshell: export: '%s': not valid identifier\n", to_be_removed_var);
 		p->exit_code = 1;
 		return (env);
 	}

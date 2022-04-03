@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 11:46:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/03 16:48:46 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/03 17:28:08 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ int	child_input_append(int array_i, t_parser_info *p, int i, int pipe_end[2])
 	while (1)
 	{
 		input = readline("> ");
+		if (!input)
+			break ;
 		if (ft_smartncmp(input, p->input_files_delimiters[array_i][i], \
 		ft_strlen(p->input_files_delimiters[array_i][i])))
 			break ;

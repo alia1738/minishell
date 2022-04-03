@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 13:56:18 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/04/03 12:24:56 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/03 17:34:39 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	error_check(t_parser_info *p, char *new_var, char *type)
 
 	if (!ft_isalpha(new_var[0]) && (new_var[0] != '_'))
 	{
-		printf("minishell: %s: '%s': not valid identifier\n", type, new_var);
+		printf("babyshell: %s: '%s': not valid identifier\n", type, new_var);
 		p->exit_code = 1;
 		return (0);
 	}
@@ -61,7 +61,7 @@ int	error_check(t_parser_info *p, char *new_var, char *type)
 	{
 		if ((!ft_isalnum(new_var[index]) && new_var[index] != '_' && new_var[index] != '+') || (new_var[index] == '+' && new_var[index + 1] != '='))
 		{
-			printf("minishell: %s: '%s': not valid identifier\n", type, new_var);
+			printf("babyshell: %s: '%s': not valid identifier\n", type, new_var);
 			p->exit_code = 1;
 			return (0);
 		}

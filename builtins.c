@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 12:12:03 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/04/03 17:06:33 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/03 17:34:30 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	pwd(t_parser_info *p)
 	char	cwd[PATH_MAX];
 	if (!getcwd(cwd, sizeof(cwd)))
 	{
-		perror("minishell: pwd");
+		perror("babyshell: pwd");
 		p->exit_code = 1;
 	}
 	else
@@ -156,13 +156,13 @@ int	cd(t_parser_info *p, char **argv)
 		temp = local_getenv("HOME", p->env);
 		if (!temp)
 		{
-			printf("minishell: cd: HOME not set\n");
+			printf("babyshell: cd: HOME not set\n");
 			p->exit_code = 1;
 
 		}
 		else if (chdir(temp) == -1)
 		{
-			temp = ft_strjoin("minishell: cd: ", temp);
+			temp = ft_strjoin("babyshell: cd: ", temp);
 			perror(temp);
 			free(temp);
 			p->exit_code = 1;
@@ -172,7 +172,7 @@ int	cd(t_parser_info *p, char **argv)
 	{
 		if (chdir(argv[1]) == -1)
 		{
-			temp = ft_strjoin("minishell: cd: ", argv[1]);
+			temp = ft_strjoin("babyshell: cd: ", argv[1]);
 			perror(temp);
 			free(temp);
 			p->exit_code = 1;
@@ -215,12 +215,12 @@ void	baby_exit(t_parser_info *p, char **cmd)
 		{
 			p->exit_code = 1;
 			exit_flag = false;
-			printf("minishell: exit: too many arguments\n");
+			printf("babyshell: exit: too many arguments\n");
 		}
 		else
 		{
 			p->exit_code = 255;
-			printf("minishell: exit: %s: numeric argument required\n", cmd[1]);
+			printf("babyshell: exit: %s: numeric argument required\n", cmd[1]);
 		}
 	}
 	if (exit_flag && !p->pipes_count)

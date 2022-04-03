@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 13:22:51 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/02 17:26:52 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/03 17:34:58 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int		check_repeated_meta(char *input, t_parser_info *p)
 // 	errno = 258;
 	
 // 	if (check_repeated_meta("         <|echo '>>>>>>>'\" |'|||'|||hello>>>>\">>   d>p") == -1)
-// 		printf("minishell: syntax error regarding the usage of metacharacters\n");
+// 		printf("babyshell: syntax error regarding the usage of metacharacters\n");
 // 	else
 // 		printf("YOURE GOOD FOR EXEC!\n");
 // }
