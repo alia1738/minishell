@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset_env.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:15:43 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/23 16:50:59 by anasr            ###   ########.fr       */
+/*   Updated: 2022/04/03 12:25:52 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ char	**remove_var(char **env, char *to_be_removed_var)
 char	**unset_env(t_parser_info *p, char **env, char *to_be_removed_var)
 {
 	p->exit_code = 0;
-	if (!error_check(p, to_be_removed_var))
+	if (!error_check(p, to_be_removed_var, "unset"))
 		return (env);
 	if (ft_strchr(to_be_removed_var, '='))
 	{

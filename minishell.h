@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/02 17:38:39 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/03 16:44:43 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,9 @@ typedef struct s_parser_info
 
 	int		in_fd;
 	int		out_fd;
+	int		**pip;
+	int		**pipe_append;
+	int		exit_code_fd[2];
 
 	bool	oldpwd_dont_update;
 
@@ -119,10 +122,12 @@ int		clear(t_parser_info *p);
 char	*ft_strndup(const char *s1, int n);
 void	skip_isspaces(int *index, char *input);
 char	*ft_strcpy(char *dst, const char *src);
+
+int		check_longmax(char *str);
 int		ft_str_isdigit(char *str);
 char	*ft_str_tolower(char *str);
+int		ft_smartncmp(const char *s1, const char *s2, size_t len);
 int		compare_caseless(const char *s_unknown, const char *s_lowercase);
-int		check_longmax(char *str);
 
 /* ------------- ** command path ** ------------- */
 
@@ -168,7 +173,7 @@ int		builtin_execute(t_parser_info *p, int i);
 /* --------------- ** export env ** ------------- */
 
 int		find_equal(char *env);
-int		error_check(t_parser_info *p, char *new_var);
+int		error_check(t_parser_info *p, char *new_var, char *type);
 char	**export_env(t_parser_info *p, char **env, char *new_env_var);
 
 /* --------------- ** unset env ** -------------- */
@@ -195,24 +200,24 @@ void	execute_pipe_execution(t_parser_info *p);
 
 /* --------------- ** pipe utils ** ------------- */
 
-int		**create_pipes(t_parser_info *p);
-int		**create_pipe_append(t_parser_info *p);
+int		**create_pipes(int size);
+int		**create_pipe_append(int size);
 void	get_in_out_fds(t_parser_info *p, int **pipe_append);
 void	check_out_fd(int in_fd, int **pip, int i, int pipe_count);
 void	check_in_fd(int in_fd, int *pipe_append, int **pip, int i);
 
 /* ------------- ** pipe utils 2 ** ------------- */
 
-void	free_n_close(t_parser_info *p, int **pip, int **pipe_append);
-void	close_all_pipes_fds(t_parser_info *p, int **pip, int **pipe_append);
-void	close_remaining_pipes(int **pipe_append, int **pip, int i, int max);
-void	before_command(t_parser_info *p, int **pip, int **pipe_append, int i);
-void	close_pip_append(t_parser_info *p,int **pip, int **append, int pip_i);
+void	free_close_exit(t_parser_info *p);
+void	close_all_pipes_fds(t_parser_info *p);
+void	before_command(t_parser_info *p, int i);
+void	close_pip_append(t_parser_info *p, int pip_i);
+void	close_remaining_pipes(t_parser_info *p, int i, int max);
 
 /* ------------- ** pipe append ** -------------- */
 
-void	big_baby_job(t_parser_info *p, int **pipe_append);
-void	make_append_child(t_parser_info *p, int **pipe_append);
+void	big_baby_job(t_parser_info *p);
+void	make_append_child(t_parser_info *p);
 
 /* -------------- ** free utils ** -------------- */
 
@@ -236,5 +241,6 @@ void	allocate_meme_specific(char *str, int array_index,t_parser_info *p);
 
 
 void	handle_signals(int signum);
+t_parser_info	*return_p(t_parser_info *p);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 12:12:03 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/04/02 16:44:15 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/03 17:06:33 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,26 @@ int	echo(t_parser_info *p, char **argv)
 	return (0);
 }
 
+void	lonely_export(t_parser_info *p)
+{
+	int	i;
+	int	env_index;
+
+	env_index = 0;
+	while (p->env[env_index])
+	{
+		i = 0;
+		printf("declare -x ");
+		while (p->env[env_index][i] != '=')
+			printf("%c", p->env[env_index][i++]);
+		printf("=\"");
+		while (p->env[env_index][++i])
+			printf("%c", p->env[env_index][i]);
+		printf("\"\n");
+		env_index++;
+	}
+}
+
 int	export(t_parser_info *p, char **cmd)
 {
 	int		i;
@@ -86,6 +106,12 @@ int	export(t_parser_info *p, char **cmd)
 	
 	i = 1;
 	failed = false;
+	if (!cmd[1])
+	{
+		lonely_export(p);
+		p->exit_code = 0;
+		return (0);
+	}
 	while (cmd[i])
 	{
 		p->env = export_env(p, p->env, cmd[i++]);
@@ -174,10 +200,6 @@ int	cd(t_parser_info *p, char **argv)
 
 void	baby_exit(t_parser_info *p, char **cmd)
 {
-	//catch cases of failure
-	// if (!ft_strncmp(local_getenv("SHLVL"), "1", 2))
-	// 	printf("logout\n");
-	// else
 	bool	exit_flag;
 
 	exit_flag = true;
@@ -201,7 +223,6 @@ void	baby_exit(t_parser_info *p, char **cmd)
 			printf("minishell: exit: %s: numeric argument required\n", cmd[1]);
 		}
 	}
-	// printf("code: %d\n", p->exit_code);
 	if (exit_flag && !p->pipes_count)
 	{
 		free_everything(p);
@@ -209,18 +230,4 @@ void	baby_exit(t_parser_info *p, char **cmd)
 		free(p->cmd_path);
 		exit(p->exit_code);
 	}
-	//if cmd[0] is higer than longmax it should fail
-	//also other cases should be accounted for where exit fails
-	//too many cases!!!
-	//exit 9223372036854775807 .. -9223372036854775808
 }
-/*
-Exit cases:
-
-> exit 4dns           -   should exit with 255
-> exit 42 dns         -   shouldn't exit and the exit code is 1
-> exit 42 4234 23     -   shouldn't exit and the exit code is 1
-> exit er42 4234 23   -   should exit 255
- 
-
-*/

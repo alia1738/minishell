@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 16:55:09 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/02 17:39:33 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/03 12:27:16 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@ void	nested_minishell(t_parser_info *p)
 	char	*temp;
 	char	*shlvl;
 
+	temp = local_getenv("SHELL", p->env);
+	if (temp)
+		export_env(p, p->env, "SHELL=minishell");
 	temp = local_getenv("SHLVL", p->env);
 	if (temp)
 	{

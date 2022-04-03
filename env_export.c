@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 13:56:18 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/04/02 17:08:31 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/03 12:24:56 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,13 @@ static int	get_index(char *env_variable, char **env)
 	return (-1);
 }
 
-int	error_check(t_parser_info *p, char *new_var)
+int	error_check(t_parser_info *p, char *new_var, char *type)
 {
 	int	index;
 
 	if (!ft_isalpha(new_var[0]) && (new_var[0] != '_'))
 	{
-		printf("minishell: export: '%s': not valid identifier\n", new_var);
+		printf("minishell: %s: '%s': not valid identifier\n", type, new_var);
 		p->exit_code = 1;
 		return (0);
 	}
@@ -61,7 +61,7 @@ int	error_check(t_parser_info *p, char *new_var)
 	{
 		if ((!ft_isalnum(new_var[index]) && new_var[index] != '_' && new_var[index] != '+') || (new_var[index] == '+' && new_var[index + 1] != '='))
 		{
-			printf("minishell: export: '%s': not valid identifier\n", new_var);
+			printf("minishell: %s: '%s': not valid identifier\n", type, new_var);
 			p->exit_code = 1;
 			return (0);
 		}
@@ -111,7 +111,7 @@ char	**export_env(t_parser_info *p, char **env, char *new_env_var) // How To Use
 	int		save_index;
 	
 	p->exit_code = 0;
-	if (!error_check(p, new_env_var))
+	if (!error_check(p, new_env_var, "export"))
 		return (env);
 	if (!ft_strchr(new_env_var, '='))
 		return (env);
