@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 16:42:32 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/04/03 16:46:41 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/04 13:18:37 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	execute_pipe_execution(t_parser_info *p)
 		free_double_int(p->pipe_append, (p->pipes_count + 1));
 		return ;
 	}
-	p->pip = create_pipes(p->pipes_count);	
+	p->pip = create_pipes(p->pipes_count);
 	while (++i <= p->pipes_count)
 	{
 		p->child_pids[i] = fork();

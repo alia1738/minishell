@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/03 16:44:43 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/04 15:19:10 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,52 +151,32 @@ char	*expand_dollars_in_str(char *str, t_parser_info *p, bool append_flag);
 
 /* ---------- ** expand dollar utils ** --------- */
 
-
 void	len_dollar_question(int *i, int *len, t_parser_info *p);
 void	expand_dollar_question(int *i, int *new_index, char *expanded, t_parser_info *p);
 void	len_dollar_general(int *i, int *len, char *str, t_parser_info *p);
 
-/* ----------- ** execution utils ** ------------ */
-
-int		final_in_fd(int array_index, t_parser_info *p);
-int		final_out_fd(int array_index, t_parser_info *p);
-void	account_for_in_redirect(int *pipe_append, int in_fd);
-void	do_in_append(t_parser_info *p, int array_i, int pipe_end[2]);
-int		child_input_append(int array_index, t_parser_info *p, int i, int pipe_append[2]);
-
 /* ---------- ** command execution ** ----------- */
 
 void	execute_single_command(t_parser_info *p);
-int		builtin_check(t_parser_info *p, int i);
-int		builtin_execute(t_parser_info *p, int i);
-
-/* --------------- ** export env ** ------------- */
-
-int		find_equal(char *env);
-int		error_check(t_parser_info *p, char *new_var, char *type);
-char	**export_env(t_parser_info *p, char **env, char *new_env_var);
-
-/* --------------- ** unset env ** -------------- */
-
-char	**unset_env(t_parser_info *p, char **env, char *to_be_removed_var);
-
-/* ---------------- ** builtins ** -------------- */
-
-int		pwd(t_parser_info *p);
-int		env(t_parser_info *p);
-int		cd(t_parser_info *p, char **argv);
-int		echo(t_parser_info *p, char **argv);
-int		unset(t_parser_info *p, char **cmd);
-int		export(t_parser_info *p, char **cmd);
-void	baby_exit(t_parser_info *p, char **cmd);
-
-/* ----------------- ** getenv ** --------------- */
-
-char	*local_getenv(char *var, char **p_env);
 
 /* ------------------ ** pipe ** ---------------- */
 
 void	execute_pipe_execution(t_parser_info *p);
+
+/* ----------- ** redirection ** ------------ */
+
+int		final_in_fd(int array_index, t_parser_info *p);
+int		final_out_fd(int array_index, t_parser_info *p);
+
+/* --------- single cmd execution utils --------- */
+
+void	free_n_exit(t_parser_info *p);
+void	append_n_fds(t_parser_info *p);
+void	account_for_in_redirect(int *pipe_append, int in_fd);
+void	before_n_after_single_cmd(t_parser_info *p, bool if_before);
+
+/* ----------- ** execution utils ** ------------ */
+//remove
 
 /* --------------- ** pipe utils ** ------------- */
 
@@ -214,10 +194,45 @@ void	before_command(t_parser_info *p, int i);
 void	close_pip_append(t_parser_info *p, int pip_i);
 void	close_remaining_pipes(t_parser_info *p, int i, int max);
 
-/* ------------- ** pipe append ** -------------- */
+/* --------------- ** append ** ---------------- */
 
 void	big_baby_job(t_parser_info *p);
 void	make_append_child(t_parser_info *p);
+void	do_in_append(t_parser_info *p, int array_i, int pipe_end[2]);
+int		child_input_append(int array_index, t_parser_info *p, int i, int pipe_append[2]);
+
+/* ------------ ** export env utils ** ---------- */
+
+int		find_equal(char *env);
+bool	append_env_check(char *new_env_var);
+int		get_index(char *env_variable, char **env);
+int		error_check(t_parser_info *p, char *new_var, char *type);
+
+/* --------------- ** export env ** ------------- */
+
+char	**export_env(t_parser_info *p, char **env, char *new_env_var);
+
+/* --------------- ** unset env ** -------------- */
+
+char	**unset_env(t_parser_info *p, char **env, char *to_be_removed_var);
+
+/* ---------------- ** builtins ** -------------- */
+
+int		builtin_check(t_parser_info *p, int i);
+int		builtin_execute(t_parser_info *p, int i);
+int		unset(t_parser_info *p, char **cmd);
+int		export(t_parser_info *p, char **cmd);
+
+int		pwd(t_parser_info *p);
+int		cd(t_parser_info *p, char **argv);
+
+int		env(t_parser_info *p);
+int		echo(t_parser_info *p, char **argv);
+void	baby_exit(t_parser_info *p, char **cmd);
+
+/* ----------------- ** getenv ** --------------- */
+
+char	*local_getenv(char *var, char **p_env);
 
 /* -------------- ** free utils ** -------------- */
 
@@ -240,6 +255,7 @@ void	allocate_meme_general(t_parser_info *p);
 void	allocate_meme_specific(char *str, int array_index,t_parser_info *p);
 
 
+void	append_handler(int signum);
 void	handle_signals(int signum);
 t_parser_info	*return_p(t_parser_info *p);
 

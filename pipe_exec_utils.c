@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/20 19:14:46 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/04/03 16:22:16 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/04 14:36:49 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,24 @@ int	**create_pipes(int size)
 	while (++i < size)
 	{
 		pip[i] = ft_calloc(2, sizeof(int));
-		pipe(pip[i]);
+		if 	(pipe(pip[i]) < 0)
+			exit(1);
 	}
 	return (pip);
+}
+
+static void	check_in_fd_helper(int in_fd, int *pipe_append, int **pip, int i)
+{
+	if (in_fd != 1)
+	{
+		close(pipe_append[1]);
+		close(pipe_append[0]);
+	}
+	if (in_fd && i)
+	{
+		close(pip[i - 1][0]);
+		close(pip[i - 1][1]);
+	}
 }
 
 void	check_in_fd(int in_fd, int *pipe_append, int **pip, int i)
@@ -47,16 +62,7 @@ void	check_in_fd(int in_fd, int *pipe_append, int **pip, int i)
 		dup2(pip[i - 1][0], STDIN_FILENO);
 		close(pip[i - 1][0]);
 	}
-	if (in_fd != 1)
-	{
-		close(pipe_append[1]);
-		close(pipe_append[0]);
-	}
-	if (in_fd && i)
-	{
-		close(pip[i - 1][0]);
-		close(pip[i - 1][1]);
-	}
+	check_in_fd_helper(in_fd, pipe_append, pip, i);
 }
 
 void	check_out_fd(int out_fd, int **pip, int i, int pipe_count)
