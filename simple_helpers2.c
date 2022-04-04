@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/01 16:43:16 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/04/04 11:50:39 by anasr            ###   ########.fr       */
+/*   Updated: 2022/04/04 16:15:30 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	compare_caseless(const char *s_unknown, const char *s_lowercase)
 	return (1);
 }
 
-int		check_longmax(char *str)
+int	check_longmax(char *str)
 {
 	int			i;
 	int			sign;
@@ -66,9 +66,8 @@ int		check_longmax(char *str)
 	result = 0;
 	if (str[i] == '-' || str[i] == '+')
 	{
-		if (str[i] == '-')
+		if (str[i++] == '-')
 			sign = -1;
-		i++;
 	}
 	while (ft_isdigit(str[i]) == 1)
 	{
