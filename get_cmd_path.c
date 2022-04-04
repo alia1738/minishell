@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 16:55:09 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/04 14:01:39 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/04 16:47:54 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,23 +80,23 @@ char	*get_cmd_path(char *cmd, t_parser_info *p)
 	char	*temp_path;
 	char	**paths_array;
 
-	i = 0;
+	i = -1;
 	if (!cmd)
 		return (NULL);
 	temp_path = local_getenv("PATH", p->env);
 	if (!temp_path)
-	{
 		perror_n_exitcode(cmd, p, false);
+	if (!temp_path)
 		return (0);
-	}
 	paths_array = ft_split(temp_path, ':');
-	while (paths_array[i] && cmd[0])
+	while (paths_array[++i] && cmd[0])
 	{
 		temp_path = join_cmd_to_path(paths_array[i], cmd);
 		if (!access(temp_path, F_OK) && !access(temp_path, X_OK))
+			free_double_char(paths_array);
+		if (!access(temp_path, F_OK) && !access(temp_path, X_OK))
 			return (temp_path);
 		free(temp_path);
-		i++;
 	}
 	perror_n_exitcode(cmd, p, true);
 	free_double_char(paths_array);
