@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 02:25:49 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/01 16:59:52 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/04 12:16:03 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	free_triple_char(char ***array)
 	return ;
 }
 
-void	free_triple_char_partial(char ***array, t_parser_info  *p)
+void	free_triple_char_partial(char ***array, t_parser_info *p)
 {
 	int	i;
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   counting_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 02:49:02 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/01 17:49:09 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/04 11:49:01 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ int	count_pipes(char *input)
 		}
 		else if (input[i] == '|')
 			count++;
-		
 	}
 	return (count);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split_custom.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/19 18:10:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/03/31 18:28:52 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/04 12:20:24 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ char *strcpy_wout_quotes(char *str)
 		}
 	}
 	
-	new_str = ft_calloc(len_wout_quote + 1, sizeof(char));
+	new_str = ft_calloc_p(len_wout_quote + 1, sizeof(char));
 	if (!new_str)
 		return (NULL);
 	i = 0;
@@ -182,25 +182,11 @@ static char	*get_next_word(int i, char *input, char **meta, t_parser_info *p)
 {
 	int		len;
 	char	*temp;
-	// char	*result;
 
 	(void)p;
 	len = get_next_word_len(i, input, meta);
 	temp = ft_substr(input, i, len);
-
-	// if (ft_strchr(temp, '$') && p->was_there_delim == false)
-	// 	temp = expand_dollars_in_str(temp, p, false);
-
-	// if (!ft_strncmp(temp, "<<", 3))
-	// 	p->was_there_delim = true;
-	// else
-	// 	p->was_there_delim = false;
-	// if (ft_strchr(temp, '\'') || ft_strchr(temp, '\"'))
-	// 	result = strcpy_wout_quotes(temp);
-	// else
-		return (temp);
-	// free(temp);
-	// return (result);
+	return (temp);
 }
 
 char	**ft_split_custom(char *input, char **meta, t_parser_info *p)
@@ -215,7 +201,7 @@ char	**ft_split_custom(char *input, char **meta, t_parser_info *p)
 	i = 0;
 	word_index = 0;
 	word_count = count_inputs(input, meta);
-	result = ft_calloc(word_count + 1, sizeof(char *)); //protect
+	result = ft_calloc_p(word_count + 1, sizeof(char *)); //protect
 	skip_isspaces(&i, input);
 	while (word_index < word_count)
 	{
@@ -226,29 +212,3 @@ char	**ft_split_custom(char *input, char **meta, t_parser_info *p)
 	}
 	return (result);
 }
-
-// int main (int argc, char **argv)
-// {
-// 	t_parser_info p;
-// 	char	**ptr;
-// 	char	*meta[5] = {"<<", "<", ">", ">>", 0};
-	
-// 	if (argc < 2)
-// 		exit(EXIT_FAILURE);
-// 	ptr = ft_split_custom(argv[1], meta, &p);
-// 	while (*ptr)
-// 	{
-// 		printf("%s\n", *ptr);
-// 		ptr++;
-// 	}
-// }
-
-	// int	i = 0;
-	// printf("count: %d\n", count_inputs(argv[1], meta));
-	// printf("quote length: %d\n", get_next_word_len(3, "<<\"me\'hey    ey\'me\"", meta));
-	// char	*str = "a    \"''\"''      a"     ;
-	// char	*str = "me\"heye\"me\"he'oo'ye\"'yyyy'";
-	// printf("string with    quotes: %s\n", str);
-	// printf("string without quotes: %s\n", strcpy_wout_quotes(str));
-	// strcpy_wout_quotes("me'heye'me'heye'");
-	// strcpy_wout_quotes("''''\"\"");

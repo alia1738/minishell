@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/03 16:44:43 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/04 14:08:32 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,10 +104,19 @@ typedef struct s_parser_info
 	int		exit_code;
 }	t_parser_info;
 
-/* ------------------ > >> Global variables << < ------------------ */
+typedef struct s_dollar_expansion
+{
+	int		i;
+	int		new_index;
+	char	*expanded;
+	char	*meta[15];
 
-// extern char	**environ;
-extern int rl_catch_signals;
+	int		len;
+
+}	t_dollar_expansion;
+
+
+/* ------------------ > >> Global variables << < ------------------ */
 
 /* --------------------- > >> Prototypes << < --------------------- */
 
@@ -126,8 +135,10 @@ char	*ft_strcpy(char *dst, const char *src);
 int		check_longmax(char *str);
 int		ft_str_isdigit(char *str);
 char	*ft_str_tolower(char *str);
-int		ft_smartncmp(const char *s1, const char *s2, size_t len);
 int		compare_caseless(const char *s_unknown, const char *s_lowercase);
+
+void	*ft_calloc_p(size_t count, size_t size);
+int		ft_smartncmp(const char *s1, const char *s2, size_t len);
 
 /* ------------- ** command path ** ------------- */
 
@@ -149,12 +160,21 @@ void	skip_dollar_content(int *i, char *str);
 char	*ft_getenv(int i, char *str, t_parser_info *p);
 char	*expand_dollars_in_str(char *str, t_parser_info *p, bool append_flag);
 
-/* ---------- ** expand dollar utils ** --------- */
+/* ---------- ** expand dollar utils1 ** --------- */
 
 
-void	len_dollar_question(int *i, int *len, t_parser_info *p);
-void	expand_dollar_question(int *i, int *new_index, char *expanded, t_parser_info *p);
-void	len_dollar_general(int *i, int *len, char *str, t_parser_info *p);
+void	len_dollar_question(t_dollar_expansion *dxl, t_parser_info *p);
+void	len_dollar_general(t_dollar_expansion *dxl, char *str, t_parser_info *p);
+void	increment_len_n_index(t_dollar_expansion *dxl);
+void	len_dollar_quote(int type, char *str, t_dollar_expansion *dxl ,t_parser_info *p);
+void	len_dollar_single_quote(bool append_flag, char *str, t_dollar_expansion *dxl ,t_parser_info *p);
+
+/* ---------- ** expand dollar utils2 ** --------- */
+
+void	expand_dollar_general(char *str, t_dollar_expansion *dx, t_parser_info *p);
+void	expand_dollar_question(t_dollar_expansion *dx, t_parser_info *p);
+void	expand_dollar_quote(int type, char *str, t_dollar_expansion *dx, t_parser_info *p);
+void	expand_dollar_single_quote(bool append_flag, char *str, t_dollar_expansion *dx, t_parser_info *p);
 
 /* ----------- ** execution utils ** ------------ */
 

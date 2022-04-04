@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   simple_helpers2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/01 16:43:16 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/04/03 13:40:27 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/04 11:50:39 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,12 +80,5 @@ int		check_longmax(char *str)
 		i++;
 		count++;
 	}
-	return (0);
-}
-
-int	ft_smartncmp(const char *s1, const char *s2, size_t len)
-{
-	if (ft_strlen(s1) == ft_strlen(s2) && !ft_strncmp(s1, s2, len))
-		return (1);
 	return (0);
 }
