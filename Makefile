@@ -1,5 +1,5 @@
 NAME = minishell
-SRC = minishell.c get_cmd_path.c simple_helpers1.c simple_helpers2.c simple_helpers3.c command_execution.c execution_utils.c ft_split_custom.c builtins.c parser_utils.c expand_dollar.c pipe.c pipe_utils.c pipe_utils2.c pipe_append.c env_export.c local_getenv.c free_utils.c memory.c counting_utils.c unset_env.c expand_dollar_utils1.c expand_dollar_utils2.c
+SRC = minishell.c get_cmd_path.c simple_helpers1.c simple_helpers2.c simple_helpers3.c command_execution.c execution_utils.c ft_split_custom.c ft_split_custom_utils.c builtins.c parser_utils1.c parser_utils2.c expand_dollar.c pipe.c pipe_utils.c pipe_utils2.c pipe_append.c env_export.c local_getenv.c free_utils.c memory.c counting_utils.c unset_env.c expand_dollar_utils1.c expand_dollar_utils2.c signals.c
 OBJ = $(SRC:.c=.o)
 DEP = $(SRC:.c=.d)
 LINK_LIBFT = -Llibft -lft

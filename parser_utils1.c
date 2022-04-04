@@ -1,16 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_utils.c                                     :+:      :+:    :+:   */
+/*   parser_utils1.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 13:22:51 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/03 17:34:58 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/04 15:13:26 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	check_empty_input(char	*input)
+{
+	int	i;
+
+	i = 0;
+	skip_isspaces(&i, input);
+	if (input[i])
+		return (1);
+	free(input);
+	return (0);
+}
 
 int		check_repeated_meta(char *input, t_parser_info *p)
 {

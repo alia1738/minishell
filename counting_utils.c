@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 02:49:02 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/04 11:49:01 by anasr            ###   ########.fr       */
+/*   Updated: 2022/04/04 14:58:07 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ int	count_pipes(char *input)
 	int	i;
 	int	count;
 
-	i = -1;
+	i = 0;
 	count = 0;
-	while (input[++i])
+	while (input[i])
 	{
 		if (input[i] == '\'')
 		{
@@ -33,6 +33,8 @@ int	count_pipes(char *input)
 		}
 		else if (input[i] == '|')
 			count++;
+		if (input[i])
+			i++;
 	}
 	return (count);
 }

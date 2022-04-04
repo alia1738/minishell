@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 05:56:45 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/03 17:34:52 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/04 14:30:37 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,66 +116,6 @@ void	save_cmds(char *input, t_parser_info *p)
 	p->command_in_action = false;
 }
 
-t_parser_info	*return_p(t_parser_info *p)
-{
-	static t_parser_info	*save_p;
-
-	if (p != NULL)
-		save_p = p;
-	return (save_p);
-}
-
-//SIGNAL STUFF
-void	handle_signals(int signum)
-{
-	t_parser_info	*p;
-
-	p = return_p(NULL);
-	if (p->command_in_action)
-		p->signal_in_cmd = true;
-	else
-		p->exit_code = 1;
-	if (signum == SIGINT)
-	{
-		write(1, "\n", 1);
-		rl_on_new_line();//tells (i think) readline that we moved to a newline
-		rl_replace_line("", 1); //replace the rl_buffer (whatever was written (without pressing enter) in readline before signal ctrl c occured) by ""
-		if (!p->command_in_action)
-			rl_redisplay(); //redisplay prompt and rl_buffer
-	}
-	return ;
-}
-
-void	hide_signal_markers(void)
-{
-	int		pid;
-	char	*ptr[3];
-	ptr[0] = "stty";
-	ptr[1] = "-echoctl";
-	ptr[2] =  0;
-	pid = fork();
-	if (pid == -1)
-		return ;
-	else if (pid == 0)
-		execve("/bin/stty", ptr, NULL);
-	else
-		waitpid(-1, NULL, 0);
-}
-
-int	check_empty_input(char	*input)
-{
-	int	i;
-
-	i = 0;
-	skip_isspaces(&i, input);
-	if (input[i])
-		return (1);
-	free(input);
-	return (0);
-}
-
-
-//
 int	main(int argc, char **argv, char **env)
 {
 	t_parser_info	p;
@@ -184,7 +124,6 @@ int	main(int argc, char **argv, char **env)
 	(void)argv;
 	ft_bzero(&p, sizeof(t_parser_info));
 	hide_signal_markers();
-	rl_catch_signals = 1;
 	signal(SIGINT, &handle_signals);
 	signal(SIGQUIT, SIG_IGN);
 	p.env = dup_array(env);

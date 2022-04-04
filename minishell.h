@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/04 14:08:32 by anasr            ###   ########.fr       */
+/*   Updated: 2022/04/04 15:19:10 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,9 +120,17 @@ typedef struct s_dollar_expansion
 
 /* --------------------- > >> Prototypes << < --------------------- */
 
-/* ------------- ** parser utils ** ------------- */
+/* ------------- ** parser utils1 ** ------------ */
 
+int		check_empty_input(char	*input);
 int		check_repeated_meta(char *input, t_parser_info *p);
+
+/* ------------- ** parser utils2 ** ------------ */
+
+int		ft_isquote(char c);
+char	*strcpy_wout_quotes(char *str);
+int		ft_ismeta(char *current_c, char **meta);
+int		skip_quote_content(int *i, char *input);
 
 /* ------------ ** simple helpers ** ------------ */
 
@@ -148,10 +156,8 @@ char	*get_cmd_path(char *cmd, t_parser_info *p);
 
 /* ----------------- ** split ** ---------------- */
 
-int		ft_isquote(char c);
-char	*strcpy_wout_quotes(char *str);
-int		ft_ismeta(char *current_c, char **meta);
-int		skip_quote_content(int *i, char *input);
+void	count_inputs_helper(int *i, char *input, char **meta);
+
 char	**ft_split_custom(char *input, char **meta, t_parser_info *p);
 
 /* ------------ ** expand dollar ** ------------- */
@@ -259,8 +265,10 @@ void	free_everything(t_parser_info *p);
 void	allocate_meme_general(t_parser_info *p);
 void	allocate_meme_specific(char *str, int array_index,t_parser_info *p);
 
+/* ----------------- ** signals ** -------------- */
 
-void	handle_signals(int signum);
+void			handle_signals(int signum);
+void			hide_signal_markers(void);
 t_parser_info	*return_p(t_parser_info *p);
 
 #endif
