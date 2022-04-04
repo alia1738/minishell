@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/02 11:46:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/04 13:48:46 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/04 17:57:16 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,9 @@ static void	sig_close_n_free(t_parser_info *p)
 	}
 	else
 	{
-		close_all_pipes_fds(p);
+		// close_all_pipes_fds(p);
+		close_all_pipes(p->pip, p->pipes_count);
+		close_all_pipes(p->pipe_append, (p->pipes_count + 1));
 		free_double_int(p->pip, p->pipes_count);
 		free_double_int(p->pipe_append, (p->pipes_count + 1));
 	}

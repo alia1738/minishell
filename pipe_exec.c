@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipe.c                                             :+:      :+:    :+:   */
+/*   pipe_exec.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 16:42:32 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/04/04 13:18:37 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/04 17:43:17 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,9 @@
 static void	pipe_child_process(t_parser_info *p, int pip_i)
 {
 	signal(SIGINT, SIG_DFL);
+	close(p->exit_code_fd[0]);
+	write(p->exit_code_fd[1], "130", 3);
+	close(p->exit_code_fd[1]);
 	before_command(p, pip_i);
 	if (builtin_check(p, pip_i) < 2)
 	{
@@ -32,16 +35,27 @@ static void	pipe_child_process(t_parser_info *p, int pip_i)
 /* --------------------------------- Parent -------------------------------- */
 static void	parent_process(t_parser_info *p)
 {
-	int	i;
-	int	status;
+	int		i;
+	int		status;
+	char	temp[3];
 
+	ft_bzero(temp, 3);
 	i = -1;
-	close_all_pipes_fds(p);
+	close_all_pipes(p->pipe_append, (p->pipes_count + 1));
+	close_all_pipes(p->pip, (p->pipes_count));
 	while (++i < p->pipes_count + 1)
 	{
 		waitpid(p->child_pids[i], &status, 0);
 		p->exit_code = WEXITSTATUS(status);
 	}
+	close(p->exit_code_fd[1]);
+	if (p->signal_in_cmd)
+	{
+		read(p->exit_code_fd[0], temp, 3);
+		p->exit_code = ft_atoi(temp);
+		p->signal_in_cmd = false;
+	}
+	close(p->exit_code_fd[0]);
 	free_double_int(p->pip, p->pipes_count);
 	free_double_int(p->pipe_append, (p->pipes_count + 1));
 }
@@ -56,14 +70,13 @@ void	execute_pipe_execution(t_parser_info *p)
 	make_append_child(p);
 	if (p->in_append_inprogress == true)
 	{
-		while (++i <= p->pipes_count)
-		{
-			close(p->pipe_append[i][0]);
-			close(p->pipe_append[i][1]);
-		}
+		close_all_pipes(p->pipe_append, (p->pipes_count + 1));
 		free_double_int(p->pipe_append, (p->pipes_count + 1));
+		p->exit_code = 1;
 		return ;
 	}
+	if (pipe(p->exit_code_fd) < 0)
+		exit(1);
 	p->pip = create_pipes(p->pipes_count);
 	while (++i <= p->pipes_count)
 	{

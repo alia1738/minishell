@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/04 15:19:10 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/04 17:28:55 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,6 +189,7 @@ void	check_in_fd(int in_fd, int *pipe_append, int **pip, int i);
 /* ------------- ** pipe utils 2 ** ------------- */
 
 void	free_close_exit(t_parser_info *p);
+void	close_all_pipes(int **pip, int len);
 void	close_all_pipes_fds(t_parser_info *p);
 void	before_command(t_parser_info *p, int i);
 void	close_pip_append(t_parser_info *p, int pip_i);
