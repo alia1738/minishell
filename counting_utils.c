@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   counting_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 02:49:02 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/01 17:49:09 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/04 16:05:00 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ int	count_pipes(char *input)
 	int	i;
 	int	count;
 
-	i = -1;
+	i = 0;
 	count = 0;
-	while (input[++i])
+	while (input[i])
 	{
 		if (input[i] == '\'')
 		{
@@ -33,7 +33,8 @@ int	count_pipes(char *input)
 		}
 		else if (input[i] == '|')
 			count++;
-		
+		if (input[i])
+			i++;
 	}
 	return (count);
 }
@@ -88,13 +89,23 @@ int	count_out_redirections(char	*str)
 	return (count);
 }
 
+static void	meta_init_five(char **meta)
+{
+	meta[0] = "<<";
+	meta[1] = "<";
+	meta[2] = ">>";
+	meta[3] = ">";
+	meta[4] = 0;
+}
+
 int	count_cmds_wout_meta(char *str, t_parser_info *p)
 {
 	int		i;
 	int		count;
 	char	**temp;
-	char	*meta[5] = {"<<", "<", ">>", ">", 0};
+	char	*meta[5];
 
+	meta_init_five(meta);
 	temp = ft_split_custom(str, meta, p);
 	i = 0;
 	count = 0;

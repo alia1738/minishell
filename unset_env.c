@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   unset_env.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:15:43 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/03 17:35:03 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/04 12:24:04 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 
 static int	check_env_unset(char *env_variable, char **env)
 {
@@ -29,7 +28,7 @@ static int	check_env_unset(char *env_variable, char **env)
 
 char	**remove_var(char **env, char *to_be_removed_var)
 {
-	int 	i;
+	int		i;
 	int		new_index;
 	char	**new_env;
 	int		env_var_index;
@@ -41,7 +40,7 @@ char	**remove_var(char **env, char *to_be_removed_var)
 		i = 0;
 		while (env[i])
 			i++;
-		new_env = ft_calloc((i), sizeof(char *));//protect
+		new_env = ft_calloc_p((i), sizeof(char *));
 		i = -1;
 		while (env[++i])
 		{
@@ -62,7 +61,8 @@ char	**unset_env(t_parser_info *p, char **env, char *to_be_removed_var)
 		return (env);
 	if (ft_strchr(to_be_removed_var, '='))
 	{
-		printf("babyshell: export: '%s': not valid identifier\n", to_be_removed_var);
+		printf("babyshell: unset: '%s': not valid identifier\n", \
+		to_be_removed_var);
 		p->exit_code = 1;
 		return (env);
 	}

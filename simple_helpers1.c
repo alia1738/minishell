@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   simple_helpers1.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 17:52:09 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/01 16:43:41 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/04 16:14:34 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	skip_isspaces(int *index, char *input)
 		(*index)++;
 }
 
-int		clear(t_parser_info *p)
+int	clear(t_parser_info *p)
 {
 	printf("\e[1;1H\e[2J");
 	p->exit_code = 0;
@@ -67,7 +67,7 @@ char	**dup_array(char **a1)
 	i = 0;
 	while (a1[i])
 		i++;
-	new_a = ft_calloc((i + 1), sizeof(char *));
+	new_a = ft_calloc_p((i + 1), sizeof(char *));
 	i = 0;
 	while (a1[i])
 	{
