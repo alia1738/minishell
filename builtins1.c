@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/04 14:40:20 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/04/04 15:12:05 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/05 14:11:08 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	env(t_parser_info *p)
 	return (0);
 }
 
-static void	lonly_cd(t_parser_info *p)
+static void	lonely_cd(t_parser_info *p)
 {
 	char	*temp;
 
@@ -83,7 +83,7 @@ int	cd(t_parser_info *p, char **argv)
 	save = ft_strdup(cwd);
 	ft_bzero(cwd, PATH_MAX);
 	if (!argv[1])
-		lonly_cd(p);
+		lonely_cd(p);
 	else
 		move_to_new_dir(p, argv);
 	if (p->exit_code == 0)
