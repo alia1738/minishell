@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/04 18:06:21 by anasr            ###   ########.fr       */
+/*   Updated: 2022/04/05 12:20:45 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,6 +143,11 @@ char	*strcpy_wout_quotes(char *str);
 int		ft_ismeta(char *current_c, char **meta);
 int		skip_quote_content(int *i, char *input);
 
+/* -------------- ** parse cmds ** -------------- */
+
+void	save_input_output_files_n_cmds(int array_index, char **specific_cmd, t_parser_info *p);
+void	save_cmds(char *input, t_parser_info *p);
+
 /* ------------- ** sort utils ** --------------- */
 
 void	sort_input(int array_index, char **specific_cmd, t_sort_indices *index, t_parser_info *p);
@@ -150,8 +155,6 @@ void	sort_output(int array_index, char **specific_cmd, t_sort_indices *index, t_
 void	sort_cmds(int array_index, char **specific_cmd, t_sort_indices *index, t_parser_info *p);
 void	save_cmds_meta_init(char **meta);
 void	save_cmds_helper(int array_index, char *input, char **meta, t_parser_info *p);
-
-void	save_input_output_files_n_cmds(int array_index, char **specific_cmd, t_parser_info *p);
 
 /* ------------ ** simple helpers ** ------------ */
 
