@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 16:42:32 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/04/05 12:21:49 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/05 15:14:43 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ static void	parent_process(t_parser_info *p)
 		read(p->exit_code_fd[0], temp, 3);
 		p->exit_code = ft_atoi(temp);
 		p->signal_in_cmd = false;
+		p->in_append_inprogress = false;
 	}
 	close(p->exit_code_fd[0]);
 	free_double_int(p->pip, p->pipes_count);

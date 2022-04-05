@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/04 14:51:58 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/04/04 15:19:26 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/05 14:11:32 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ int	pwd(t_parser_info *p)
 {
 	char	cwd[PATH_MAX];
 
+	p->exit_code = 0;
 	if (!getcwd(cwd, sizeof(cwd)))
 	{
 		perror("babyshell: pwd");
@@ -23,7 +24,6 @@ int	pwd(t_parser_info *p)
 	}
 	else
 		printf("%s\n", cwd);
-	p->exit_code = 0;
 	return (0);
 }
 

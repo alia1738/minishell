@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/04/04 14:37:30 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/05 15:06:06 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ static void	single_cmd_parent(t_parser_info *p, char temp[3])
 		read(p->exit_code_fd[0], temp, 3);
 		p->exit_code = ft_atoi(temp);
 		p->signal_in_cmd = false;
+		close(p->exit_code_fd[0]);
+		return ;
 	}
 	close(p->exit_code_fd[0]);
 	if (p->cmd[0][0] && !builtin_check(p, 0))

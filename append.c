@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:46:03 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/04/05 12:21:24 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/05 14:59:22 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,9 @@ void	make_append_child(t_parser_info *p)
 	{
 		p->in_append_inprogress = true;
 		waitpid(p->child_pids[0], &status, 0);
-		if (WIFSIGNALED(status) == false)
+		if (p->signal_in_cmd == false)
 			p->in_append_inprogress = false;
+		else
+			p->signal_in_cmd = false;
 	}
 }
