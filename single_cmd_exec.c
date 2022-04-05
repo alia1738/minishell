@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:48:43 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/04/05 15:06:06 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/05 16:13:00 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ static void	single_child_process(t_parser_info *p, int pipe_append[2])
 	{
 		dup2(p->out_fd, STDOUT_FILENO);
 		close(p->out_fd);
+		p->out_fd = 0;
 	}
 	if (builtin_check(p, 0) == 1)
 	{
