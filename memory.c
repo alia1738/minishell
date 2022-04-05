@@ -3,25 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   memory.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 02:46:33 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/04 12:14:54 by anasr            ###   ########.fr       */
+/*   Updated: 2022/04/05 13:41:24 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-/*
-********
-cmd_part                  --  char *** -- allocated fully     -- (p->pipes_count + 2) char** -- each char** implicit allocation through split function
-cmd                       --  char *** -- allocated partially -- (p->pipes_count + 2) char** -- allocated count_cmds_wout_meta() char*'s for each char**
-in_arrow_flag             --  int**    -- allocated fully     -- (p->pipes_count + 1) int*   -- allocated count_in_redirection() int's for each int* 
-out_arrow_flag            --  int**    -- allocated fully     -- (p->pipes_count + 1) int*   -- allocated count_out_redirection() int's for each int*
-output_files              --  char***  -- allocated partially -- (p->pipes_count + 2) char** -- allocated count_out_redirections() char*'s for each of the char**'s 
-input_files_delimeters    --  char***  -- allocated partially -- (p->pipes_count + 2) char** -- allocated count_in_redirections() char*'s for each of the char**'s 
-********
-*/
 
 void	free_everything(t_parser_info *p)
 {
@@ -68,3 +57,39 @@ void	allocate_meme_specific(char *str, int array_index, t_parser_info *p)
 	p->input_files_delimiters[array_index] = (char **)ft_calloc_p \
 	(count_in_redirections(str) + 1, sizeof(char *));
 }
+
+/*
+
+cmd	-- char ***
+	-- allocated partially
+	-- (p->pipes_count + 2) char**
+	-- allocated count_cmds_wout_meta() char*'s for each char**
+
+cmd_part	-- char ***
+			-- allocated fully     
+			-- (p->pipes_count + 2) char**
+			-- each char** implicit allocation through split function
+
+in_arrow_flag	-- int**
+				-- allocated fully
+				-- (p->pipes_count + 1) int*
+				-- allocated count_in_redirection() int's for each int* 
+
+out_arrow_flag	-- int**
+				-- allocated fully
+				-- (p->pipes_count + 1) int*
+				-- allocated count_out_redirection() int's for each int*
+
+output_files	--  char***
+				-- allocated partially
+				-- (p->pipes_count + 2) char**
+				-- allocated count_out_redirections() char*'s for each of
+				   the char**'s
+
+input_files_delimeters	--  char***
+						-- allocated partially
+						-- (p->pipes_count + 2) char**
+						-- allocated count_in_redirections() char*'s for 
+						   each of the char**'s 
+
+*/

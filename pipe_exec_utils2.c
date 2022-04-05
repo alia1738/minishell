@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipe_utils2.c                                      :+:      :+:    :+:   */
+/*   pipe_exec_utils2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 11:25:34 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/04/03 16:47:23 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/04 17:35:27 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,20 +32,15 @@ void	close_pip_append(t_parser_info *p, int pip_i)
 	}
 }
 
-void	close_all_pipes_fds(t_parser_info *p)
+void	close_all_pipes(int **pip, int len)
 {
 	int	i;
 
 	i = -1;
-	while (++i <= p->pipes_count)
+	while (++i < len)
 	{
-		if (i != p->pipes_count)
-		{
-			close(p->pip[i][0]);
-			close(p->pip[i][1]);
-		}
-		close(p->pipe_append[i][0]);
-		close(p->pipe_append[i][1]);
+		close(pip[i][0]);
+		close(pip[i][1]);
 	}
 }
 
