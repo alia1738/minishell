@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/04 14:27:36 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/04 14:30:08 by anasr            ###   ########.fr       */
+/*   Updated: 2022/04/05 13:08:24 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,35 @@ void	hide_signal_markers(void)
 		execve("/bin/stty", ptr, NULL);
 	else
 		waitpid(-1, NULL, 0);
+}
+
+static void	sig_close_n_free(t_parser_info *p)
+{
+	if (!p->pipes_count)
+	{
+		close(p->pipe_append[0][0]);
+		close(p->pipe_append[0][1]);
+		close(p->exit_code_fd[1]);
+		free_double_int(p->pipe_append, 1);
+	}
+	else
+	{
+		close(p->exit_code_fd[1]);
+		close_all_pipes(p->pipe_append, (p->pipes_count + 1));
+		free_double_int(p->pipe_append, (p->pipes_count + 1));
+	}
+}
+
+void	append_handler(int signum)
+{
+	t_parser_info	*p;
+
+	p = return_p(NULL);
+	if (signum == SIGINT)
+	{
+		sig_close_n_free(p);
+		free_everything(p);
+		free_double_char(p->env);
+		exit(0);
+	}
 }
