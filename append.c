@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:46:03 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/04/04 14:35:06 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/05 12:21:24 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,8 @@ void	big_baby_job(t_parser_info *p)
 	int	array_i;
 
 	array_i = 0;
+	close(p->exit_code_fd[0]);
+	write(p->exit_code_fd[1], "1", 1);
 	while (p->input_files_delimiters[array_i])
 	{
 		do_in_append(p, array_i, p->pipe_append[array_i]);
@@ -74,6 +76,8 @@ void	big_baby_job(t_parser_info *p)
 		close(p->pipe_append[array_i][1]);
 		array_i++;
 	}
+	write(p->exit_code_fd[1], "30", 2);
+	close(p->exit_code_fd[1]);
 	free_everything(p);
 	free(p->cmd_path);
 	free_double_int(p->pipe_append, (p->pipes_count + 1));

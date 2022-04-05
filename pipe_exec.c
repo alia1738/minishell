@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 16:42:32 by aalsuwai          #+#    #+#             */
-/*   Updated: 2022/04/04 17:43:17 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/04/05 12:21:49 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ static void	pipe_child_process(t_parser_info *p, int pip_i)
 {
 	signal(SIGINT, SIG_DFL);
 	close(p->exit_code_fd[0]);
-	write(p->exit_code_fd[1], "130", 3);
 	close(p->exit_code_fd[1]);
 	before_command(p, pip_i);
 	if (builtin_check(p, pip_i) < 2)
@@ -49,7 +48,7 @@ static void	parent_process(t_parser_info *p)
 		p->exit_code = WEXITSTATUS(status);
 	}
 	close(p->exit_code_fd[1]);
-	if (p->signal_in_cmd)
+	if (p->signal_in_cmd || p->in_append_inprogress == true)
 	{
 		read(p->exit_code_fd[0], temp, 3);
 		p->exit_code = ft_atoi(temp);
@@ -67,6 +66,8 @@ void	execute_pipe_execution(t_parser_info *p)
 
 	i = -1;
 	p->pipe_append = create_pipes(p->pipes_count + 1);
+	if (pipe(p->exit_code_fd) < 0)
+		exit(1);
 	make_append_child(p);
 	if (p->in_append_inprogress == true)
 	{
@@ -75,8 +76,6 @@ void	execute_pipe_execution(t_parser_info *p)
 		p->exit_code = 1;
 		return ;
 	}
-	if (pipe(p->exit_code_fd) < 0)
-		exit(1);
 	p->pip = create_pipes(p->pipes_count);
 	while (++i <= p->pipes_count)
 	{
