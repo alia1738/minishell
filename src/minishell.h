@@ -6,7 +6,7 @@
 /*   By: aalsuwai <aalsuwai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 19:19:34 by anasr             #+#    #+#             */
-/*   Updated: 2022/04/05 13:45:42 by aalsuwai         ###   ########.fr       */
+/*   Updated: 2022/11/14 17:13:47 by aalsuwai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # include <sys/wait.h>
 # include <sys/errno.h>
 # include <sys/types.h>
-# include "libft/libft.h"
+# include "../libft/libft.h"
 # include <readline/history.h>
 # include <readline/readline.h>
 

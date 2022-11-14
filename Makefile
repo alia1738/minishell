@@ -27,7 +27,7 @@ libft/libft.a:
 	$(MAKE) -sC libft all
 	@printf "\e[0m"
 	
-obj/%.o:%.c
+obj/%.o:src/%.c
 	@printf "\033[2;36m\033[3;36m"
 	gcc -c $(CFLAGS) $< -o $@ -MD -MF $(@:obj/%.o=dep/%.d)
 	@printf "\e[0m"
@@ -36,6 +36,7 @@ clean:
 	@printf "\033[2;31m"
 	$(MAKE) -sC libft fclean
 	rm -f $(addprefix obj/,$(OBJ)) $(addprefix dep/,$(DEP))
+	rm -rf dep obj
 	@printf "\e[0m"
 
 fclean: clean
